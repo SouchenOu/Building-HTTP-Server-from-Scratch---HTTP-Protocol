@@ -11,9 +11,14 @@
 /* ************************************************************************** */
 
 
-/*working on the simplest component of a web server or the most basic component of programming in networks that is a sockets
-// and a socket is just a thing that allows your operating system to connect to a network in  a particular way, and 
-you would use this whether you are building a server a client or a peer-to-peer network
+//steps:
+/******1: Implementing TCP
+ * to implement tcp we have to learn TCP socket programming
+ * There are a few steps involved in using sockets:
+ * 1: create socket
+ * 2:identify the socket
+ * 3: on the server, wait for an incoming connection
+ * 4: Send and receive messages
+ * 5:Close the socket
+ * */
 
-
-*/
