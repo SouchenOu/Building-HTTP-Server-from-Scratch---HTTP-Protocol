@@ -37,13 +37,16 @@ namespace ft
             //constructer
         public:
             Socket(int domain, int service, int protocole, int port, u_long ip_address);
+            // in order to force the user to do one of (connect() or bind()) we use this virtual function,
+            // so now we have to create a class that inherits from socket and will implement this virtual function
+            //(In new file binding_socket) 
             virtual int connect_to_network(int identify_sock, struct sockaddr_in address) = 0;
             //getters
 
             int get_ident_socket();
             int get_connection();
             struct sockaddr_in get_address();
-            
+
             // function to test if the connection is established or not
             void test_connection(int);
 

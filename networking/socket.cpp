@@ -27,10 +27,10 @@ you would use this whether you are building a server a client or a peer-to-peer 
  
  */
 
-ft::Socket::Socket(int domain, int service, int protocol, int port, u_long ip_address)
+ft::Socket::Socket(int domain, int type, int protocol, int port, u_long ip_address)
 {
     // *****************Create a socket(Establish a socket)
-    if(ident_socket = socket(domain,service, protocol) == 0)
+    if(ident_socket = socket(domain,type, protocol) == 0)
     {
         perror("Problem creating a Socket.....");
         exit(0);
