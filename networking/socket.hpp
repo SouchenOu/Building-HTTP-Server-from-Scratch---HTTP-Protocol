@@ -31,13 +31,26 @@ namespace ft
     class  Socket
     {
         private:
-            int connection;
+            int ident_socket;
             struct sockaddr_in address;
+            int connection;
             //constructer
         public:
             Socket(int domain, int service, int protocole, int port, u_long ip_address);
+            virtual int connect_to_network(int identify_sock, struct sockaddr_in address) = 0;
+            //getters
+
+            int get_ident_socket();
+            int get_connection();
+            struct sockaddr_in get_address();
+            
+            // function to test if the connection is established or not
+            void test_connection(int);
 
     };
+    // we will use a class interface and specify a virtual function and this is going to make anyone  inheriting 
+    //this class template, they are going to be forced to imlement this connection function in some way 
+    // and they can specify whether it is bind or connect 
 };
 
 
