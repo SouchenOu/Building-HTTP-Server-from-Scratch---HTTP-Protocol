@@ -13,7 +13,6 @@
 
 #ifndef SOCKET_HPP
 #define SOCKET_HPP
-#include "stdio.h"
 //socket library
 #include "sys/socket.h"
 #include "netinet/in.h"
@@ -36,7 +35,7 @@ namespace ft
             int connection;
             //constructer
         public:
-            Socket(int domain, int service, int protocole, int port, u_long ip_address);
+            Socket(int domain, int type, int protocole, int port, u_long ip_address);
             // in order to force the user to do one of (connect() or bind()) we use this virtual function,
             // so now we have to create a class that inherits from socket and will implement this virtual function
             //(In new file binding_socket) 
