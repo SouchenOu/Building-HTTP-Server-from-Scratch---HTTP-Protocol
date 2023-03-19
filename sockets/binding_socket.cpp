@@ -30,3 +30,9 @@ int ft::BindingSocket::connect_to_network(int identify_sock, struct sockaddr_in 
 {
     return bind(identify_sock, (struct sockaddr *)&address, sizeof(address));
 }
+
+
+// build our binding socket
+// Our binding socket was what would connect to the network, and actually bind itself to it with this name.
+
+// now we are going to add an extension to that which is the listening capability, now listening is where this socket is going to be connected to the network on a certain port, and it is going to wait for incoming connection 
