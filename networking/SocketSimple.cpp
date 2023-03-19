@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   socket.cpp                                         :+:      :+:    :+:   */
+/*   SocketSimple.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: souchen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "socket.hpp"
+#include "SocketSimple.hpp"
 #include "iostream"
 
 /*working on the simplest component of a web server or the most basic component of programming in networks that is a sockets
@@ -27,7 +27,7 @@ you would use this whether you are building a server a client or a peer-to-peer 
  
  */
 
-ft::Socket::Socket(int domain, int type, int protocol, int port, u_long ip_address)
+ft::SocketSimple::SocketSimple(int domain, int type, int protocol, int port, u_long ip_address)
 {
     // *****************Create a socket(Establish a socket)
     if(ident_socket = socket(domain,type, protocol) == 0)
@@ -61,12 +61,12 @@ ft::Socket::Socket(int domain, int type, int protocol, int port, u_long ip_addre
      // so the connection will be made  using this connect to network function which is either going to call (bind or connect)
  
         // establish the connection 
-        connection = connect_to_network(ident_socket, address);
-        test_connection(connection);
+        // connection = connect_to_network(ident_socket, address);
+        // test_connection(connection);
 }
 
 // Test connection virtual function
-void ft::Socket::test_connection(int to_test)
+void ft::SocketSimple::test_connection(int to_test)
 {
     if(to_test < 0)
     {
@@ -79,18 +79,25 @@ void ft::Socket::test_connection(int to_test)
 
 // getters
 
-struct sockaddr_in ft::Socket::get_address()
+struct sockaddr_in ft::SocketSimple::get_address()
 {
     return address;
 }
 
-int ft::Socket::get_connection()
+int ft::SocketSimple::get_connection()
 {
     return connection;
 }
-int ft::Socket::get_ident_socket()
+int ft::SocketSimple::get_ident_socket()
 {
     return ident_socket;
+}
+
+//setters
+
+void    ft::SocketSimple::set_connection(int connect)
+{
+    connection = connect;
 }
 
 

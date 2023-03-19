@@ -11,16 +11,16 @@
 /* ************************************************************************** */
 
 #include "binding_socket.hpp"
-#include "socket.cpp"
+#include "SocketSimple.cpp"
 
 
 
 
-ft::BindingSocket::BindingSocket(int domain, int type, int protocol, int port, u_long ip_address) : Socket(domain, type, port, ip_address)
+ft::BindingSocket::BindingSocket(int domain, int type, int protocol, int port, u_long ip_address) : SocketSimple(domain, type, protocol, port, ip_address)
 {
 
-        int connection = connect_to_network(get_ident_socket(), get_address());
-        test_connection(connection);
+        set_connection(connect_to_network(get_ident_socket(), get_address()));
+        test_connection(get_connection());
 
 }
 
