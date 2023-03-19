@@ -26,7 +26,7 @@ namespace ft
             int listennn;
         //constructers
         public:
-            listening(int domain, int type, int protocol, int port, u_long address, int backlong);
+            listening(int domain, int type, int protocol, int port, u_long address, int bck);
             void listen_funct();
 
     };

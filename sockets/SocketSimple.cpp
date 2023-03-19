@@ -30,7 +30,8 @@ you would use this whether you are building a server a client or a peer-to-peer 
 ft::SocketSimple::SocketSimple(int domain, int type, int protocol, int port, u_long ip_address)
 {
     // *****************Create a socket(Establish a socket)
-    if(ident_socket = socket(domain,type, protocol) == 0)
+    ident_socket = socket(domain,type, protocol);
+    if(ident_socket == 0)
     {
         perror("Problem creating a Socket.....");
         exit(0);
@@ -70,7 +71,7 @@ void ft::SocketSimple::test_connection(int to_test)
 {
     if(to_test < 0)
     {
-        perror("Faied to connect..");
+        perror("Failed to connect..");
         exit(0);
     }
 }

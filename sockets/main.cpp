@@ -33,11 +33,13 @@ int main()
     //ft::SocketSimple sock = ft::SocketSimple(AF_INET, SOCK_STREAM, 0, 80, INADDR_ANY);
     std::cout << "Binding a socket....\n";
 
-    ft::BindingSocket bind_socket = ft::BindingSocket(AF_INET, SOCK_STREAM, 0,80, INADDR_ANY);
+    ft::BindingSocket bind_socket = ft::BindingSocket(AF_INET, SOCK_STREAM, 0,81, INADDR_ANY);
 
     ft::listening listen = ft::listening(AF_INET, SOCK_STREAM,0 , 80, INADDR_ANY, 10);
-  
-    std::cout << "connect with Successs!!\n";
+    
+    (void) listen;
+    (void) bind_socket;
+      std::cout << "connect with Successs!!\n";
 
 
 }
