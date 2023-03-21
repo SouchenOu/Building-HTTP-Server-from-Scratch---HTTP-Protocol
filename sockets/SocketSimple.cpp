@@ -31,6 +31,7 @@ ft::SocketSimple::SocketSimple(int domain, int type, int protocol, int port, u_l
 {
     // *****************Create a socket(Establish a socket)
     ident_socket = socket(domain,type, protocol);
+    //domain: communication domain in which the socket should be created --> AF_INET(IP), AF_INET6 (IPV6)
     if(ident_socket == 0)
     {
         perror("Problem creating a Socket.....");

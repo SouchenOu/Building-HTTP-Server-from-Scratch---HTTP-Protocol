@@ -25,7 +25,10 @@ ft::BindingSocket::BindingSocket(int domain, int type, int protocol, int port, u
 }
 
 
+// the structure sockaddr is a generic  container that just allows the OS to be able to read the first couple of bytes that 
+// identify the address family.
 
+// The address family determines what variant of the sockaddr struct to use that contains elements that make sense for that specific communication type. we use struct sockaddr_in, wich is defined in the header netinet/in.h
 int ft::BindingSocket::connect_to_network(int identify_sock, struct sockaddr_in address)
 {
     return bind(identify_sock, (struct sockaddr *)&address, sizeof(address));

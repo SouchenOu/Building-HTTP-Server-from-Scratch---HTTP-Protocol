@@ -31,6 +31,7 @@ void ft::test::accepter()
     struct sockaddr_in address = get_socket()->get_address();
     int addrlen = sizeof(address);
     new_socket = accept(get_socket()->get_ident_socket(), (struct sockaddr *)&address, (socklen_t*)&addrlen);
+    // we finally have connected sockets between a client and server(When you visit Ip address of your server from a web browser)
     // then read from the connection 
     read(new_socket, buffer, 30000);
 }
