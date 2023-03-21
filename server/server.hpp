@@ -23,6 +23,7 @@ namespace ft
     class Server
     {
         private:
+        // i want our socket to be a private member variable
             //defines a space in memory to hold a socket without actually instantiating it 
             listening *socket;
             virtual void accepter() = 0;
@@ -36,5 +37,8 @@ namespace ft
 
     };
 }
+
+
+// first with accept() we test that connection to make sure it worked and  the client make a requiste to the server then reading what that requeste is then writing a response 
 
 #endif

@@ -1,42 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.hpp                                           :+:      :+:    :+:   */
+/*   mainServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: souchen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/19 18:10:22 by souchen           #+#    #+#             */
-/*   Updated: 2023/03/19 18:10:24 by souchen          ###   ########.fr       */
+/*   Created: 2023/03/21 11:12:43 by souchen           #+#    #+#             */
+/*   Updated: 2023/03/21 11:12:44 by souchen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "iostream"
+#include "test.hpp"
 
-#ifndef TEST_HPP
-#define TEST_HPP
-
-
-#include "server.hpp"
-
-namespace ft
+int main()
 {
-    class test : public Server
-    {
-        private:
-            char buffer[30000];
-            int new_socket;
-            void accepter();
-            void handler();
-            void responder();
-        public:
-            test();
-            void launch();
-    };
+    ft::test t;
 
+    // so now i will see my get request from the browser 
 }
-
-
-
-
-
-
-#endif
