@@ -16,7 +16,14 @@
 #pragma once
 #include <iostream>
 #include "netinet/in.h"
-#include "winsock.h"
+#include "sys/select.h"
+
+#include <string>
+#include <sstream>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 
 
 
