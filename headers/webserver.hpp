@@ -22,16 +22,16 @@
 # include <cstdlib>
 # include <unistd.h>
 # include <ctime>
-# include <sys/stat.h> // mkdir
-# include <dirent.h> // dirent readdir
+# include <sys/stat.h> 
+# include <dirent.h> 
 # include <sys/types.h>
 # include <sys/wait.h>
 
-//* NETWORK INCLUDES
+
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <sys/select.h>
-# include <sys/socket.h> // bind
+# include <sys/socket.h> 
 
 # include <list>
 # include <map>
@@ -43,17 +43,22 @@
 class Webserver
 {
 	private:
+	/**You can declare multiple server contexts, 
+	 * because each instance defines a specific virtual server to handle client 
+	 * requests. You can have as many server blocks as you need, each of which can handle 
+	 * a specific subset of connections.*/
 		list<server*>	servers;
 	
 
 	public:
     // constructer
-		Webserver(const string config_file);
+		//Webserver(const string config_file);
+		Webserver();
     // Destructer
 		~Webserver();
 
-		
-		void	build(void);
+		void parcing_config_file(const string config_file);
+		void	setup(void);
 		void	push_in_server(server *serv);
 };
 

@@ -21,25 +21,20 @@
 # include <string>
 # include <cstdlib>
 # include <unistd.h>
-# include <ctime>
-# include <sys/stat.h> // mkdir
-# include <dirent.h> // dirent readdir
-# include <sys/types.h>
-# include <sys/wait.h>
+#include "string.h"
 
-//* NETWORK INCLUDES
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <sys/select.h>
-# include <sys/socket.h> // bind
+# include <sys/socket.h> 
 
 # include <list>
 # include <map>
 # include "request.hpp"
-# include "location.hpp"
+# include "Location.hpp"
 
 
-
+using namespace std;
 
 
 
@@ -54,7 +49,7 @@ class server
 		long long					client_max_body_size;
 		string						root; // directory where the webste is
 		string						index; // file served when "/" is requested
-		list<location>				locations;
+		//list<Location>				locations;
 		map<string, string>			cgis; // CGI's extentions names and exec paths
 		
 		// some used variable 
@@ -97,10 +92,10 @@ class server
 		
 		
 
-		void						push_back_location(const Location location);
-		void						push_back_server_name(const string server_name);
-		void						push_back_cgi(const string extention_name, const string exec_path);
-		void						push_back_error_page(const pair<unsigned int, string> error_page);
+		void						push_in_location(const Location location);
+		void						push_in_server_name(const string server_name);
+		void						push_in_cgi(const string extention_name, const string exec_path);
+		void						push_in_error_page(const pair<unsigned int, string> error_page);
 		
 		
 };

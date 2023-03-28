@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.hpp"
+#include "../headers/server.hpp"
 #include <fcntl.h>
 
 server::server()
@@ -21,9 +21,8 @@ server::server()
 
 server::~server()
 {
-	DEBUG("KILLING server");
 	close(fd_socket);
-	DEBUG("KILLED");
+	
 }
 
 int server::EstablishConnection(void)
@@ -122,7 +121,7 @@ bool	server::is_valid(string &error) const
 
 unsigned int	server::get_port_listen() const
 {
-	return port;
+	return port_listen;
 }
 
 string			server::get_ip_address() const
@@ -132,7 +131,7 @@ string			server::get_ip_address() const
 
 list<string>	server::get_server_name() const
 {
-	return server_names;
+	return server_name;
 }
 
 map<unsigned int, string>	server::get_error_pages() const
@@ -150,9 +149,9 @@ string			server::get_index() const
 	return index;
 }
 
-long long		server::get_max_client_body_size() const
+long long		server::get_client_max_body_size() const
 {
-	return max_client_body_size;
+	return client_max_body_size;
 }
 
 list<Location>	server::get_locations() const
