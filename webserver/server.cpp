@@ -54,68 +54,6 @@ int server::EstablishConnection(void)
 	return (fd_socket);
 }
 
-bool	server::is_valid(string &error) const
-{
-	int fd;
-
-	if (get_port_listen() == 0)
-	{
-		error = "port is not set";
-	}
-		
-	if (get_root() == "")
-	{
-		error = "root is not set";
-	}
-	if (get_index() == "")
-	{
-		error = "index is not set";
-	}
-		
-	if (get_client_max_body_size() == 0)
-	{
-		error = "max_client_body_size is not set";
-	}
-
-	if (get_ip_address() == "")
-	{
-		error = "ip_address is not set";
-	}		
-		
-	
-		
-	map<string, string> cgis = get_cgis();
-
-	for (map<string, string>::iterator cgi = cgis.begin(); cgi != cgis.end(); cgi++)
-	{
-		fd = ::open(cgi->second.c_str(), O_RDONLY);
-		if (fd <= 0)
-			error = "cgi " + cgi->second + " is unavailable";
-		close(fd);
-	}
-
-	map<unsigned int, string> error_pages = get_error_pages();
-
-	for (map<unsigned int, string>::iterator error_page = error_pages.begin(); error_page != error_pages.end(); error_page++)
-	{
-		fd = ::open((get_root() + error_page->second).c_str(), O_RDONLY);
-		if (fd <= 0)
-			error = "error_page " + get_root() + error_page->second + " is unavailable";
-		close(fd);
-	}
-
-	list<Location> locations = get_locations();
-
-	if (!locations.size())
-		error = "location is not set";
-
-	for (list<Location>::iterator location = locations.begin(); location != locations.end(); location++)
-	{
-		if (!location->is_valid(error))
-			return false;
-	}
-	return (error.length() == 0);
-}
 
 // ************************getters
 
@@ -154,10 +92,10 @@ long long		server::get_client_max_body_size() const
 	return client_max_body_size;
 }
 
-list<Location>	server::get_locations() const
-{
-	return locations;
-}
+// list<Location>	server::get_locations() const
+// {
+// 	return locations;
+// }
 
 
 map<string, string>	server::get_cgis() const
@@ -166,7 +104,7 @@ map<string, string>	server::get_cgis() const
 }
 
 
-int server::get_fd_socket(void) const
+int server::get_fd_socket(void)
 {
 	return fd_socket;
 }
@@ -215,10 +153,10 @@ void	server::set_index(const string index)
 	this->index = index;
 }
 
-void	server::set_locations(const list<Location> locations)
-{
-	this->locations = locations;
-}
+// void	server::set_locations(const list<Location> locations)
+// {
+// 	this->locations = locations;
+// }
 
 
 void	server::set_cgis(const map<string, string> cgis)
@@ -241,10 +179,10 @@ void	server::push_in_error_page(const pair<unsigned int, string> error_page)
 
 void	server::push_in_server_name(string server_name)
 {
-	this->server_names.push_back(server_name);
+	this->server_name.push_back(server_name);
 }
 
-void	server::push_in_location(Location location)
-{
-	this->locations.push_back(location);
-}
+// void	server::push_in_location(Location location)
+// {
+// 	this->locations.push_back(location);
+// }

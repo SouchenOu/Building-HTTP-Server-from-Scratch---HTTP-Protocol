@@ -49,7 +49,6 @@ class server
 		long long					client_max_body_size;
 		string						root; // directory where the webste is
 		string						index; // file served when "/" is requested
-		//list<Location>				locations;
 		map<string, string>			cgis; // CGI's extentions names and exec paths
 		
 		// some used variable 
@@ -69,7 +68,7 @@ class server
 		long long					get_client_max_body_size(void) const;
 		string						get_root(void) const;
 		string						get_index(void) const;
-		list<Location>				get_locations(void) const;
+		//list<Location>				get_locations(void) const;
 		map<string, string>			get_cgis(void) const;
 		int							get_fd_socket();
 
@@ -87,12 +86,12 @@ class server
 		void						set_client_max_body_size(const long long max_client_body_size);
 		void						set_root(const string root);
 		void						set_index(const string index);
-		void						set_locations(const list<Location> locations);
+		//void						set_locations(const list<Location> locations);
 		void						set_cgis(const map<string, string> cgis);
 		
 		
 
-		void						push_in_location(const Location location);
+		//void						push_in_location(const Location location);
 		void						push_in_server_name(const string server_name);
 		void						push_in_cgi(const string extention_name, const string exec_path);
 		void						push_in_error_page(const pair<unsigned int, string> error_page);

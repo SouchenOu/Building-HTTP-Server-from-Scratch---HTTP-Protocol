@@ -32,7 +32,7 @@ void ccout(std::string message, string color = BLUE)
 
 	std::cout << color << "[";
 
-	std::cout << time_rightnow->tm_hour << ":" << time_rightnow->tm_min << ":" << time_rightnow->tm_sec << "]: " << message << RESET << std::endl;
+	std::cout << time_rightnow->tm_hour << ":" << time_rightnow->tm_min << ":" << time_rightnow->tm_sec << "]: " << message << std::endl;
 }
 
 
@@ -41,7 +41,7 @@ void ccout(std::string message, string color = BLUE)
 
 
 
-server	*parse_server(const vector<string> config_file, size_t *count)
+server	*parse_server(vector<string> config_file, size_t *count)
 {
 	string address_ip;
 	string address_port;
@@ -56,7 +56,7 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 	}
 		
 
-	vector<string>::const_iterator iter = config_file.begin() + *count;
+	vector<string>::iterator iter = config_file.begin() + *count;
 	if (iter == config_file.end())
 	{
 		return NULL;
@@ -79,9 +79,6 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 		}
 	
 			
-
-
-
 		// listen
 		// example     listen 127.0.0.1:8080;
 		/**listen: The IP address / port combination that this server block is 
@@ -126,6 +123,7 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 		}
 		// server_name
 	/******server_name: This directive is the other component used to select a server block for processing. If there are multiple server blocks with listen directives of the same specificity that can handle the request,
+	 * 
 	 *  Nginx will parse the “Host” header of the request and match it against this directive.*/
 		else if (words2[0] == "server_name")
 		{
@@ -138,22 +136,6 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 			{
 				serv->push_in_server_name(*server_name);
 			}
-		}
-		/***** each location is used to handle a certain type of client request,
-		 *  and each location is selected by matching the location definition against the client request through a selection algorithm.*/
-
-
-		/*****NGINX’s location setting helps you set up the way in which NGINX responds to requests for resources inside the server.*/
-		else if (words2[0] == "location")
-		{
-			if (words2.size() != 3)
-			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after location" << endl;
-				exit(0);
-			}
-			size_t old_count = *count;
-			serv->push_in_location(parse_location(config_file, count, serv));
-			iter = iter +  *count - old_count;
 		}
 		
 		else if (words2[0] == "error_page")
@@ -222,6 +204,72 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 				root_tmp.resize(root_tmp.size() - 1);
 			serv->set_root(root_tmp);
 		}
+
+		/***** each location is used to handle a certain type of client request,
+		 *  and each location is selected by matching the location definition against the client request through a selection algorithm.*/
+
+
+		/*****NGINX’s location setting helps you set up the way in which NGINX responds to requests for resources inside the server.*/
+
+		//One or more location contexts in a server context define how to process specific sets of URIs.
+		else if (words2[0] == "location")
+		{
+			if (words2.size() != 3)
+			{
+				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after location" << endl;
+
+				exit(0);
+			}
+			size_t old_count = *count;
+
+			// we shouls parse location
+			string t;
+			string path;
+			t = words2[1];
+			if(t.size() > 0 && t[0] != '/')
+			{
+				t = '/' + t;
+			}
+			if(t.size() > 1 && t[t.size() - 1] == '/')
+			{
+				t.resize(t.size() - 1);
+			} 
+			if(words2[2] != "{")
+			{
+				std::cout << BLUE  << serv->get_root() << "--> should have close bracket after location and path" << endl;
+			}
+
+			path = t;
+			*count++;
+			vector<string>::iterator iter2 = config_file.begin() + *count;
+			while(iter != config_file.end())
+			{
+				vector<string> line = ft_split(*iter, isspace);
+				if(line.size() == 0)
+				{
+					iter++;
+					*count++;
+					continue;
+				}
+				if(line[0][0] == '#')
+				{
+					*count++;
+					iter++;
+					continue;
+
+				}
+				if(line[0] ==  "}")
+				{
+					break ;
+				}
+			}
+
+
+
+			//serv->push_in_location();
+			iter = iter +  *count - old_count;
+		}
+		
 		
 	
 		iter++;
@@ -241,4 +289,13 @@ server	*parse_server(const vector<string> config_file, size_t *count)
 	
 	return serv;
 }
+
+
+
+
+
+
+
+
+
 
