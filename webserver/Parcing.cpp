@@ -226,17 +226,15 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			string t;
 			string path;
 			t = words2[1];
-			if(t.size() > 0 && t[0] != '/')
-			{
-				t = '/' + t;
-			}
+		
 			if(t.size() > 1 && t[t.size() - 1] == '/')
 			{
 				t.resize(t.size() - 1);
 			} 
 			if(words2[2] != "{")
 			{
-				std::cout << BLUE  << serv->get_root() << "--> should have close bracket after location and path" << endl;
+				std::cout << BLUE  << serv->get_root() << "--> should have open bracket after location and path" << endl;
+				exit(0);
 			}
 
 			path = t;
@@ -262,6 +260,17 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				{
 					break ;
 				}
+				// root
+
+				if(line[0] == "root")
+				{
+					if(line.size() != 0)
+					{
+						std::cout << BLUE  << serv->get_root() << "--> should have another argument after root" << endl;
+						exit(0);
+					}
+				}
+
 			}
 
 
