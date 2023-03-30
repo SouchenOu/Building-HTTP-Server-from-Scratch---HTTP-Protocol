@@ -292,6 +292,24 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				}
 				// alias in location 
 
+				if(line[0] == "alias")
+				{
+					if(line.size() != 2)
+					{
+						std::cout << BLUE  << serv->get_root() << "--> should have another argument after alias" << endl;
+						exit(0);
+					}
+					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+					{
+						line[1].resize(line[1].size() - 1);
+					}
+					location.set_alias(line[1]);
+				}
+
+				// return in location
+
+				
+
 			}
 
 
