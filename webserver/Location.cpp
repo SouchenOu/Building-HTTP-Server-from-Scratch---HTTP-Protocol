@@ -10,4 +10,61 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../headers/Location.hpp"
+
+
+
+Location::Location()
+{
+
+}
+
+Location::~Location()
+{
+
+}
+// getters
+
+string Location::get_root()
+{
+    return root;
+}
+
+string Location::get_try_files()
+{
+    return try_files;
+}
+
+string Location::get_return_line()
+{
+    return return_line;
+}
+
+string Location::get_alias()
+{
+    return alias;
+}
+
+// setters
+
+void Location::set_root(string root)
+{
+    this->root = root;
+}
+
+void Location::set_return_line(string return_line)
+{
+    this->return_line = return_line;
+}
+void Location::set_alias(string alias)
+{
+    this->alias = alias;
+}
+void Location::set_try_files(string try_files)
+{
+    this->try_files = try_files;
+}
+
+
+
 
