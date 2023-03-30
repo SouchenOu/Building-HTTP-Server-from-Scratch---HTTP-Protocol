@@ -307,8 +307,32 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				}
 
 				// return in location
+				if(line[0] == "return")
+				{
+					if(line.size() != 3)
+					{
+						std::cout << BLUE  << serv->get_root() << "--> should have two argument after return" << endl;
+						exit(0);
+					}
+					if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
+					{
+						line[2].resize(line[2].size() - 1);
+					}
+					int number = atoi(line[1].c_str());
 
-				
+					if(number == 301 || number == 307)
+					{
+						std::cout << BLUE  << serv->get_root() << "--> invalid number" << endl;
+						exit(0);
+					}
+
+					location.set_return_line(line[2]);
+					
+					
+
+				}
+
+
 
 			}
 
