@@ -43,4 +43,4 @@ class Location
     string get_alias();
 
 
-}
+};

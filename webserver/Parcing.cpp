@@ -214,6 +214,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		//One or more location contexts in a server context define how to process specific sets of URIs.
 		else if (words2[0] == "location")
 		{
+			Location location;
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after location" << endl;
@@ -260,8 +261,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				{
 					break ;
 				}
-				// root
-
+				// root in location
 				if(line[0] == "root")
 				{
 					if(line.size() != 0)
@@ -269,7 +269,28 @@ server	*parse_server(vector<string> config_file, size_t *count)
 						std::cout << BLUE  << serv->get_root() << "--> should have another argument after root" << endl;
 						exit(0);
 					}
+
+					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+					{
+						line[1].resize(line[1].size() - 1);
+					}
+					location.set_root(line[1]);
 				}
+				// try_files in location 
+				if(line[0] == "try_files")
+				{
+					if(line.size() < 2)
+					{
+						std::cout << BLUE  << serv->get_root() << "--> should have minimum one argument after try_files argument" << endl;
+						exit(0);
+					}
+					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+					{
+						line[1].resize(line[1].size() - 1);
+					}
+					location.set_try_files(line[1]);
+				}
+				// alias in location 
 
 			}
 
