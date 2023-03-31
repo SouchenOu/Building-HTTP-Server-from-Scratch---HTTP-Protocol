@@ -138,13 +138,15 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << endl;
 				exit(0);
 			}
+			//The C++ pair allows you to store two disparate items as a single entity.
 			serv->push_in_error_page(pair<unsigned int, string>((unsigned int)atoi(words2[1].c_str()), words2[2]));
 		}
+		// the index directive defines the index file is name (The default value is index.html)
 		else if (words2[0] == "index")
 		{
 			if (words2.size() != 2)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after index" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after index" << endl;
 		
 				exit(0);
 			}
@@ -156,12 +158,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		{
 			if (words2.size() != 2)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after client_max_body_size" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after client_max_body_size" << endl;
 				exit(0);
 			}
 			if (!is_integer(words2[1]))
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have a number after client_max_body_size" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have a number after client_max_body_size" << endl;
 	
 				exit(0);
 			}
@@ -175,7 +177,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		{
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have three argument after cgi" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after cgi" << endl;
 				exit(0);
 			}
 			serv->push_in_cgi(words2[1], words2[2]);
@@ -210,29 +212,29 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			Location location;
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after location" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << endl;
 
 				exit(0);
 			}
 			size_t old_count = *count;
 
 			// we shouls parse location
-			string t;
-			string path;
-			t = words2[1];
 		
-			if(t.size() > 1 && t[t.size() - 1] == '/')
+			string path;
+			path = words2[1];
+		
+			if(path.size() > 1 && path[path.size() - 1] == '/')
 			{
-				t.resize(t.size() - 1);
+				path.resize(path.size() - 1);
 			} 
 			if(words2[2] != "{")
 			{
-				std::cout << BLUE  << serv->get_root() << "--> should have open bracket after location and path" << endl;
+				std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
 				exit(0);
 			}
 
-			path = t;
 			*count++;
+			// first line after location line
 			vector<string>::iterator iter2 = config_file.begin() + *count;
 			while(iter != config_file.end())
 			{
@@ -250,9 +252,9 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				// root in location
 				if(line[0] == "root")
 				{
-					if(line.size() != 0)
+					if(line.size() == 0)
 					{
-						std::cout << BLUE  << serv->get_root() << "--> should have another argument after root" << endl;
+						std::cout << BLUE  << "--> should have another argument after root" << endl;
 						exit(0);
 					}
 
@@ -267,7 +269,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				{
 					if(line.size() < 2)
 					{
-						std::cout << BLUE  << serv->get_root() << "--> should have minimum one argument after try_files argument" << endl;
+						std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
 						exit(0);
 					}
 					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
@@ -282,7 +284,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				{
 					if(line.size() != 2)
 					{
-						std::cout << BLUE  << serv->get_root() << "--> should have another argument after alias" << endl;
+						std::cout << BLUE  << "--> should have another argument after alias" << endl;
 						exit(0);
 					}
 					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
@@ -297,7 +299,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				{
 					if(line.size() != 3)
 					{
-						std::cout << BLUE  << serv->get_root() << "--> should have two argument after return" << endl;
+						std::cout << BLUE  << "--> should have two argument after return" << endl;
 						exit(0);
 					}
 					if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
