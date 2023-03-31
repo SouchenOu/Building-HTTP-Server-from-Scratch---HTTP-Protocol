@@ -12,6 +12,8 @@
 
 #include "../headers/server.hpp"
 #include <fcntl.h>
+#include "sys/socket.h"
+#include "netinet/in.h"
 
 server::server()
 {
@@ -67,7 +69,7 @@ string			server::get_ip_address() const
 	return ip_address;
 }
 
-list<string>	server::get_server_name() const
+vector<string>	server::get_server_name() const
 {
 	return server_name;
 }
@@ -126,7 +128,7 @@ void	server::set_ip_address(const string ip_address)
 }
 
 
-void	server::set_server_name(const list<string> server_name)
+void	server::set_server_name(vector<string> server_name)
 {
 	this->server_name = server_name;
 }
@@ -182,7 +184,7 @@ void	server::push_in_server_name(string server_name)
 	this->server_name.push_back(server_name);
 }
 
-// void	server::push_in_location(Location location)
-// {
-// 	this->locations.push_back(location);
-// }
+void	server::push_in_location(Location location)
+{
+	this->locations.push_back(location);
+}

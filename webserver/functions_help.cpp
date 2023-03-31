@@ -122,43 +122,61 @@ using namespace std;
 //  return (tab);
 // }
 
-int search(char const c, const string &search_string)
-{
-    int j;
-
-    j = 0;
-    while (search_string[j])
-    {
-        if (c == search_string[j])
-        {
-            return 1;
-        }
-        j++;    
-    }
-    return 0;
-}
 
 
-vector<string> ft_split(const string &str, const string &search_data)
+vector<string> ft_divise(const string &str, const string &search_data)
 {
     vector<string> split_set;
     size_t          i;
+    size_t          j;
     string          the_str;
+    int             indice;
 
     i = 0;
+    j = 0;
+    indice = 0;
     the_str = "";
     while (i < str.length())
     {
-        while (i < str.length() && search(str[i], search_data))
+        //&& search(str[i], search_data)
+        while (i < str.length())
         {
+            while(search_data[j] != '\0')
+            {
+                if(str[i] == search_data[j])
+                {
+                    indice = indice + 1;
+                    break ;
+                }
+                j++;
+            }
+            if(indice < 0)
+            {
+                break ;
+            }
             i++;
         }
             
         if (i < str.length())
         {
-            while (i < str.length() && !search(str[i], search_data))
+            while (i < str.length())
             {
-                the_str = the_str + str[i];
+                while(search_data[j] != '\0')
+                {
+                    if(str[i] == search_data[j])
+                    {
+                        indice = indice + 1;
+                        break ;
+                    }
+                    j++;
+                }
+                if(indice < 0)
+                {
+                    the_str = the_str + str[i];
+                    i++;
+                    break ;
+                }
+                    
                 i++;
             }
             split_set.push_back(the_str);

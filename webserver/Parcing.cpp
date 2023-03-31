@@ -25,15 +25,6 @@
 
 using namespace std;
 
-void ccout(std::string message, string color = BLUE)
-{
-	std::time_t time = std::time(0);
-	std::tm* time_rightnow = std::localtime(&time);
-
-	std::cout << color << "[";
-
-	std::cout << time_rightnow->tm_hour << ":" << time_rightnow->tm_min << ":" << time_rightnow->tm_sec << "]: " << message << std::endl;
-}
 
 
 // convert .txt to string
@@ -48,11 +39,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	size_t size;
 
 	server *serv = new server();
-	vector<string> world1 = ft_split(config_file[0], isspace);
+	vector<string> world1 = ft_divise(config_file[0], isspace);
 
 	if (world1[1] != "{")
 	{
-		return NULL;
+		cout << "Invalid config file\n";
+		exit(0);
 	}
 		
 
@@ -66,7 +58,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	(*count)++;
 	while (iter != config_file.end())
 	{
-		vector<string> words2 = ft_split(*iter, isspace);
+		vector<string> words2 = ft_divise(*iter, isspace);
 		if (!words2.size() || words2[0][0] == '#')
 		{
 			iter++;
@@ -92,7 +84,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after listen" << endl;
 					exit(0);
 			}
-			vector<string> listen_words = ft_split(words2[1], ":");
+			vector<string> listen_words = ft_divise(words2[1], ":");
 			
 			address_ip = listen_words[0];
 
@@ -243,19 +235,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			vector<string>::iterator iter2 = config_file.begin() + *count;
 			while(iter != config_file.end())
 			{
-				vector<string> line = ft_split(*iter, isspace);
-				if(line.size() == 0)
+				vector<string> line = ft_divise(*iter, isspace);
+				if(line.size() == 0 || line[0][0] == '#')
 				{
 					iter++;
 					*count++;
 					continue;
-				}
-				if(line[0][0] == '#')
-				{
-					*count++;
-					iter++;
-					continue;
-
 				}
 				if(line[0] ==  "}")
 				{
@@ -338,7 +323,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 
 
 
-			//serv->push_in_location();
+			serv->push_in_location(location);
 			iter = iter +  *count - old_count;
 		}
 		
@@ -347,11 +332,11 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		iter++;
 		(*count)++;
 	}
-	// vector<string> end_file = ft_split(*iter, isspace);
+	// vector<string> end_file = ft_divise(*iter, isspace);
 	// while (!end_file.size() || end_file[0] != "}")
 	// {
 	// 	(*count)++;
-	// 	end_file = ft_split(config_file[*count], isspace);
+	// 	end_file = ft_divise(config_file[*count], isspace);
 	// }
 	// if (end_file.size() && end_file[0] != "}")
 	// {

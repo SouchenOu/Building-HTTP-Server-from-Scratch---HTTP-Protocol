@@ -43,4 +43,7 @@ class Location
     string get_alias();
 
 
+    // function push_in_location
+
+
 };
