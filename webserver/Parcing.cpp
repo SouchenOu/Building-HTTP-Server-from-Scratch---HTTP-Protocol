@@ -81,12 +81,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			if (words2.size() != 2)
 			{
 				
-					std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after listen" << endl;
+					std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after listen" << endl;
 					exit(0);
 			}
 			vector<string> listen_words = ft_divise(words2[1], ":");
 			
-			address_ip = listen_words[0];
+			
 
 			if (listen_words.size() == 1)
 			{
@@ -95,6 +95,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			}
 			else if(listen_words.size() == 2)
 			{
+				address_ip = listen_words[0];
 				address_port = listen_words[1];
 			}
 				
@@ -107,7 +108,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 
 			if (is_integer(address_port) == 0)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: address port should be an integer" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: address port should be an integer" << endl;
 				exit(0);
 			}
 			serv->set_port_listen(atoi(address_port.c_str()));
@@ -121,7 +122,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		{
 			if (words2.size() < 2)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after server_name" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have another argument after server_name" << endl;
 				exit(0);
 			}
 			for (vector<string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
@@ -134,7 +135,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		{
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have three argument after error_page" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << endl;
 				exit(0);
 			}
 			serv->push_in_error_page(pair<unsigned int, string>((unsigned int)atoi(words2[1].c_str()), words2[2]));

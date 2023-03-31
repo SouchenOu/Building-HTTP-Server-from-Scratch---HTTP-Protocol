@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
     Webserver webserver;
     webserver.parcing_config_file(argv[1]);
     webserver.setup();
-    //parsing_config_file(argv[1]);
     
 
 	return 0;
