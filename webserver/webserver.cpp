@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../headers/webserver.hpp"
+#include "../headers/server.hpp"
 #include "Parcing.cpp"
 # define isspace "; \t"
 #include <fcntl.h>
@@ -60,31 +61,24 @@ void Webserver::parcing_config_file(const string config_file)
 		if (word_line[0] == "server")
 		{
 			server *serv = parse_server(config_line, &count);
-			if(serv != 0)
-			{
-				std::cout << BLUE  << serv->get_root() << "--> ip_address:port/server_names conflict with another server" << endl;
-				delete serv;
-				exit(0);
-			}
 			for (list<server*>::const_iterator sserver = servers.begin(); sserver != servers.end(); sserver++)
 			{
 				if ((*sserver)->get_ip_address() == serv->get_ip_address() && (*sserver)->get_port_listen() == serv->get_port_listen())
 				{
-					list<string> server_names = (*sserver)->get_server_name();
-					if (server_names.size() == 0 || serv->get_server_name().size() == 0)
+					if ((*sserver)->get_server_name().size() == 0 || serv->get_server_name().size() == 0)
 					{
-						std::cout << BLUE  << serv->get_root() << "--> ip_address:port/server_names conflict with another server" << endl;
+						std::cout << BLUE  <<  "[warn] conflicting server name "" on " << serv->get_ip_address() << ":" << serv->get_port_listen()<< ", ignored" << endl;
 						delete serv;
 						exit(0);
 					}
 						
-					for (list<string>::iterator server_name = server_names.begin(); server_name != server_names.end(); server_name++)
+					for (list<string>::iterator server_names = server_name.begin(); server_names != server_name.end(); server_names++)
 					{
-						for (list<string>::const_iterator new_server_name = serv->get_server_name().begin(); new_server_name != serv->get_server_name().end(); new_server_name++)
+						for (list<string>::iterator new_server_name = serv->get_server_name().begin(); new_server_name != serv->get_server_name().end(); new_server_name++)
 						{
 							if (*server_name == *new_server_name)
 							{
-								std::cout << BLUE  << serv->get_root() << "--> ip_address:port/server_names conflict with another server" << endl;
+								std::cout << BLUE  <<  "[warn] conflicting server name "" on " << serv->get_ip_address() << ":" << serv->get_port_listen()<< ", ignored" << endl;
 								delete serv;
 								exit(0);
 							}
