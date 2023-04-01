@@ -22,6 +22,7 @@ class Location
         string try_files;
         string  return_line;
         string  alias;
+        int http_redirection;
     public:
     // constructer
         Location();
@@ -34,6 +35,7 @@ class Location
     void set_try_files(string try_files);
     void set_return_line(string return_line);
     void set_alias(string alias);
+    void set_http_redirection(int http_redirection);
 
     // getters
 
@@ -41,6 +43,7 @@ class Location
     string get_try_files();
     string get_return_line();
     string get_alias();
+    int  get_http_redirection();
 
 
     // function push_in_location
