@@ -308,12 +308,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					}
 					int number = atoi(line[1].c_str());
 
-					if(number == 301 || number == 302  | number == 303 || number == 307 || number == 308 )
+					if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
 					{
 						std::cout << BLUE  <<  "--> invalid number" << endl;
 						exit(0);
 					}
-						
+					location.set_http_redirection(number);	
 					location.set_return_line(line[2]);
 					
 					

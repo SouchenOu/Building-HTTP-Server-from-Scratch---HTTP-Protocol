@@ -45,6 +45,11 @@ string Location::get_alias()
     return alias;
 }
 
+int Location::get_http_redirection()
+{
+
+}
+
 // setters
 
 void Location::set_root(string root)
@@ -63,6 +68,11 @@ void Location::set_alias(string alias)
 void Location::set_try_files(string try_files)
 {
     this->try_files = try_files;
+}
+
+void Location::set_http_redirection(int http_redirection)
+{
+    this->http_redirection = http_redirection;
 }
 
 
