@@ -47,7 +47,12 @@ string Location::get_alias()
 
 int Location::get_http_redirection()
 {
+    return http_redirection;
+}
 
+string Location::get_autoindex()
+{
+    return autoindex;
 }
 
 // setters
@@ -73,6 +78,11 @@ void Location::set_try_files(string try_files)
 void Location::set_http_redirection(int http_redirection)
 {
     this->http_redirection = http_redirection;
+}
+
+void Location::set_autoindex(string autoindex)
+{
+    this->autoindex = autoindex;
 }
 
 

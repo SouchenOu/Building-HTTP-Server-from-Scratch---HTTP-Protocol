@@ -316,8 +316,15 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					location.set_http_redirection(number);	
 					location.set_return_line(line[2]);
 					
+				}
+				if(line[0] == "autoindex")
+				{
+					if(line.size() != 2)
+					{
+						std::cout << "should have another argument after autoindex" << endl;
+						exit(0);
+					}
 					
-
 				}
 
 
