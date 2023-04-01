@@ -265,7 +265,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					location.set_root(line[1]);
 				}
 				// try_files in location 
-				if(line[0] == "try_files")
+				else if(line[0] == "try_files")
 				{
 					if(line.size() < 2)
 					{
@@ -280,7 +280,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				}
 				// alias in location 
 
-				if(line[0] == "alias")
+				else if(line[0] == "alias")
 				{
 					if(line.size() != 2)
 					{
@@ -295,7 +295,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				}
 
 				// return in location
-				if(line[0] == "return")
+				else if(line[0] == "return")
 				{
 					if(line.size() != 3)
 					{
@@ -317,19 +317,36 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					location.set_return_line(line[2]);
 					
 				}
-				if(line[0] == "autoindex")
+				// autoindex
+				else if(line[0] == "autoindex")
 				{
 					if(line.size() != 2)
 					{
 						std::cout << "should have another argument after autoindex" << endl;
 						exit(0);
 					}
+
+					location.set_autoindex(line[1]);
 					
 				}
+				else if (line[0] == "index")
+				{
+					if(line.size() != 2)
+					{
+						std::cout << "should have another argument after index" << endl;
+						exit(0);
+					}
+					location.set_index(line[1]);
+				}
+				else 
+
+					std::cout << "It is another location \n ";
 
 
 
 			}
+
+			
 
 
 

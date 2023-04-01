@@ -24,6 +24,7 @@ class Location
         string  alias;
         int http_redirection;
         string  autoindex;
+        string index;
     public:
     // constructer
         Location();
@@ -38,6 +39,7 @@ class Location
     void set_alias(string alias);
     void set_http_redirection(int http_redirection);
     void set_autoindex(string autoindex);
+    void set_index(string index);
 
     // getters
 
@@ -47,6 +49,7 @@ class Location
     string get_alias();
     int  get_http_redirection();
     string get_autoindex();
+    string get_index();
 
 
     // function push_in_location

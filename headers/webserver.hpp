@@ -33,7 +33,7 @@
 # include <sys/select.h>
 # include <sys/socket.h> 
 
-# include <list>
+# include <set>
 # include <map>
 
 
@@ -47,7 +47,7 @@ class Webserver
 	 * because each instance defines a specific virtual server to handle client 
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
-		list<server*>	servers;
+		set<server*>	servers;
 	
 
 	public:

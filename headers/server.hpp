@@ -29,6 +29,7 @@
 # include <sys/socket.h> 
 
 # include <vector>
+#include <set>
 # include <map>
 # include "request.hpp"
 # include "Location.hpp"
@@ -41,19 +42,22 @@ using namespace std;
 class server
 {
 	private :
-		// * PARSED FROM CONFIG FILE *
-        unsigned int				port_listen; // port to listen and send on ("listen" in config file)
-		string						ip_address;
-		vector<string>				server_name; // "Host" header in HTTP request (domain names)
-		map<unsigned int, string>	error_pages;
-		long long					client_max_body_size;
-		string						root; // directory where the webste is
-		string						index; // file served when "/" is requested
-		map<string, string>			cgis; // CGI's extentions names and exec paths
+        unsigned int						port_listen; // port == listen in config_file
+		string								ip_address;
+		set<string>							server_name; //domain_name
+		map<unsigned int, string>			error_pages;
+		long long							client_max_body_size;
+		string								root; 
+		string								index; 
+		map<string, string>					cgis; 
 		vector<Location>					locations;
+
+
+
+		
 		// some used variable 
-		int							fd_socket;
-		struct sockaddr_in			address;
+		int									fd_socket;
+		struct sockaddr_in					address;
 
 	public:
 		server();
@@ -63,12 +67,12 @@ class server
 	// getters
 		unsigned int				get_port_listen(void) const;
 		string						get_ip_address(void) const;
-		vector<string>				get_server_name(void) const;
+		set<string>					get_server_name(void) const;
 		map<unsigned int, string>	get_error_pages(void) const;
 		long long					get_client_max_body_size(void) const;
 		string						get_root(void) const;
 		string						get_index(void) const;
-		list<Location>				get_locations(void) const;
+		vector<Location>			get_locations(void) const;
 		map<string, string>			get_cgis(void) const;
 		int							get_fd_socket();
 
@@ -79,12 +83,12 @@ class server
 		
 		void						set_port_listen(const unsigned int listen);
 		void						set_ip_address(const string ip_address);
-		void						set_server_name(vector<string> server_names);
+		void						set_server_name(set<string> server_names);
 		void						set_error_pages(const map<unsigned int, string> error_pages);
 		void						set_client_max_body_size(const long long max_client_body_size);
 		void						set_root(const string root);
 		void						set_index(const string index);
-		//void						set_locations(const list<Location> locations);
+		void						set_locations(const vector<Location> locations);
 		void						set_cgis(const map<string, string> cgis);
 		
 		

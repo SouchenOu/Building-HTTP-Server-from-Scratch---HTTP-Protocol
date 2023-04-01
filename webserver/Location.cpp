@@ -55,6 +55,11 @@ string Location::get_autoindex()
     return autoindex;
 }
 
+string Location::get_index()
+{
+    return index;
+}
+
 // setters
 
 void Location::set_root(string root)
@@ -83,6 +88,12 @@ void Location::set_http_redirection(int http_redirection)
 void Location::set_autoindex(string autoindex)
 {
     this->autoindex = autoindex;
+}
+
+
+void Location::set_index(string index)
+{
+    this->index = index;
 }
 
 

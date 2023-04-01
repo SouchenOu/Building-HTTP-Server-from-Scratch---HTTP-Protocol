@@ -69,7 +69,7 @@ string			server::get_ip_address() const
 	return ip_address;
 }
 
-vector<string>	server::get_server_name() const
+set<string>	server::get_server_name() const
 {
 	return server_name;
 }
@@ -94,10 +94,10 @@ long long		server::get_client_max_body_size() const
 	return client_max_body_size;
 }
 
-// list<Location>	server::get_locations() const
-// {
-// 	return locations;
-// }
+vector<Location>	server::get_locations() const
+{
+	return locations;
+}
 
 
 map<string, string>	server::get_cgis() const
@@ -128,7 +128,7 @@ void	server::set_ip_address(const string ip_address)
 }
 
 
-void	server::set_server_name(vector<string> server_name)
+void	server::set_server_name(set<string> server_name)
 {
 	this->server_name = server_name;
 }
@@ -155,10 +155,10 @@ void	server::set_index(const string index)
 	this->index = index;
 }
 
-// void	server::set_locations(const list<Location> locations)
-// {
-// 	this->locations = locations;
-// }
+void	server::set_locations(const vector<Location> locations)
+{
+	this->locations = locations;
+}
 
 
 void	server::set_cgis(const map<string, string> cgis)
@@ -181,7 +181,7 @@ void	server::push_in_error_page(const pair<unsigned int, string> error_page)
 
 void	server::push_in_server_name(string server_name)
 {
-	this->server_name.push_back(server_name);
+	this->server_name.insert(server_name);
 }
 
 void	server::push_in_location(Location location)
