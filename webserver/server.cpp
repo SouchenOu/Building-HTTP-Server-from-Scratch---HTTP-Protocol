@@ -29,12 +29,18 @@ server::~server()
 
 int server::EstablishConnection(void)
 {
-	//first arg (domain): For communicating between processes on different hosts connected by IPV4, we use AF_INET and AF_I NET 6 for processes connected by IPV6.
+	//first arg (domain or address family): For communicating between processes on different hosts connected by IPV4, we use AF_INET (IP) and AF_INET6 for processes connected by IPV6.
 
 	/*	second arg (type) : SOCK_STREAM: TCP(reliable, connection oriented)
 		SOCK_DGRAM: UDP(unreliable, connectionless)*/
 
 	/**Third arg: (protocol)  Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.*/
+
+
+	/****For TCP/IP sockets, we want to specify the IP address family ( AF_INET ) and virtual
+		circuit service ( SOCK_STREAM ). Since there’s only one form of virtual circuit service, there
+		are no variations of the protocol, so the last argument, protocol, is zero. Our code for
+		creating a TCP socket looks like this:*/
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{
