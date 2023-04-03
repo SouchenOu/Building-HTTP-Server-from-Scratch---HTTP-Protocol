@@ -29,14 +29,19 @@ server::~server()
 
 int server::EstablishConnection(void)
 {
+	//first arg (domain): For communicating between processes on different hosts connected by IPV4, we use AF_INET and AF_I NET 6 for processes connected by IPV6.
+
+	/*	second arg (type) : SOCK_STREAM: TCP(reliable, connection oriented)
+		SOCK_DGRAM: UDP(unreliable, connectionless)*/
+
+	/**Third arg: (protocol)  Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.*/
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{
 		perror("Error: Problem creation a socket");
 		exit(1);
 	}
-	//Log("Listening socket created on port: " + to_string_custom(port), GREEN);
-
+	//Before calling bind, we need to fill out this structure. The three key parts we need to set are:
 	address.sin_family = AF_INET;
 	address.sin_port = htons(port_listen);
 	address.sin_addr.s_addr = htonl(ip_address);
