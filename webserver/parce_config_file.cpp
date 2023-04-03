@@ -12,23 +12,13 @@
 
 
 #define BLUE    "\033[34m"
-# define isspace "; \t"
-#include "../headers/server.hpp"
+# define white_espace "; \t"
 
-
-#include "functions_help.cpp"
-#include <iostream>
-#include <string>
-#include <fstream>
+#include "../headers/webserver.hpp"
+//#include "../headers/server.hpp"
 #include <iterator>
-#include <sstream>
 
-using namespace std;
-
-
-
-// convert .txt to string
-
+//using namespace std;
 
 
 
@@ -36,13 +26,13 @@ server	*parse_server(vector<string> config_file, size_t *count)
 {
 	string address_ip;
 	string address_port;
-	size_t size;
+	//size_t size;
 
 	server *serv = new server();
-	vector<string> world1 = ft_divise(config_file[0], isspace);
+	vector<string> world1 = ft_divise(config_file[0], white_espace);
 
 	if (world1[1] != "{")
-	{
+	{//
 		cout << "Invalid config file\n";
 		exit(0);
 	}
@@ -58,7 +48,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	(*count)++;
 	while (iter != config_file.end())
 	{
-		vector<string> words2 = ft_divise(*iter, isspace);
+		vector<string> words2 = ft_divise(*iter, white_espace);
 		if (!words2.size() || words2[0][0] == '#')
 		{
 			iter++;
@@ -233,16 +223,16 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				exit(0);
 			}
 
-			*count++;
+			(*count)++;
 			// first line after location line
 			vector<string>::iterator iter2 = config_file.begin() + *count;
-			while(iter != config_file.end())
+			while(iter2 != config_file.end())
 			{
-				vector<string> line = ft_divise(*iter, isspace);
+				vector<string> line = ft_divise(*iter, white_espace);
 				if(line.size() == 0 || line[0][0] == '#')
 				{
-					iter++;
-					*count++;
+					iter2++;
+					(*count)++;
 					continue;
 				}
 				if(line[0] ==  "}")
@@ -359,11 +349,11 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		iter++;
 		(*count)++;
 	}
-	// vector<string> end_file = ft_divise(*iter, isspace);
+	// vector<string> end_file = ft_divise(*iter, white_espace);
 	// while (!end_file.size() || end_file[0] != "}")
 	// {
 	// 	(*count)++;
-	// 	end_file = ft_divise(config_file[*count], isspace);
+	// 	end_file = ft_divise(config_file[*count], white_espace);
 	// }
 	// if (end_file.size() && end_file[0] != "}")
 	// {

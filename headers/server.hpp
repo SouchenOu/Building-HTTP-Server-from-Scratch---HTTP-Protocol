@@ -11,31 +11,31 @@
 /* ************************************************************************** */
 
 
-# ifndef CONFIG_HPP
-# define CONFIG_HPP
+# ifndef SERVER_HPP
+# define SERVER_HPP
 
 
-# include <iostream>
-# include <fstream>
-# include <sstream>
-# include <string>
-# include <cstdlib>
-# include <unistd.h>
-#include "string.h"
+// # include <iostream>
+// # include <fstream>
+// # include <sstream>
+// # include <string>
+// # include <cstdlib>
+// #include <fcntl.h>
+// # include <unistd.h>
+// #include "string.h"
 
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <sys/select.h>
-# include <sys/socket.h> 
+// # include <netinet/in.h>
+// # include <arpa/inet.h>
+// # include <sys/select.h>
+// # include <sys/socket.h> 
 
-# include <vector>
-#include <set>
-# include <map>
-# include "request.hpp"
-# include "Location.hpp"
-
-
-using namespace std;
+// # include <vector>
+// #include <set>
+// # include <map>
+// # include "Location.hpp"
+// #include "../webserver/functions_help.cpp"
+#include "headers.hpp"
+#include "Location.hpp"
 
 
 
@@ -78,6 +78,7 @@ class server
 
 		// some used functions
 		int							EstablishConnection(void);
+		//server* 					parse_server(vector<string> config_file, size_t *count);
 		
 		//settters
 		

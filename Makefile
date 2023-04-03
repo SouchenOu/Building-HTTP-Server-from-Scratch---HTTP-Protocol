@@ -13,9 +13,9 @@
 
 NAME = WebServ
 
-FILES =  sockets/binding_socket.cpp sockets/connecting.cpp  sockets/listening.cpp sockets/SocketSimple.cpp  server/request.cpp server/server.cpp server/test.cpp server/mainServer.cpp
+FILES =  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp
 
-INC =  sockets/binding_socket.hpp sockets/connecting.hpp  sockets/listening.hpp sockets/SocketSimple.hpp server/server.hpp server/test.hpp
+INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp
 
 
 FLAGS = -Wall -Wextra -Werror -std=c++98

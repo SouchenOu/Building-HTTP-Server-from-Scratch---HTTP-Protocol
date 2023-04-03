@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/server.hpp"
-#include <iostream>
-#include <fstream>
-#include "Parcing.cpp"
 #include "../headers/webserver.hpp"
+#include "../headers/server.hpp"
+
 
 //Developpe a webserv like NGINX
 

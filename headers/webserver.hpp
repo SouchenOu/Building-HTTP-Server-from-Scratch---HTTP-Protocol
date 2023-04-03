@@ -12,33 +12,16 @@
 
 
 
-#ifndef WEBSERV_HPP
-# define WEBSERV_HPP
-
-# include <iostream>
-# include <fstream>
-# include <sstream>
-# include <string>
-# include <cstdlib>
-# include <unistd.h>
-# include <ctime>
-# include <sys/stat.h> 
-# include <dirent.h> 
-# include <sys/types.h>
-# include <sys/wait.h>
+#ifndef WEBSERVER_HPP
+# define WEBSERVER_HPP
 
 
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <sys/select.h>
-# include <sys/socket.h> 
 
-# include <set>
-# include <map>
+#include "headers.hpp" 
 
+//# include "server.hpp"
 
-# include "client.hpp"
-# include "server.hpp"
+class server;
 
 class Webserver
 {

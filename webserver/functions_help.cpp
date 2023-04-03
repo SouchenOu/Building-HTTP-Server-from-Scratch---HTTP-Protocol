@@ -190,59 +190,58 @@ vector<string> ft_divise(const string &str, const string &search_data)
 
 /*******substr*/
 
+// char    *ft_substr(char const *s, unsigned int start, size_t len)
+// {
+//     char    *test;
+//     size_t  j;
+//     size_t  i;
 
-char    *ft_substr(char const *s, unsigned int start, size_t len)
-{
-    char    *test;
-    size_t  j;
-    size_t  i;
-
-    i = start;
-    j = 0;
-    if (!s)
-        return (NULL);
-    if (len > ft_strlen(s + start))
-    {
-        len = ft_strlen(s + start);
-    }
-    //test = (char *) malloc ((len + 1) * sizeof(char));
-    test = new char[len + 1];
-    if (test == NULL)
-    {
-        return (NULL);
-    }
-    while (i < ft_strlen(s) && j < len)
-    {
-        test[j++] = s[i++];
-    }
-    test[j] = '\0';
-    return (test);
-}
+//     i = start;
+//     j = 0;
+//     if (!s)
+//         return (NULL);
+//     if (len > strlen(s + start))
+//     {
+//         len = strlen(s + start);
+//     }
+//     //test = (char *) malloc ((len + 1) * sizeof(char));
+//     test = new char[len + 1];
+//     if (test == NULL)
+//     {
+//         return (NULL);
+//     }
+//     while (i < strlen(s) && j < len)
+//     {
+//         test[j++] = s[i++];
+//     }
+//     test[j] = '\0';
+//     return (test);
+// }
 
 /******ft_strlen*/
 
-size_t  ft_strlen(const char *str)
-{
-    size_t  i;
+// size_t  ft_strlen(const char *str)
+// {
+//     size_t  i;
 
-    i = 0;
-    while (str[i] != '\0')
-    {
-        i++;
-    }
-    return (i);
-}
+//     i = 0;
+//     while (str[i] != '\0')
+//     {
+//         i++;
+//     }
+//     return (i);
+// }
 
 //*******is_digit
 
-int ft_isdigit(int c)
-{
-    if (c >= 48 && c <= 57)
-    {
-        return (1);
-    }
-    return (0);
-}
+// int ft_isdigit(int c)
+// {
+//     if (c >= 48 && c <= 57)
+//     {
+//         return (1);
+//     }
+//     return (0);
+// }
 
 /****The atoi() and atol() functions convert a character string containing decimal integer constants, 
  * but the strtol() and strtoul() functions can convert a character string containing 
