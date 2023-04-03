@@ -48,22 +48,36 @@ int server::EstablishConnection(void)
 		exit(1);
 	}
 	//Before calling bind, we need to fill out this structure. The three key parts we need to set are:
+
+	//The address family or a domain we used when we set up the socket. In our case, it’s AF_INET .
 	address.sin_family = AF_INET;
+	// transport address or a port number
+	//The htons function can be used to convert an IP port number in host byte order to the IP port number in network byte order.
 	address.sin_port = htons(port_listen);
-	address.sin_addr.s_addr = htonl(ip_address);
-	//inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
+	// This is your machine is IP address
+	//address.sin_addr.s_addr = htonl(ip_address);
 
-	int opt = 1;
-	// Need to check conn alive and stuff
-	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	//convert IPv4 and IPv6 addresses from text to binary form
 
+	inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
+
+	
 	if (bind(fd_socket, (const struct sockaddr *)&address, sizeof(address)) == -1)
 	{
 		perror("Error : Problem binding");
 		exit(1);
 	}
-	// Change max number of clients
-	listen(fd_socket, SOMAXCONN);
+	// accept client connection requests
+
+	/****marks the socket referred to by fd_socket as a passive
+       socket, that is, as a socket that will be used to accept incoming
+       connection requests using accept().*/
+
+	//SOMAXCONN : Use the SOMAXCONN statement to specify the maximum number of connection requests queued for any listening socket.cle
+	if(listen(fd_socket, SOMAXCONN) == -1)
+	{
+		perror("Error: Problem in listening\n");
+	}
 	return (fd_socket);
 }
 
