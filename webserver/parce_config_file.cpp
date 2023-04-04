@@ -196,10 +196,12 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	//size_t size;
 
 	server *serv = new server();
-	vector<string> world1 = ft_divise(config_file[0], white_espace);
+	vector<string> word1 = ft_divise(config_file[0  + *count], white_espace);
+	std::cout << "conf_file-->" << word1[0] << endl;
+	std::cout << "second->" << word1[1] << endl;
 
-	if (world1[1] != "{")
-	{//
+	if (word1[1] != "{")
+	{
 		cout << "Invalid config file\n";
 		exit(0);
 	}
@@ -216,6 +218,9 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	while (iter != config_file.end())
 	{
 		vector<string> words2 = ft_divise(*iter, white_espace);
+		std::cout<< "world[0]->" << words2[0] << endl;
+		std::cout<< "world[1]->" << words2[1] << endl;
+
 		if (!words2.size() || words2[0][0] == '#')
 		{
 			iter++;
@@ -235,6 +240,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		 *  this block will potentially be selected to handle the connection*/
 		else if (words2[0] == "listen")
 		{
+			std::cout << "yes\n";
 			if (words2.size() != 2)
 			{
 				
