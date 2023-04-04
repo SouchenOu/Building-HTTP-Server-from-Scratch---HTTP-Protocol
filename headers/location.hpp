@@ -10,21 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cstring"
-#include "string"
-#include "iostream"
-using namespace std;
+// #include "cstring"
+// #include "string"
+// #include "iostream"
+
+#ifndef LOCATION_HPP
+#define LOCATION_HPP
+
+#include "headers.hpp"
+// using namespace std;
 
 class Location
 {
     private:
-        string root;
-        string try_files;
-        string  return_line;
-        string  alias;
+        std::string root;
+        std::string try_files;
+        std::string  return_line;
+        std::string  alias;
         int http_redirection;
-        string  autoindex;
-        string index;
+        std::string  autoindex;
+        std::string index;
     public:
     // constructer
         Location();
@@ -33,26 +38,28 @@ class Location
 
     // setters
 
-    void set_root(string root);
-    void set_try_files(string try_files);
-    void set_return_line(string return_line);
-    void set_alias(string alias);
+    void set_root(std::string root);
+    void set_try_files(std::string try_files);
+    void set_return_line(std::string return_line);
+    void set_alias(std::string alias);
     void set_http_redirection(int http_redirection);
-    void set_autoindex(string autoindex);
-    void set_index(string index);
+    void set_autoindex(std::string autoindex);
+    void set_index(std::string index);
 
     // getters
 
-    string get_root();
-    string get_try_files();
-    string get_return_line();
-    string get_alias();
+    std::string get_root();
+    std::string get_try_files();
+    std::string get_return_line();
+    std::string get_alias();
     int  get_http_redirection();
-    string get_autoindex();
-    string get_index();
+    std::string get_autoindex();
+    std::string get_index();
 
 
     // function push_in_location
 
 
 };
+
+#endif

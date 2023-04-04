@@ -30,7 +30,7 @@ class Webserver
 	 * because each instance defines a specific virtual server to handle client 
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
-		set<server*>	servers;
+		std::set<server*>	servers;
 	
 
 	public:
@@ -40,7 +40,7 @@ class Webserver
     // Destructer
 		~Webserver();
 
-		void parcing_config_file(const string config_file);
+		void parcing_config_file(const std::string config_file);
 		void	setup(void);
 		void	push_in_server(server *serv);
 };

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../headers/webserver.hpp"
-#include "parce_config_file.cpp"
+//#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
 # define white_espace "; \t"
 
@@ -94,6 +94,5 @@ void Webserver::setup(void)
 		//	high_fd = fd;
 	}
 }
-
 
 

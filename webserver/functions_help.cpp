@@ -12,8 +12,10 @@
 
 
 
-#include "iostream"
-#include <vector>
+// #include "iostream"
+// #include <vector>
+
+#include "../headers/headers.hpp"
 
 using namespace std;
 //ft_split, substr, is_integer
@@ -124,66 +126,66 @@ using namespace std;
 
 
 
-vector<string> ft_divise(const string &str, const string &search_data)
-{
-    vector<string> split_set;
-    size_t          i;
-    size_t          j;
-    string          the_str;
-    int             indice;
+// vector<string> ft_divise(const string &str, const string &search_data)
+// {
+//     vector<string> split_set;
+//     size_t          i;
+//     size_t          j;
+//     string          the_str;
+//     int             indice;
 
-    i = 0;
-    j = 0;
-    indice = 0;
-    the_str = "";
-    while (i < str.length())
-    {
-        //&& search(str[i], search_data)
-        while (i < str.length())
-        {
-            while(search_data[j] != '\0')
-            {
-                if(str[i] == search_data[j])
-                {
-                    indice = indice + 1;
-                    break ;
-                }
-                j++;
-            }
-            if(indice < 0)
-            {
-                break ;
-            }
-            i++;
-        }
+//     i = 0;
+//     j = 0;
+//     indice = 0;
+//     the_str = "";
+//     while (i < str.length())
+//     {
+//         //&& search(str[i], search_data)
+//         while (i < str.length())
+//         {
+//             while(search_data[j] != '\0')
+//             {
+//                 if(str[i] == search_data[j])
+//                 {
+//                     indice = indice + 1;
+//                     break ;
+//                 }
+//                 j++;
+//             }
+//             if(indice < 0)
+//             {
+//                 break ;
+//             }
+//             i++;
+//         }
             
-        if (i < str.length())
-        {
-            while (i < str.length())
-            {
-                while(search_data[j] != '\0')
-                {
-                    if(str[i] == search_data[j])
-                    {
-                        indice = indice + 1;
-                        break ;
-                    }
-                    j++;
-                }
-                if(indice < 0)
-                {
-                    the_str = the_str + str[i];
-                    i++;
-                    break ;
-                }
+//         if (i < str.length())
+//         {
+//             while (i < str.length())
+//             {
+//                 while(search_data[j] != '\0')
+//                 {
+//                     if(str[i] == search_data[j])
+//                     {
+//                         indice = indice + 1;
+//                         break ;
+//                     }
+//                     j++;
+//                 }
+//                 if(indice < 0)
+//                 {
+//                     the_str = the_str + str[i];
+//                     i++;
+//                     break ;
+//                 }
                     
-                i++;
-            }
-            split_set.push_back(the_str);
-        }
-    }
-    return split_set;
-}
+//                 i++;
+//             }
+//             split_set.push_back(the_str);
+//         }
+//     }
+//     return split_set;
+// }
 
 
 
@@ -246,11 +248,11 @@ vector<string> ft_divise(const string &str, const string &search_data)
 /****The atoi() and atol() functions convert a character string containing decimal integer constants, 
  * but the strtol() and strtoul() functions can convert a character string containing 
  * a integer constant in octal, decimal, hexadecimal, or a base specified by the base parameter.*/
-int is_integer(const string &str)
-{
-    if (str.empty() || ((!isdigit(str[0])) && (str[0] != '+') && (str[0] != '-')))
-        return 0;
+// int is_integer(const string &str)
+// {
+//     if (str.empty() || ((!isdigit(str[0])) && (str[0] != '+') && (str[0] != '-')))
+//         return 0;
     
-    return (1);
-}
+//     return (1);
+// }
 

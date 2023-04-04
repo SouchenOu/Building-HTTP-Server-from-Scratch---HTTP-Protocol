@@ -32,25 +32,25 @@
 // # include <vector>
 // #include <set>
 // # include <map>
-// # include "Location.hpp"
+//# include "Location.hpp"
 // #include "../webserver/functions_help.cpp"
 #include "headers.hpp"
-#include "Location.hpp"
 
 
+class Location;
 
 class server
 {
 	private :
-        unsigned int						port_listen; // port == listen in config_file
-		string								ip_address;
-		set<string>							server_name; //domain_name
-		map<unsigned int, string>			error_pages;
-		long long							client_max_body_size;
-		string								root; 
-		string								index; 
-		map<string, string>					cgis; 
-		vector<Location>					locations;
+        unsigned int									port_listen; // port == listen in config_file
+		std::string										ip_address;
+		std::set<std::string>								server_name; //domain_name
+		std::map<unsigned int, std::string>				error_pages;
+		long long										client_max_body_size;
+		std::string										root; 
+		std::string										index; 
+		std::map<std::string, std::string>				cgis; 
+		std::vector<Location>							locations;
 
 
 
@@ -65,16 +65,16 @@ class server
 	
 
 	// getters
-		unsigned int				get_port_listen(void) const;
-		string						get_ip_address(void) const;
-		set<string>					get_server_name(void) const;
-		map<unsigned int, string>	get_error_pages(void) const;
-		long long					get_client_max_body_size(void) const;
-		string						get_root(void) const;
-		string						get_index(void) const;
-		vector<Location>			get_locations(void) const;
-		map<string, string>			get_cgis(void) const;
-		int							get_fd_socket();
+		unsigned int						get_port_listen(void) const;
+		std::string							get_ip_address(void) const;
+		std::set<std::string>					get_server_name(void) const;
+		std::map<unsigned int, std::string>		get_error_pages(void) const;
+		long long							get_client_max_body_size(void) const;
+		std::string							get_root(void) const;
+		std::string							get_index(void) const;
+		std::vector<Location>				get_locations(void) const;
+		std::map<std::string, std::string>			get_cgis(void) const;
+		int									get_fd_socket();
 
 		// some used functions
 		int							EstablishConnection(void);
@@ -83,21 +83,21 @@ class server
 		//settters
 		
 		void						set_port_listen(const unsigned int listen);
-		void						set_ip_address(const string ip_address);
-		void						set_server_name(set<string> server_names);
-		void						set_error_pages(const map<unsigned int, string> error_pages);
+		void						set_ip_address(const std::string ip_address);
+		void						set_server_name(std::set<std::string> server_names);
+		void						set_error_pages(const std::map<unsigned int, std::string> error_pages);
 		void						set_client_max_body_size(const long long max_client_body_size);
-		void						set_root(const string root);
-		void						set_index(const string index);
-		void						set_locations(const vector<Location> locations);
-		void						set_cgis(const map<string, string> cgis);
+		void						set_root(const std::string root);
+		void						set_index(const std::string index);
+		void						set_locations(const std::vector<Location> locations);
+		void						set_cgis(const std::map<std::string, std::string> cgis);
 		
 		
 
 		void						push_in_location(const Location location);
-		void						push_in_server_name(const string server_name);
-		void						push_in_cgi(const string extention_name, const string exec_path);
-		void						push_in_error_page(const pair<unsigned int, string> error_page);
+		void						push_in_server_name(const std::string server_name);
+		void						push_in_cgi(const std::string extention_name, const std::string exec_path);
+		void						push_in_error_page(const std::pair<unsigned int, std::string> error_page);
 		
 		
 };

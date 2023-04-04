@@ -20,6 +20,77 @@
 
 //using namespace std;
 
+int is_integer(const std::string &str)
+{
+    if (str.empty() || ((!isdigit(str[0])) && (str[0] != '+') && (str[0] != '-')))
+        return 0;
+    
+    return (1);
+}
+
+
+
+vector<string> ft_divise(const std::string &str, const std::string &search_data)
+{
+    std::vector<std::string> split_set;
+    size_t          i;
+    size_t          j;
+    string          the_str;
+    int             indice;
+
+    i = 0;
+    j = 0;
+    indice = 0;
+    the_str = "";
+    while (i < str.length())
+    {
+        //&& search(str[i], search_data)
+        while (i < str.length())
+        {
+            while(search_data[j] != '\0')
+            {
+                if(str[i] == search_data[j])
+                {
+                    indice = indice + 1;
+                    break ;
+                }
+                j++;
+            }
+            if(indice < 0)
+            {
+                break ;
+            }
+            i++;
+        }
+            
+        if (i < str.length())
+        {
+            while (i < str.length())
+            {
+                while(search_data[j] != '\0')
+                {
+                    if(str[i] == search_data[j])
+                    {
+                        indice = indice + 1;
+                        break ;
+                    }
+                    j++;
+                }
+                if(indice < 0)
+                {
+                    the_str = the_str + str[i];
+                    i++;
+                    break ;
+                }
+                    
+                i++;
+            }
+            split_set.push_back(the_str);
+        }
+    }
+    return split_set;
+}
+
 
 
 server	*parse_server(vector<string> config_file, size_t *count)

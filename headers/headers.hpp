@@ -32,12 +32,25 @@
 # include <vector>
 #include <set>
 # include <map>
+# include "server.hpp"
+#include "Location.hpp"
+
+
+class server;
+class Location;
 //# include "../webserver/parce_config_file.cpp"
-#include "../webserver/functions_help.cpp"
+//#include "../webserver/functions_help.cpp"
 //#include "server.hpp"
 //#include "../webserver/functions_help.cpp"
 
 
 using namespace std;
+
+
+vector<string> ft_divise(const std::string &str, const std::string &search_data);
+server	*parse_server(vector<string> config_file, size_t *count);
+
+
+
 
 #endif
