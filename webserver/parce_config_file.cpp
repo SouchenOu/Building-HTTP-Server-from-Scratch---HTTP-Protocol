@@ -27,125 +27,67 @@ int is_integer(const std::string &str)
     
     return (1);
 }
-/*****static bool	ft_in_charset(char const c, const string &charset)
+int	ft_search(char const c, const string &search_data)
 {
-	int	i_charset;
-
-	i_charset = 0;
-	while (charset[i_charset])
-	{
-		if (c == charset[i_charset++])
-			return true;
-	}
-	return false;
-}
-
-
-vector<string> ft_split(const string &str, const string &charset)
-{
-	vector<string> res;
-	string			tmp;
-	size_t			i;
+	int	i;
 
 	i = 0;
+	while (search_data[i])
+	{
+		if (c == search_data[i++])
+			return 1;
+	}
+	return 0;
+}
+
+
+vector<string> ft_divise(const string &str, const string &search)
+{
+	vector<string> split_set;
+	string			the_str;
+	size_t			i;
+	size_t			j;
+	int indice;
+
+	i = 0;
+
 	while (i < str.length())
 	{
-		while (i < str.length() && ft_in_charset(str[i], charset))
-			i++;
-		if (i < str.length())
+		//&& ft_search(str[i], search) == 1
+		while (i < str.length())
 		{
-			tmp = "";
-			while (i < str.length() && !ft_in_charset(str[i], charset))
-				tmp += str[i++];
-			res.push_back(tmp);
-		}
-	}
-	return res;
-}
-*/
-
-vector<string> ft_divise(const std::string &str, const std::string &search_data)
-{
-
-    std::vector<std::string> split_set;
-    size_t          i;
-    size_t          j;
-    string          the_str;
-    int             indice1;
-	int 			indice2;
-
-    i = 0;
-    the_str = "";
-    while (i < str.length())
-    {
-		indice1 = 0;
-		//j = 0;
-        while (i < str.length())
-        {
-			indice1 = 0;
 			j = 0;
-			while(search_data[j] != '\0')
+			indice = 0;
+			while(search[j])
 			{
-				if(str[i] == search_data[j])
-            	{
-                	indice1 = indice1 + 1;
+				if(str[i] == search[j])
+				{
+					indice ++;
 					i++;
 					break ;
-            	}
+
+				}
 				j++;
 			}
-            
-            if(indice1 == 0)
-            {
-                break ;
-            }
-        }
-        if (i < str.length())
-        {
-			j = 0;
+			if(indice == 0)
+			{
+				break;
+			}
+		}
+			
+		if (i < str.length())
+		{
 			the_str = "";
-            while (i < str.length())
-            {
-				j = 0;
-				indice2 = 0;
-				while(search_data[j] != '\0' && str[i] != search_data[j])
-				{
-					
-					indice2++;
-					j++;
-					// if(str[i] != search_data[j])
-                	// {
-                    // 	the_str = the_str + str[i];
-					// 	i++;
-                	// }
-					// else if(str[i] == search_data[j])
-					// {
-					// 	split_set.push_back(the_str);
-					// 	break ;
-					// }
-					// j++;
+			while (i < str.length() && !ft_search(str[i], search))
+			{
+				the_str = the_str + str[i];
+				i++;
+			}
+				
+			split_set.push_back(the_str);
+		}
+	}
 
-				}
-				// exit(0);
-				if(indice2 != 0)
-				{
-					the_str = the_str + str[i];
-					i++;
-				}else if(indice2 == 0)
-				{
-					split_set.push_back(the_str);
-					break ;
-				}
-              
-               
-            }
-		
-                          
-        }
-		
-        
-    }
-	
 	// std::vector<string>::iterator iter ;
 	
 	// for(iter = split_set.begin(); iter != split_set.end(); iter++)
@@ -155,8 +97,95 @@ vector<string> ft_divise(const std::string &str, const std::string &search_data)
 	// 	std::cout << "*********************\n";
 	// }
 
-    return split_set;
+	return split_set;
 }
+
+
+// vector<string> ft_divise(const std::string &str, const std::string &search_data)
+// {
+
+//     std::vector<std::string> split_set;
+//     size_t          i;
+//     size_t          j;
+//     string          the_str;
+//     int             indice1;
+// 	int 			indice2;
+
+//     i = 0;
+//     the_str = "";
+//     while (i < str.length())
+//     {
+		
+// 		indice1 = 0;
+// 		//j = 0;
+//         while (i < str.length())
+//         {
+// 			indice1 = 0;
+// 			j = 0;
+// 			while(search_data[j] != '\0')
+// 			{
+// 				if(str[i] == search_data[j])
+//             	{
+// 					std::cout << "yes\n";
+//                 	indice1 = indice1 + 1;
+// 					i++;
+// 					break ;
+//             	}
+// 				j++;
+// 			}
+            
+//             if(indice1 == 0)
+//             {
+//                 break ;
+//             }
+//         }
+		
+//         if (i < str.length())
+//         {
+// 			std::cout << "str =" << str[i] << endl;
+// 			j = 0;
+// 			the_str = "";
+//             while (i < str.length())
+//             {
+// 				j = 0;
+// 				indice2 = 0;
+// 				while(search_data[j] != '\0' && str[i] != search_data[j])
+// 				{
+					
+// 					indice2++;
+// 					j++;
+// 				}
+// 				// exit(0);
+// 				if(indice2 != 0)
+// 				{
+// 					the_str = the_str + str[i];
+// 					i++;
+// 				}else if(indice2 == 0 && the_str != "")
+// 				{
+// 					split_set.push_back(the_str);
+// 					break ;
+// 				}
+              
+               
+//             }
+		
+                          
+//         }
+		
+        
+//     }
+	
+// 	std::vector<string>::iterator iter ;
+	
+// 	for(iter = split_set.begin(); iter != split_set.end(); iter++)
+// 	{
+// 		std::cout << "*********************\n";
+// 		std::cout << "Element : "<<*iter << std::endl;
+// 		std::cout << "*********************\n";
+// 	}
+
+//     return split_set;
+// }
 
 
 

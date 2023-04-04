@@ -49,19 +49,26 @@ void Webserver::parcing_config_file(const string config_file)
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
 	read_file.close();
 	vector<string> config_line = ft_divise(the_str, "\n");
-	exit(0);
+	//exit(0);
 	// vector<string>::iterator ii ;
 
 	// for(ii = config_line.begin(); ii != config_line.end(); ii++)
 	// {
 	// 	std::cout << "Line by line -->" << *ii << std::endl; 
 	// }
-	
+	// exit(0);
 	while (count < config_line.size())
 	{
 		vector<string>::iterator iter1 = config_line.begin() + count;
+		std::cout << "-----------------------------\n";
 		vector<string> word_line = ft_divise(*iter1, white_espace);
-
+		exit(0);
+		vector<string>::iterator ip ;
+		for(ip = word_line.begin(); ip != word_line.end(); ip++)
+		{
+			std::cout << "elem->" << *ip << endl;
+		}
+		exit(0);
 		vector<string>::iterator iter2 = word_line.begin();
 		if (*iter2 == "server")
 		{
