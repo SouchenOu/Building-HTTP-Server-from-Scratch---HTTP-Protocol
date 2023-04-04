@@ -29,65 +29,74 @@ int is_integer(const std::string &str)
 }
 
 
-
 vector<string> ft_divise(const std::string &str, const std::string &search_data)
 {
+
     std::vector<std::string> split_set;
     size_t          i;
     size_t          j;
     string          the_str;
-    int             indice;
+    int             indice1;
 
     i = 0;
-    j = 0;
-    indice = 0;
     the_str = "";
     while (i < str.length())
     {
-        //&& search(str[i], search_data)
+		indice1 = 0;
+		j = 0;
         while (i < str.length())
         {
-            while(search_data[j] != '\0')
+			indice1 = 0;
+            if(str[i] == search_data[j])
             {
-                if(str[i] == search_data[j])
-                {
-                    indice = indice + 1;
-                    break ;
-                }
-                j++;
+                indice1 = indice1 + 1;
+				i++;
             }
-            if(indice < 0)
+            
+            if(indice1 == 0)
             {
                 break ;
             }
-            i++;
         }
-            
         if (i < str.length())
         {
+			j = 0;
+			the_str = "";
             while (i < str.length())
             {
-                while(search_data[j] != '\0')
-                {
-                    if(str[i] == search_data[j])
-                    {
-                        indice = indice + 1;
-                        break ;
-                    }
-                    j++;
-                }
-                if(indice < 0)
+              
+                if(str[i] != search_data[j])
                 {
                     the_str = the_str + str[i];
-                    i++;
-                    break ;
+					std::cout << "char-->" << the_str << endl;
+					i++;
                 }
-                    
-                i++;
+				else if(str[i] == search_data[j])
+				{
+					split_set.push_back(the_str);
+					std::cout << "break \n";
+					break ;
+				}
             }
-            split_set.push_back(the_str);
+		
+                          
         }
+		std::cout << "yyyy\n";
+		
+        
     }
+	
+	std::vector<string>::iterator iter ;
+	iter = split_set.begin();
+
+	//std::cout << *iter << endl;
+	// for(iter = split_set.begin(); iter != split_set.end(); iter++)
+	// {
+	// 	std::cout << "*********************\n";
+	// 	std::cout << *iter << std::endl;
+	// 	std::cout << "*********************\n";
+	// }
+
     return split_set;
 }
 

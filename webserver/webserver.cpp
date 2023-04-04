@@ -37,17 +37,24 @@ void Webserver::parcing_config_file(const string config_file)
 
 	size_t count = 0;
 	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
+
     std::ifstream read_file(config_file);
 	string str;
+	getline(read_file, str);
 	if(!getline(read_file, str))
 	{
 		cout << "config file is empty\n";
 	}
 	// now we should convert ifstream to string
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
-
 	read_file.close();
 	vector<string> config_line = ft_divise(the_str, "\n");
+	// vector<string>::iterator ii ;
+
+	// for(ii = config_line.begin(); ii != config_line.end(); ii++)
+	// {
+	// 	std::cout << "Line by line -->" << *ii << std::endl; 
+	// }
 	
 	while (count < config_line.size())
 	{
