@@ -27,7 +27,42 @@ int is_integer(const std::string &str)
     
     return (1);
 }
+/*****static bool	ft_in_charset(char const c, const string &charset)
+{
+	int	i_charset;
 
+	i_charset = 0;
+	while (charset[i_charset])
+	{
+		if (c == charset[i_charset++])
+			return true;
+	}
+	return false;
+}
+
+
+vector<string> ft_split(const string &str, const string &charset)
+{
+	vector<string> res;
+	string			tmp;
+	size_t			i;
+
+	i = 0;
+	while (i < str.length())
+	{
+		while (i < str.length() && ft_in_charset(str[i], charset))
+			i++;
+		if (i < str.length())
+		{
+			tmp = "";
+			while (i < str.length() && !ft_in_charset(str[i], charset))
+				tmp += str[i++];
+			res.push_back(tmp);
+		}
+	}
+	return res;
+}
+*/
 
 vector<string> ft_divise(const std::string &str, const std::string &search_data)
 {
@@ -37,21 +72,28 @@ vector<string> ft_divise(const std::string &str, const std::string &search_data)
     size_t          j;
     string          the_str;
     int             indice1;
+	int 			indice2;
 
     i = 0;
     the_str = "";
     while (i < str.length())
     {
 		indice1 = 0;
-		j = 0;
+		//j = 0;
         while (i < str.length())
         {
 			indice1 = 0;
-            if(str[i] == search_data[j])
-            {
-                indice1 = indice1 + 1;
-				i++;
-            }
+			j = 0;
+			while(search_data[j] != '\0')
+			{
+				if(str[i] == search_data[j])
+            	{
+                	indice1 = indice1 + 1;
+					i++;
+					break ;
+            	}
+				j++;
+			}
             
             if(indice1 == 0)
             {
@@ -64,36 +106,52 @@ vector<string> ft_divise(const std::string &str, const std::string &search_data)
 			the_str = "";
             while (i < str.length())
             {
-              
-                if(str[i] != search_data[j])
-                {
-                    the_str = the_str + str[i];
-					std::cout << "char-->" << the_str << endl;
+				j = 0;
+				indice2 = 0;
+				while(search_data[j] != '\0' && str[i] != search_data[j])
+				{
+					
+					indice2++;
+					j++;
+					// if(str[i] != search_data[j])
+                	// {
+                    // 	the_str = the_str + str[i];
+					// 	i++;
+                	// }
+					// else if(str[i] == search_data[j])
+					// {
+					// 	split_set.push_back(the_str);
+					// 	break ;
+					// }
+					// j++;
+
+				}
+				// exit(0);
+				if(indice2 != 0)
+				{
+					the_str = the_str + str[i];
 					i++;
-                }
-				else if(str[i] == search_data[j])
+				}else if(indice2 == 0)
 				{
 					split_set.push_back(the_str);
-					std::cout << "break \n";
 					break ;
 				}
+              
+               
             }
 		
                           
         }
-		std::cout << "yyyy\n";
 		
         
     }
 	
-	std::vector<string>::iterator iter ;
-	iter = split_set.begin();
-
-	//std::cout << *iter << endl;
+	// std::vector<string>::iterator iter ;
+	
 	// for(iter = split_set.begin(); iter != split_set.end(); iter++)
 	// {
 	// 	std::cout << "*********************\n";
-	// 	std::cout << *iter << std::endl;
+	// 	std::cout << "Element : "<<*iter << std::endl;
 	// 	std::cout << "*********************\n";
 	// }
 

@@ -49,6 +49,7 @@ void Webserver::parcing_config_file(const string config_file)
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
 	read_file.close();
 	vector<string> config_line = ft_divise(the_str, "\n");
+	exit(0);
 	// vector<string>::iterator ii ;
 
 	// for(ii = config_line.begin(); ii != config_line.end(); ii++)
