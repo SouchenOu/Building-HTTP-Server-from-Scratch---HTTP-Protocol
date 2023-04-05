@@ -435,34 +435,34 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					// std::cout << "root->" << location.get_root() << endl;
 				}
 				// try_files in location 
-				else if(line[0] == "try_files")
-				{
-					if(line.size() < 2)
-					{
-						std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
-						exit(0);
-					}
-					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-					{
-						line[1].resize(line[1].size() - 1);
-					}
-					location.set_try_files(line[1]);
-				}
+				// else if(line[0] == "try_files")
+				// {
+				// 	if(line.size() < 2)
+				// 	{
+				// 		std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
+				// 		exit(0);
+				// 	}
+				// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+				// 	{
+				// 		line[1].resize(line[1].size() - 1);
+				// 	}
+				// 	location.set_try_files(line[1]);
+				// }
 				// alias in location 
 
-				else if(line[0] == "alias")
-				{
-					if(line.size() != 2)
-					{
-						std::cout << BLUE  << "--> should have another argument after alias" << endl;
-						exit(0);
-					}
-					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-					{
-						line[1].resize(line[1].size() - 1);
-					}
-					location.set_alias(line[1]);
-				}
+				// else if(line[0] == "alias")
+				// {
+				// 	if(line.size() != 2)
+				// 	{
+				// 		std::cout << BLUE  << "--> should have another argument after alias" << endl;
+				// 		exit(0);
+				// 	}
+				// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+				// 	{
+				// 		line[1].resize(line[1].size() - 1);
+				// 	}
+				// 	location.set_alias(line[1]);
+				// }
 
 				// return in location
 				else if(line[0] == "return")
@@ -512,13 +512,10 @@ server	*parse_server(vector<string> config_file, size_t *count)
 
 					std::cout << "It is another location \n ";
 
-
+				(*count)++;
+				iter2++;
 
 			}
-
-			
-
-
 
 			serv->push_in_location(location);
 			iter = iter +  *count - old_count;
@@ -529,17 +526,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		iter++;
 		(*count)++;
 	}
-	// vector<string> end_file = ft_divise(*iter, white_espace);
-	// while (!end_file.size() || end_file[0] != "}")
-	// {
-	// 	(*count)++;
-	// 	end_file = ft_divise(config_file[*count], white_espace);
-	// }
-	// if (end_file.size() && end_file[0] != "}")
-	// {
-	// 	std::cout << BLUE  << serv.get_root() << "--> server configuration is invalid: missig close bracket" << endl;
-	// 	exit(0);
-	// }
+	
 	
 	return serv;
 }
