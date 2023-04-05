@@ -501,7 +501,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				}
 				else if (line[0] == "index")
 				{
-					if(line.size() != 2)
+					if(line.size() < 2)
 					{
 						std::cout << "should have another argument after index" << endl;
 						exit(0);

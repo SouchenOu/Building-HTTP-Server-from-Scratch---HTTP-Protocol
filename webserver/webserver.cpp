@@ -90,6 +90,7 @@ void Webserver::setup(void)
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
 		 file_descriptor = (*server)->EstablishConnection();
+		 
 	
 	}
 }
