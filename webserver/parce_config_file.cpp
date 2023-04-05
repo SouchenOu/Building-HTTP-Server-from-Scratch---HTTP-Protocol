@@ -276,6 +276,9 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			}
 			serv->set_port_listen(atoi(address_port.c_str()));
 
+			// std::cout << "ip_address->" << serv->get_ip_address() << endl;
+			// std::cout << "ip_port-->" << serv->get_port_listen() << endl;
+
 		}
 		// server_name
 	/******server_name: This directive is the other component used to select a server block for processing. If there are multiple server blocks with listen directives of the same specificity that can handle the request,
