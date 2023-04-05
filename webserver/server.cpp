@@ -205,6 +205,10 @@ void	server::push_in_cgi(const std::string extention_name, const std::string exe
 void	server::push_in_error_page(const std::pair<unsigned int, std::string> error_page)
 {
 	this->error_pages.insert(error_page);
+	// std::map<unsigned int, string>::iterator i;
+	// i = error_pages.begin();
+	// std::cout << "error_page :" << i->first << endl;
+	// std::cout << "error_page :" << i->second << endl;
 }
 
 void	server::push_in_server_name(std::string server_name)

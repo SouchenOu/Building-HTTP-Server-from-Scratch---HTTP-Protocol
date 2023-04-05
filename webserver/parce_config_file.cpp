@@ -197,8 +197,6 @@ server	*parse_server(vector<string> config_file, size_t *count)
 
 	server *serv = new server();
 	vector<string> word1 = ft_divise(config_file[0  + *count], white_espace);
-	std::cout << "conf_file-->" << word1[0] << endl;
-	std::cout << "second->" << word1[1] << endl;
 
 	if (word1[1] != "{")
 	{
@@ -218,8 +216,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	while (iter != config_file.end())
 	{
 		vector<string> words2 = ft_divise(*iter, white_espace);
-		std::cout<< "world[0]->" << words2[0] << endl;
-		std::cout<< "world[1]->" << words2[1] << endl;
+		
 
 		if (!words2.size() || words2[0][0] == '#')
 		{
@@ -240,7 +237,6 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		 *  this block will potentially be selected to handle the connection*/
 		else if (words2[0] == "listen")
 		{
-			std::cout << "yes\n";
 			if (words2.size() != 2)
 			{
 				
@@ -294,7 +290,9 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			for (vector<string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
 			{
 				serv->push_in_server_name(*server_name);
+				 
 			}
+			
 		}
 		
 		else if (words2[0] == "error_page")
@@ -360,7 +358,10 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			}
 			string root_tmp = words2[1];
 			if (root_tmp.size() > 0 && root_tmp[0] == '/')
+			{
 				root_tmp = root_tmp.substr(1);
+			}
+				
 			if (root_tmp.size() > 1 && root_tmp[root_tmp.size() - 1] == '/')
 				root_tmp.resize(root_tmp.size() - 1);
 			serv->set_root(root_tmp);
@@ -376,6 +377,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		else if (words2[0] == "location")
 		{
 			Location location;
+			
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << endl;
@@ -404,7 +406,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			vector<string>::iterator iter2 = config_file.begin() + *count;
 			while(iter2 != config_file.end())
 			{
-				vector<string> line = ft_divise(*iter, white_espace);
+				vector<string> line = ft_divise(*iter2, white_espace);
 				if(line.size() == 0 || line[0][0] == '#')
 				{
 					iter2++;
@@ -418,6 +420,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 				// root in location
 				if(line[0] == "root")
 				{
+					// std::cout << "enter\n";
 					if(line.size() == 0)
 					{
 						std::cout << BLUE  << "--> should have another argument after root" << endl;
@@ -429,6 +432,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 						line[1].resize(line[1].size() - 1);
 					}
 					location.set_root(line[1]);
+					// std::cout << "root->" << location.get_root() << endl;
 				}
 				// try_files in location 
 				else if(line[0] == "try_files")
