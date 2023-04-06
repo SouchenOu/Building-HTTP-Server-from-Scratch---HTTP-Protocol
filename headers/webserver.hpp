@@ -22,6 +22,7 @@
 //# include "server.hpp"
 
 class server;
+class client;
 
 class Webserver
 {
@@ -31,7 +32,11 @@ class Webserver
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
 		std::set<server*>	servers;
-		fd_set      set_fd;
+		std::set<client*>   clients;
+		fd_set      		set_fd;
+		int 				fd;
+		fd_set				readfds;
+		fd_set				writefds;
 	
 
 	public:

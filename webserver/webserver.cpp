@@ -137,7 +137,11 @@ void Webserver::setup(void)
 
 	while(true)
 	{
-		
+		for(set<client*>::iterator iter1= clients.begin(); iter1 != clients.end(); iter1++)
+		{
+
+		}
+		select(fd + 1, &readfds, &writefds, NULL, 0);
 	}
 
 	//handle multiple socket connections with fd_set and select 

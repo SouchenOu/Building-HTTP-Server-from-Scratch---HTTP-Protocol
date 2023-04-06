@@ -11,3 +11,21 @@
 /* ************************************************************************** */
 
 
+#ifndef CLIENT_HPP
+#define CLIENT_HPP
+
+class client
+{
+    private:
+
+
+    public:
+        // constructer
+        client();
+        ~client();
+        //destructer
+};
+
+
+
+#endif
