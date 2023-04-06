@@ -72,7 +72,24 @@ void Webserver::parcing_config_file(const string config_file)
 		vector<string>::iterator iter2 = world_line.begin();
 		if (*iter2 == "server")
 		{
-			server *serv = parse_server(config_line, &count);
+			server *serv = parse_server(config_line, &count);;
+			for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
+			{
+				if((*iter1)->get_ip_address() == serv->get_ip_address() && (*iter1)->get_port_listen() == serv->get_port_listen())
+				{
+					set<string> server_names = (*iter1)->get_server_name();
+					for(set<string>::iterator iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
+					{
+						for(set<string>::iterator iter3 = serv->get_server_name().begin(); iter3 != serv->get_server_name().end(); iter3++)
+						{
+							if((*iter2) == (*iter3))
+							{
+								std::cout << BLUE << "MyServer: [warn] conflicting server name on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << endl;
+							}
+						}
+					}
+				}
+			}
 			push_in_server(serv);
 		}
 		count++;
@@ -80,6 +97,26 @@ void Webserver::parcing_config_file(const string config_file)
 
 }
 
+// bool Webserver::conflict_ip_address(const string &new_ip_address, const unsigned int new_port, const set<string> &new_server_names)
+// {
+// 	for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
+// 	{
+// 			if((*iter1)->get_ip_address() == new_ip_address && (*iter1)->get_port_listen() == new_port)
+// 			{
+// 				for(set<string>::iterator iter2 = server_name.begin(); iter2 != server_name.end(); iter2++)
+// 				{
+// 					for(set<string>::iterator iter3 = new_server_names.begin(); iter3 != new_server_names.end(); iter3++)
+// 					{
+// 						if((*iter2) == (*iter3))
+// 						{
+// 							std::cout << BLUE << "ip_address;port_listen and domain_name conflict with another server\n";
+// 						}
+// 					}
+// 				}
+// 			}
+// 	}
+// 	return false;
+// }
 
 
 void Webserver::setup(void)

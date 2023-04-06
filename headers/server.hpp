@@ -44,7 +44,7 @@ class server
 	private :
         unsigned int									port_listen; // port == listen in config_file
 		std::string										ip_address;
-		std::set<std::string>								server_name; //domain_name
+		std::set<std::string>							server_name; //domain_name
 		std::map<unsigned int, std::string>				error_pages;
 		long long										client_max_body_size;
 		std::string										root; 

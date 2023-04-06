@@ -43,6 +43,7 @@ class Webserver
 		void parcing_config_file(const std::string config_file);
 		void	setup(void);
 		void	push_in_server(server *serv);
+		bool conflict_ip_address(const string &new_ip_address, const unsigned int new_port, const set<string> &new_server_names);
 };
 
 #endif

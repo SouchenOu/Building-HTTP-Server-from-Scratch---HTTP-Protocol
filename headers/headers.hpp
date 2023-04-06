@@ -35,6 +35,8 @@
 # include "server.hpp"
 #include "Location.hpp"
 
+#define BLUE    "\033[34m"
+
 
 class server;
 class Location;
