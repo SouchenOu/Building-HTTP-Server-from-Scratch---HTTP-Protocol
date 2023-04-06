@@ -85,6 +85,7 @@ void Webserver::parcing_config_file(const string config_file)
 							if((*iter2) == (*iter3))
 							{
 								std::cout << BLUE << "MyServer: [warn] conflicting server name on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << endl;
+								exit(0);
 							}
 						}
 					}
@@ -128,8 +129,73 @@ void Webserver::setup(void)
 	{
 		 file_descriptor = (*server)->EstablishConnection();
 		 
-	
 	}
+	//Clear an fd_set
+	FD_ZERO(&set_fd);
+	//Add a file_descriptor to an fd_set
+	FD_SET(file_descriptor, &set_fd);
+
+	while(true)
+	{
+		
+	}
+
+	//handle multiple socket connections with fd_set and select 
+	//When writing server programs using sockets , it becomes necessary to handle multiple connections at a time , since a server needs to serve multiple clients.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 	void	Webserv::listen(void)
+// {
+// 	Log("Server started", GREEN);
+// 	while (true)
+// 	{
+// 		// DEBUG("Waiting for new connections...");
+// 		loop_prep();
+// 		select(high_fd + 1, &lcopy_set, &wcopy_set, NULL, 0);
+// 		accept_new_conn();
+// 		for (list<Client*>::iterator client = _clients.begin(); client != _clients.end(); client++)
+// 		{
+// 			if (FD_ISSET((*client)->get_fd(), &lcopy_set))
+// 			{
+// 				// DEBUG("Yeah give it:"<<(*client)->status() );
+// 				if (((*client)->status() == 0 || (*client)->status() == 4) && (*client)->receive() == -1) //Or if we need more data to feed CGI
+// 				{
+// 					clear_fd(*client);
+// 					delete (*client);
+// 					client = _clients.erase(client);
+// 					--client;
+// 				}
+// 			}
+// 			else if ((*client)->is_done_recv())
+// 			{
+// 				if ((*client)->status() == 0 ||(*client)->status() == 4 )
+// 				{
+					
+// 					(*client)->set_response();
+// 					DEBUG("SET RESP :" << (*client)->status());
+// 				}
+// 				else if ((*client)->status() > 0)
+// 					(*client)->smart_send();
+// 			}
+// 			else if (fcntl((*client)->get_fd(), F_GETFL) < 0)
+// 				DEBUG("AH, FOUND ONE");
+// 		}
+// 	}
+// }
 }
 
 

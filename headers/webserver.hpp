@@ -31,6 +31,7 @@ class Webserver
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
 		std::set<server*>	servers;
+		fd_set      set_fd;
 	
 
 	public:
