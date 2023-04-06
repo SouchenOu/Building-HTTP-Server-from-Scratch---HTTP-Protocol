@@ -1,0 +1,205 @@
+
+
+#include "server.hpp"
+#include <fcntl.h>
+Server::Server()
+: max_client_body_size(4096), listen_fd(0)
+{}
+
+Server::~Server()
+{
+	DEBUG("KILLING SERVER");
+	close(listen_fd);
+	DEBUG("KILLED");
+}
+
+int Server::setup(void)
+{
+	listen_fd = socket(AF_INET, SOCK_STREAM , 0);
+	if (listen_fd == -1)
+	{
+		//Can't use ERRNO value
+		perror("socket");
+		exit(1);
+	}
+	Log("Listening socket created on port: " + to_string_custom(port), GREEN);
+
+	hint.sin_family = AF_INET;
+	hint.sin_port = htons(port);
+
+
+	//TODEL
+	// if (ip_address.empty())
+	// 	inet_pton(AF_INET, "0.0.0.0", &(hint.sin_addr));
+	// else //TODEL
+	inet_pton(AF_INET, ip_address.c_str(), &(hint.sin_addr));
+
+	int opt = 1;
+	// Need to check conn alive and stuff
+	setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+	if (bind(listen_fd, (const struct sockaddr *)&hint, sizeof(hint)) == -1)
+	{
+		perror("bind");
+		exit(1);
+	}
+	// Change max number of clients
+	listen(listen_fd, SOMAXCONN);
+	return (listen_fd);
+}
+
+bool	Server::is_valid(string &error) const
+{
+	int fd;
+	if (get_ip_address() == "")
+		error = "ip_address is not set";
+	if (get_port() == 0)
+		error = "port is not set";
+	if (get_root() == "")
+		error = "root is not set";
+	if (get_index() == "")
+		error = "index is not set";
+	if (get_max_client_body_size() == 0)
+		error = "max_client_body_size is not set";
+	map<string, string> cgis = get_cgis();
+	for (map<string, string>::iterator cgi = cgis.begin(); cgi != cgis.end(); cgi++)
+	{
+		fd = ::open(cgi->second.c_str(), O_RDONLY);
+		if (fd <= 0)
+			error = "cgi " + cgi->second + " is unavailable";
+		close(fd);
+	}
+	map<unsigned int, string> error_pages = get_error_pages();
+	for (map<unsigned int, string>::iterator error_page = error_pages.begin(); error_page != error_pages.end(); error_page++)
+	{
+		fd = ::open((get_root() + error_page->second).c_str(), O_RDONLY);
+		if (fd <= 0)
+			error = "error_page " + get_root() + error_page->second + " is unavailable";
+		close(fd);
+	}
+	list<Location> locations = get_locations();
+	if (!locations.size())
+		error = "location is not set";
+	for (list<Location>::iterator location = locations.begin(); location != locations.end(); location++)
+	{
+		if (!location->is_valid(error))
+			return false;
+	}
+	return (error.length() == 0);
+}
+
+list<Location>	Server::get_locations() const
+{
+	return locations;
+}
+
+list<string>	Server::get_server_names() const
+{
+	return server_names;
+}
+
+map<string, string>	Server::get_cgis() const
+{
+	return cgis;
+}
+
+map<unsigned int, string>	Server::get_error_pages() const
+{
+	return error_pages;
+}
+
+string			Server::get_ip_address() const
+{
+	return ip_address;
+}
+
+unsigned int	Server::get_port() const
+{
+	return port;
+}
+
+string			Server::get_root() const
+{
+	return root;
+}
+
+string			Server::get_index() const
+{
+	return index;
+}
+
+long long		Server::get_max_client_body_size() const
+{
+	return max_client_body_size;
+}
+
+int Server::get_listen_fd(void) const
+{
+	return listen_fd;
+}
+
+
+void	Server::set_locations(const list<Location> locations)
+{
+	this->locations = locations;
+}
+
+void	Server::push_back_location(Location location)
+{
+	this->locations.push_back(location);
+}
+
+void	Server::set_server_names(const list<string> server_names)
+{
+	this->server_names = server_names;
+}
+
+void	Server::push_back_server_name(string server_name)
+{
+	this->server_names.push_back(server_name);
+}
+
+void	Server::set_cgis(const map<string, string> cgis)
+{
+	this->cgis = cgis;
+}
+
+void	Server::push_back_cgi(const string extention_name, const string exec_path)
+{
+	this->cgis.insert(pair<string, string>(extention_name, exec_path));
+}
+
+void	Server::set_error_pages(const map<unsigned int, string> error_pages)
+{
+	this->error_pages = error_pages;
+}
+
+void	Server::push_back_error_page(const pair<unsigned int, string> error_page)
+{
+	this->error_pages.insert(error_page);
+}
+
+void	Server::set_ip_address(const string ip_address)
+{
+	this->ip_address = ip_address;
+}
+
+void	Server::set_port(const unsigned int port)
+{
+	this->port = port;
+}
+
+void	Server::set_root(const string root)
+{
+	this->root = root;
+}
+
+void	Server::set_index(const string index)
+{
+	this->index = index;
+}
+
+void	Server::set_max_client_body_size(const long long max_client_body_size)
+{
+	this->max_client_body_size = max_client_body_size;
+}

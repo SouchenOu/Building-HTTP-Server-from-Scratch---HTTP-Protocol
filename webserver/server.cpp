@@ -67,9 +67,11 @@ int server::EstablishConnection(void)
 	
 	if (bind(fd_socket, (const struct sockaddr *)&address, sizeof(address)) == -1)
 	{
+		std::cout << "enter\n";
 		perror("Error : Problem binding");
 		exit(1);
 	}
+	std::cout << "nop\n";
 	// accept client connection requests
 
 	/****marks the socket referred to by fd_socket as a passive
