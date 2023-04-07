@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.hpp                                         :+:      :+:    :+:   */
+/*   WebBrowser.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: souchen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,10 +11,12 @@
 /* ************************************************************************** */
 
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef WEBBROWSER_HPP
+#define WEBBROWSER_HPP
 
-class Clients
+#include "headers.hpp"
+
+class   WebBrowsers
 {
     private:
             int file_descriptor;
@@ -22,10 +24,10 @@ class Clients
 
     public:
         // constructer
-        Clients();
-        Clients(int new_listen_fd, set<server*>& servers);
+        WebBrowsers();
+        WebBrowsers(int new_listen_fd, set<server*>& servers);
         //destructer
-        ~Clients();
+        ~WebBrowsers();
 
 
 

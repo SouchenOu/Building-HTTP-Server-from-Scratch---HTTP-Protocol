@@ -13,7 +13,7 @@
 #include "../headers/webserver.hpp"
 //#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
-#include "../headers/client.hpp"
+#include "../headers/WebBrowser.hpp"
 # define white_espace "; \t"
 
 
@@ -105,10 +105,8 @@ void Webserver::parcing_config_file(const string config_file)
 void Webserver::setup(void)
 {
 	
-
-	int file_descriptor;
+	int fd_socket;
 	
-
 	fd = 0;
 	int tmp_fd;
 	//Clear an fd_set
@@ -116,19 +114,19 @@ void Webserver::setup(void)
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
-		file_descriptor = (*server)->EstablishConnection();	
+		fd_socket = (*server)->EstablishConnection();	
 		//Add a file_descriptor to an fd_set
-		FD_SET(file_descriptor, &readfds);
-		if(file_descriptor > fd)
+		FD_SET(fd_socket, &readfds);
+		if(fd_socket > fd)
 		{
-			fd = file_descriptor;
+			fd = fd_socket;
 		}
 	}
 
 
 	while(true)
 	{
-		for(set<Clients*>::iterator iter1= clients.begin(); iter1 != clients.end(); iter1++)
+		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 				
 			tmp_fd	= (*iter1)->get_file_descriptor();	
@@ -139,11 +137,11 @@ void Webserver::setup(void)
 			if (FD_ISSET((*iter2)->get_fd_socket(), &readfds))
 			{
 				// new client connected
-				Clients *client = new Clients((*iter2)->get_fd_socket(), servers);
-				clients.insert(client);
+				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
+				Browsers.insert(browser);
 
-				FD_SET(client->get_file_descriptor(), &readfds);
-				FD_SET(client->get_file_descriptor(), &writefds);
+				FD_SET(browser->get_file_descriptor(), &readfds);
+				FD_SET(browser->get_file_descriptor(), &writefds);
 			}
 		}
 	}

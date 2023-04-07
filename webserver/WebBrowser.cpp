@@ -10,30 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/client.hpp"
+#include "../headers/WebBrowser.hpp"
 #include "../headers/server.hpp"
 
-Clients::Clients(){}
+WebBrowsers::WebBrowsers(){}
 
-Clients::Clients(int fd_socket, set<server*>& servers) : file_descriptor(0)
+WebBrowsers::WebBrowsers(int fd_socket, set<server*>& servers) : file_descriptor(0)
 {
 	// struct sockaddr_in *address = get_address_client();
     int addrlen = sizeof(address_client);
+	//The accept() system call is used to process each connection thread in the queue created by listen()
 	file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
+	if(file_descriptor < 0)
+	{
+		std::cout << "server failed to accept incoming connection " << endl; 
+	}
 }
-Clients::~Clients()
+WebBrowsers::~WebBrowsers()
 {
 
 }
 
 //getters
 
-int Clients::get_file_descriptor()
+int WebBrowsers::get_file_descriptor()
 {
 	return file_descriptor;
 }
 
-struct sockaddr* Clients::get_address_client(void)
+struct sockaddr* WebBrowsers::get_address_client(void)
 {
 	return (struct sockaddr*)(&address_client);
 }

@@ -23,6 +23,7 @@ server::server()
 
 server::~server()
 {
+	//When our Server gets cleaned up (the destructor function, ~server() , is called) we want to make sure we also close the socket we’ve created for our server. 
 	close(fd_socket);
 	
 }
@@ -42,8 +43,7 @@ int server::EstablishConnection(void)
 		are no variations of the protocol, so the last argument, protocol, is zero. Our code for
 		creating a TCP socket looks like this:*/
 
-	std::cout << "address ip-->" << ip_address << endl;
-	std::cout << "port-->" << port_listen << endl;
+//Creating a TCP/IP socket
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{
@@ -56,15 +56,16 @@ int server::EstablishConnection(void)
 	address.sin_family = AF_INET;
 	// transport address or a port number
 	//The htons function can be used to convert an IP port number in host byte order to the IP port number in network byte order.
+	//We will need to call htons() to ensure that the port is stored in network byte order.
 	address.sin_port = htons(port_listen);
 	// This is your machine is IP address
-	//address.sin_addr.s_addr = htonl(ip_address);
+	//convert the IP address from a char * to an unsigned long and have it stored in network byte order.
+	address.sin_addr.s_addr = inet_addr(ip_address.c_str());
 
 	//convert IPv4 and IPv6 addresses from text to binary form
+	//inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
 
-	inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
-
-	
+	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
 	if (bind(fd_socket, (const struct sockaddr *)&address, sizeof(address)) == -1)
 	{
 		
@@ -72,7 +73,11 @@ int server::EstablishConnection(void)
 		exit(1);
 	}
 
-	// accept client connection requests
+	// listen for incoming requests......
+
+	//Start Listening for Requests...
+	//listen(fd_socket, backlog)
+	//The backlog is the maximum number of connections that can be waiting to be accepted.
 
 	/****marks the socket referred to by fd_socket as a passive
        socket, that is, as a socket that will be used to accept incoming
