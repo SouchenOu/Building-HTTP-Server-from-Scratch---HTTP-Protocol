@@ -98,26 +98,7 @@ void Webserver::parcing_config_file(const string config_file)
 
 }
 
-// bool Webserver::conflict_ip_address(const string &new_ip_address, const unsigned int new_port, const set<string> &new_server_names)
-// {
-// 	for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
-// 	{
-// 			if((*iter1)->get_ip_address() == new_ip_address && (*iter1)->get_port_listen() == new_port)
-// 			{
-// 				for(set<string>::iterator iter2 = server_name.begin(); iter2 != server_name.end(); iter2++)
-// 				{
-// 					for(set<string>::iterator iter3 = new_server_names.begin(); iter3 != new_server_names.end(); iter3++)
-// 					{
-// 						if((*iter2) == (*iter3))
-// 						{
-// 							std::cout << BLUE << "ip_address;port_listen and domain_name conflict with another server\n";
-// 						}
-// 					}
-// 				}
-// 			}
-// 	}
-// 	return false;
-// }
+
 
 
 void Webserver::setup(void)
@@ -125,23 +106,39 @@ void Webserver::setup(void)
 	
 
 	int file_descriptor;
+	int tmp_fd;
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
 		 file_descriptor = (*server)->EstablishConnection();
-		 
+		 	//Clear an fd_set
+			FD_ZERO(&readfds);
+			FD_ZERO(&writefds);
+			//Add a file_descriptor to an fd_set
+			FD_SET(file_descriptor, &readfds);
 	}
-	//Clear an fd_set
-	FD_ZERO(&set_fd);
-	//Add a file_descriptor to an fd_set
-	FD_SET(file_descriptor, &set_fd);
+
 
 	while(true)
 	{
-		for(set<client*>::iterator iter1= clients.begin(); iter1 != clients.end(); iter1++)
+		for(set<Clients*>::iterator iter1= clients.begin(); iter1 != clients.end(); iter1++)
 		{
-
+				
+			tmp_fd	= (*iter1)->get_file_descriptor();	
 		}
 		select(fd + 1, &readfds, &writefds, NULL, 0);
+		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
+		{
+			if (FD_ISSET((*iter2)->get_port_listen(), &readfds))
+			{
+				// new client connected
+				Clients *client = new clients((*iter2)->get_listen_fd(), servers);
+				clients.push_back(client);
+				//TO MOVE
+
+				FD_SET(client->get_file_descriptor(), &readfds);
+				FD_SET(client->get_file_descriptor(), &writefds);
+			}
+		}
 	}
 
 	//handle multiple socket connections with fd_set and select 

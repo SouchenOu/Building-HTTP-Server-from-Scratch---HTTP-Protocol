@@ -14,15 +14,15 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-class client
+class Clients
 {
     private:
 
 
     public:
         // constructer
-        client();
-        ~client();
+        Clients();
+        ~Clients();
         //destructer
 };
 
