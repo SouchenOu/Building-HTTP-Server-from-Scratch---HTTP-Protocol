@@ -17,13 +17,31 @@
 class Clients
 {
     private:
-
+            int file_descriptor;
+            struct sockaddr_in	address_client;
 
     public:
         // constructer
         Clients();
-        ~Clients();
+        Clients(int new_listen_fd, set<server*>& servers);
         //destructer
+        ~Clients();
+
+
+
+        //getters
+        int get_file_descriptor()
+        {
+            return file_descriptor;
+        }
+       
+        void set_file_descriptor(int fd)
+        {
+            this->file_descriptor = fd;
+        }
+
+        struct sockaddr* get_address_client(void);
+        
 };
 
 

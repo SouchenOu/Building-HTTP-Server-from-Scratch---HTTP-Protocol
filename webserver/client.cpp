@@ -11,12 +11,32 @@
 /* ************************************************************************** */
 
 #include "../headers/client.hpp"
+#include "../headers/server.hpp"
 
-Client::Client(int new_listen_fd, set<server*>& servers) : fd_descripter(0)
+Clients::Clients(){}
+
+Clients::Clients(int fd_socket, set<server*>& servers) : file_descriptor(0)
 {
-	//client_len = sizeof(client_addr);
-	fd_descripter = accept(new_listen_fd, get_sockaddr(), get_addr_len());
-	inet_ntop(AF_INET, &(client_addr.sin_addr), client_ipv4_str, INET_ADDRSTRLEN);
+	// struct sockaddr_in *address = get_address_client();
+    int addrlen = sizeof(address_client);
+	file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
 }
+Clients::~Clients()
+{
+
+}
+
+//getters
+
+int Clients::get_file_descriptor()
+{
+	return file_descriptor;
+}
+
+struct sockaddr* Clients::get_address_client(void)
+{
+	return (struct sockaddr*)(&address_client);
+}
+
 
 
