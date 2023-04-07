@@ -29,3 +29,23 @@ Once the socket is bound to a port, you can start listening for incoming request
 
 Handle Requests and Send Responses
 The final step is to write the code to handle the requests and send back the appropriate response. This is the most important part of creating a web server in C++. You will need to write code to parse the request, determine what the request is asking for, and then send back the appropriate response. This can be done using the read() and write() functions from the C++ standard library. The read() function will read the request from the socket and the write() function will write the response back to the socket.
+
+
+
+
+
+
+Our project steps:
+-------------------
+
+In summary, our server will have a socket that:
+
+listens for incoming network connections and puts them on a Queue
+accepts a network connection from the Queue one at a time
+reads the data (Request) sent from the client over the network connection
+sends data (Response) to the client over the network connection.
+
+
+
+
+
