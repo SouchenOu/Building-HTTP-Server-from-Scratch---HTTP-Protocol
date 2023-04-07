@@ -33,6 +33,7 @@
 #include <set>
 # include <map>
 # include "server.hpp"
+#include "WebBrowser.hpp"
 #include "Location.hpp"
 
 #define BLUE    "\033[34m"

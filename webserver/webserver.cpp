@@ -107,19 +107,19 @@ void Webserver::setup(void)
 	
 	int fd_socket;
 	
-	fd = 0;
-	int tmp_fd;
+	fd_max = 0;
+	int fd;
 	//Clear an fd_set
-	FD_ZERO(&readfds);
+	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
 		fd_socket = (*server)->EstablishConnection();	
 		//Add a file_descriptor to an fd_set
 		FD_SET(fd_socket, &readfds);
-		if(fd_socket > fd)
+		if(fd_socket > fd_max)
 		{
-			fd = fd_socket;
+			fd_max = fd_socket;
 		}
 	}
 
@@ -129,21 +129,28 @@ void Webserver::setup(void)
 		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 				
-			tmp_fd	= (*iter1)->get_file_descriptor();	
-		}
-		select(fd + 1, &readfds, &writefds, NULL, 0);
-		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
-		{
-			if (FD_ISSET((*iter2)->get_fd_socket(), &readfds))
+			fd	= (*iter1)->get_file_descriptor();	
+			if(fd > fd_max)
 			{
-				// new client connected
-				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
-				Browsers.insert(browser);
-
-				FD_SET(browser->get_file_descriptor(), &readfds);
-				FD_SET(browser->get_file_descriptor(), &writefds);
+				fd_max = fd;
 			}
 		}
+		//What if you’re blocking on an accept() call? How are you going to recv() data at the same time? “Use non-blocking sockets!” No way! You don’t want to be a CPU hog. What, then?
+		/*****select() gives you the power to monitor several sockets at the same time. It’ll tell you which ones are ready for reading, which are ready for writing, and which sockets have raised exceptions, if you really want to know that.*/
+		// select(fd_max + 1, &readfds, &writefds, NULL, 0);
+		// for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
+		// {
+		// 	//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
+		// 	//Return true if fd is in the set.
+		// 	if (FD_ISSET((*iter2)->get_fd_socket(), &readfds))
+		// 	{
+		// 		WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
+		// 		Browsers.insert(browser);
+
+		// 		FD_SET(browser->get_file_descriptor(), &readfds);
+		// 		FD_SET(browser->get_file_descriptor(), &writefds);
+		// 	}
+		// }
 	}
 
 	//handle multiple socket connections with fd_set and select 

@@ -25,23 +25,17 @@ class   WebBrowsers
     public:
         // constructer
         WebBrowsers();
-        WebBrowsers(int new_listen_fd, set<server*>& servers);
+        WebBrowsers(int new_listen_fd);
         //destructer
         ~WebBrowsers();
 
 
 
         //getters
-        int get_file_descriptor()
-        {
-            return file_descriptor;
-        }
+        int get_file_descriptor();
        
-        void set_file_descriptor(int fd)
-        {
-            this->file_descriptor = fd;
-        }
-
+       //setters
+        void set_file_descriptor(int fd);
         struct sockaddr* get_address_client(void);
         
 };

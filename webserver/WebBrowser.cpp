@@ -15,11 +15,12 @@
 
 WebBrowsers::WebBrowsers(){}
 
-WebBrowsers::WebBrowsers(int fd_socket, set<server*>& servers) : file_descriptor(0)
+WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0)
 {
 	// struct sockaddr_in *address = get_address_client();
     int addrlen = sizeof(address_client);
 	//The accept() system call is used to process each connection thread in the queue created by listen()
+	//Accept incoming client connections.
 	file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
 	if(file_descriptor < 0)
 	{
@@ -37,6 +38,13 @@ int WebBrowsers::get_file_descriptor()
 {
 	return file_descriptor;
 }
+
+ 
+void WebBrowsers::set_file_descriptor(int fd)
+{
+    this->file_descriptor = fd;
+}
+
 
 struct sockaddr* WebBrowsers::get_address_client(void)
 {

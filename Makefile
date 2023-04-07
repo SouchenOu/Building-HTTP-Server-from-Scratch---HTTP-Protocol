@@ -13,9 +13,9 @@
 
 NAME = WebServ
 
-FILES =  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp
+FILES =  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp
 
-INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp
+INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp
 
 
 FLAGS = -Wall -Wextra -Werror -std=c++98

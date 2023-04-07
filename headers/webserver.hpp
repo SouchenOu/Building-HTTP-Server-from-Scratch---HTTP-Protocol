@@ -31,10 +31,10 @@ class Webserver
 	 * because each instance defines a specific virtual server to handle client 
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
-		std::set<server*>	servers;
+		std::set<server*>		servers;
 		std::set<WebBrowsers*>   Browsers;
-		fd_set      		set_fd;
-		int 				fd;
+		// fd_set      		set_fd;
+		int 				fd_max;
 		fd_set				readfds;
 		fd_set				writefds;
 	
@@ -49,7 +49,6 @@ class Webserver
 		void parcing_config_file(const std::string config_file);
 		void	setup(void);
 		void	push_in_server(server *serv);
-		bool conflict_ip_address(const string &new_ip_address, const unsigned int new_port, const set<string> &new_server_names);
 };
 
 #endif

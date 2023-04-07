@@ -58,6 +58,8 @@ class server
 		// some used variable 
 		int									fd_socket;
 		//With this, whenever a client tries to connect to our server, they will know what address to send their network request to.
+
+		//the struct sockaddr holds socket address information for many types of sockets.
 		struct sockaddr_in					address;
 
 	public:
