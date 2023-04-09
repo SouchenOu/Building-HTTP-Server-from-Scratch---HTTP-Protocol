@@ -35,6 +35,7 @@
 # include "server.hpp"
 #include "WebBrowser.hpp"
 #include "Location.hpp"
+#include "Request.hpp"
 
 #define BLUE    "\033[34m"
 

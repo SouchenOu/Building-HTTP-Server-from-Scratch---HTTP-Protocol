@@ -15,6 +15,9 @@
 #define WEBBROWSER_HPP
 
 #include "headers.hpp"
+//#include "Request.hpp"
+
+class server;
 
 class   WebBrowsers
 {
@@ -22,6 +25,9 @@ class   WebBrowsers
             int file_descriptor;
             struct sockaddr_in	address_client;
             int     recvStatus;
+            std::string read_buffer;
+            //Request     *request;
+            int value;
 
     public:
         // constructer
@@ -35,11 +41,17 @@ class   WebBrowsers
         //getters
         int get_file_descriptor();
         int get_recvStatus();
+        int get_value();
        
        //setters
         void set_file_descriptor(int fd);
         void set_recvStatus(int recvStatus);
         struct sockaddr* get_address_client(void);
+
+
+        // some used functions
+
+        int receive_data();
         
 };
 

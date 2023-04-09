@@ -11,3 +11,25 @@
 /* ************************************************************************** */
 
 
+#include "../headers/headers.hpp"
+
+
+// constructers
+
+
+Request::Request()
+{
+    std::cout << "Send a request\n";
+}
+
+// Request::Request(const std::string buffer)
+// {
+
+// }
+
+// // destructer
+
+// Request::~Request()
+// {
+
+// }

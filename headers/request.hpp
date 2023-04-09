@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   request.hpp                                        :+:      :+:    :+:   */
+/*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: souchen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,4 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
+
+class Request
+{
+   
+    public:
+
+        // constructers
+
+        Request();
+        Request(const std::string buffer);
+        ~Request();
+        
+
+
+
+
+
+};
+
+
+
+
+
+#endif
