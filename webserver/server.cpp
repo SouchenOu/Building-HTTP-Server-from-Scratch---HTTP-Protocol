@@ -44,6 +44,9 @@ int server::EstablishConnection(void)
 		creating a TCP socket looks like this:*/
 
 //Creating a TCP/IP socket
+
+
+//---> When you first create the socket descriptor with socket(), the kernel sets it to blocking. If you don’t want a socket to be blocking, you have to make a call to fcntl():
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{

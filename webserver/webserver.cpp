@@ -123,34 +123,37 @@ void Webserver::setup(void)
 		}
 	}
 
-
 	while(true)
 	{
 		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
-				
+			std::cout << "fd =" << fd << endl;
 			fd	= (*iter1)->get_file_descriptor();	
 			if(fd > fd_max)
 			{
 				fd_max = fd;
 			}
 		}
+		/****
+		 * The recv function is used to read incoming data on connection-oriented sockets,
+		 * 
+		*/
 		//What if you’re blocking on an accept() call? How are you going to recv() data at the same time? “Use non-blocking sockets!” No way! You don’t want to be a CPU hog. What, then?
 		/*****select() gives you the power to monitor several sockets at the same time. It’ll tell you which ones are ready for reading, which are ready for writing, and which sockets have raised exceptions, if you really want to know that.*/
-		// select(fd_max + 1, &readfds, &writefds, NULL, 0);
-		// for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
-		// {
-		// 	//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
-		// 	//Return true if fd is in the set.
-		// 	if (FD_ISSET((*iter2)->get_fd_socket(), &readfds))
-		// 	{
-		// 		WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
-		// 		Browsers.insert(browser);
+		select(fd_max + 1, &readfds, &writefds, NULL, 0);
+		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
+		{
+			//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
+			//Return true if fd is in the set.
+			if (FD_ISSET((*iter2)->get_fd_socket(), &readfds))
+			{
+				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket());
+				Browsers.insert(browser);
 
-		// 		FD_SET(browser->get_file_descriptor(), &readfds);
-		// 		FD_SET(browser->get_file_descriptor(), &writefds);
-		// 	}
-		// }
+				FD_SET(browser->get_file_descriptor(), &readfds);
+				FD_SET(browser->get_file_descriptor(), &writefds);
+			}
+		}
 	}
 
 	//handle multiple socket connections with fd_set and select 

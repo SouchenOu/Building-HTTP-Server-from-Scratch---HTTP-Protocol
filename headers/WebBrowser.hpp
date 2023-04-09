@@ -21,6 +21,7 @@ class   WebBrowsers
     private:
             int file_descriptor;
             struct sockaddr_in	address_client;
+            int     recvStatus;
 
     public:
         // constructer
@@ -33,9 +34,11 @@ class   WebBrowsers
 
         //getters
         int get_file_descriptor();
+        int get_recvStatus();
        
        //setters
         void set_file_descriptor(int fd);
+        void set_recvStatus(int recvStatus);
         struct sockaddr* get_address_client(void);
         
 };

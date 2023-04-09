@@ -15,7 +15,7 @@
 
 WebBrowsers::WebBrowsers(){}
 
-WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0)
+WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0), recvStatus(0)
 {
 	// struct sockaddr_in *address = get_address_client();
     int addrlen = sizeof(address_client);
@@ -39,17 +39,29 @@ int WebBrowsers::get_file_descriptor()
 	return file_descriptor;
 }
 
+struct sockaddr* WebBrowsers::get_address_client(void)
+{
+	return (struct sockaddr*)(&address_client);
+}
+
+int WebBrowsers::get_recvStatus()
+{
+	return recvStatus;
+}
+
  
 void WebBrowsers::set_file_descriptor(int fd)
 {
     this->file_descriptor = fd;
 }
 
-
-struct sockaddr* WebBrowsers::get_address_client(void)
+void WebBrowsers::set_recvStatus(int recvStatus)
 {
-	return (struct sockaddr*)(&address_client);
+	this->recvStatus = recvStatus;
 }
+
+
+
 
 
 
