@@ -28,6 +28,7 @@ class   WebBrowsers
             std::string read_buffer;
             //Request     *request;
             int value;
+            int check_fd;
 
     public:
         // constructer
@@ -42,6 +43,7 @@ class   WebBrowsers
         int get_file_descriptor();
         int get_recvStatus();
         int get_value();
+        int get_check_fd();
        
        //setters
         void set_file_descriptor(int fd);

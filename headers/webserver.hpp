@@ -37,6 +37,8 @@ class Webserver
 		int 				fd_max;
 		fd_set				readfds;
 		fd_set				writefds;
+		fd_set				r_fds;
+		fd_set				w_fds;
 	
 
 	public:

@@ -22,6 +22,7 @@
 WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0), recvStatus(0), read_buffer(0)
 {
 	std::cout<< "here\n";
+	check_fd = 0;
 	// struct sockaddr_in *address = get_address_client();
     int addrlen = sizeof(address_client);
 	//The accept() system call is used to process each connection thread in the queue created by listen()
@@ -29,7 +30,8 @@ WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0), recvStatus(0), rea
 	file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
 	if(file_descriptor < 0)
 	{
-		std::cout << "server failed to accept incoming connection " << endl; 
+		std::cout << "server failed to accept incoming connection " << endl;
+		check_fd = -1;
 	}
 }
 WebBrowsers::~WebBrowsers()
@@ -96,6 +98,12 @@ int WebBrowsers::get_value()
 {
 	return value;
 }
+
+int WebBrowsers::get_check_fd()
+{
+	return check_fd;
+}
+
 void WebBrowsers::set_file_descriptor(int fd)
 {
     this->file_descriptor = fd;
