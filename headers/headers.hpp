@@ -33,7 +33,6 @@
 #include <set>
 # include <map>
 # include "server.hpp"
-#include "WebBrowser.hpp"
 #include "Location.hpp"
 #include "Request.hpp"
 

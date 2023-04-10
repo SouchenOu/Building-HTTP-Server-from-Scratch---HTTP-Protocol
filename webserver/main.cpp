@@ -20,14 +20,6 @@
 // CGI : Common Gateway Interface --> is an interface type for web servers to execute apps that execute like console applications running on a server that generates web pages in dynamical way
 
 /*****CGI program will reside in a special directory ( with limited rights ) in order to let the web server to understand that the file is for execution only and not to display in the user’s browser.*/
-Webserver* ptr;
-
-void stop(int num)
-{
-	(void) num;
-	ptr->stop();
-	exit(0);
-}
 
 
 int main(int argc, char *argv[])
@@ -51,10 +43,7 @@ int main(int argc, char *argv[])
     Webserver webserver;
     webserver.parcing_config_file(argv[1]);
     webserver.setup();
-    ptr = &webserver;
-    // signal(SIGPIPE, SIG_IGN);
-	// signal(SIGINT, &stop);
-    // webserver.accept_connection();
+
     
 
 	return 0;

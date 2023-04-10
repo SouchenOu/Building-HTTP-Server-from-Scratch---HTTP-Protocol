@@ -13,7 +13,6 @@
 #include "../headers/webserver.hpp"
 //#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
-#include "../headers/WebBrowser.hpp"
 # define white_espace "; \t"
 
 
@@ -108,7 +107,7 @@ void Webserver::setup(void)
 	int fd_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
-	int fd;
+	//int fd;
 	//Clear an fd_set
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
@@ -129,22 +128,7 @@ void Webserver::setup(void)
 		w_fds = writefds;
 		activity = 0;
 
-		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
-		{
-			// std::cout << "fd =" << fd << endl;
-			fd	= (*iter1)->get_file_descriptor();
-			if((*iter1)->get_check_fd() == -1)
-			{
-				delete(*iter1);
-				// *iter1 = 0;
-				iter1 = Browsers.erase(iter1);
-				
-			}	
-			else if(fd > fd_max)
-			{
-				fd_max = fd;
-			}
-		}
+		
 		/****
 		 * The recv function is used to read incoming data on connection-oriented sockets,
 		 * 
@@ -165,59 +149,40 @@ void Webserver::setup(void)
 			//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
 			//Return true if fd is in the set.
 
-			//WebBrowsers *browser = new WebBrowsers();
-			//(void) browser;
+			
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				int len = sizeof(address);
-				new_socket = accept((*iter2)->get_fd_socket(), get_address(), (socklen_t*)&len);
-			// 	std::cout << "here\n";
-			// 	WebBrowsers *browser = new WebBrowsers();
-			// 	 //(void) browser;
-			// 	//WebBrowsers *browser = new WebBrowsers();
-
-			// 	//Browsers.insert(browser);
-			 FD_SET(new_socket, &readfds);
-			 FD_SET(new_socket, &writefds);
-			// 	// int addrlen = sizeof(browser->get_address_client());
-			// 	// new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
-			// 	// browser->set_file_descriptor(new_socket);
-			// 	// Browsers.insert(browser);
+				int len = sizeof((*iter2)->get_address());
+				new_socket = accept((*iter2)->get_fd_socket(), (*iter2)->get_address(),(socklen_t*)&len);
+				(*iter2)->set_new_socket(new_socket);
+				FD_SET((*iter2)->get_new_socket(), &readfds);
+				FD_SET((*iter2)->get_new_socket(), &writefds);
+				if(new_socket > fd_max)
+				{
+					fd_max = new_socket;
+				}
 				
 			}
 			std::cout << "back\n";
 		
 		}
 
-		// send new connection greeting message
+		
 
-		// if(send(new_socket, message, strlen(message), 0))
-		// {
-		// 		std::cout<< "Error send()\n";
-		// }
-
-		// for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
-		// {
+		for(set<server*>::iterator iter3 = servers.begin(); iter3 !=servers.end(); iter3++ )
+		{
 			std::cout << "why\n";
-			if(FD_ISSET(new_socket, &readfds))
+			if(FD_ISSET((*iter3)->get_new_socket(), &readfds))
 			{
-				
 				// read incoming message....
 				// if((*iter3)->receive_data() == 2)
 				// {
 				// 	iter3 = Browsers.erase(iter3);
 				// 	iter3--;
 				// }
-				//(*iter3)->receive_data();
-				char buffer[1000];
-	 			read(new_socket, buffer, 30000);
-				std::cout << "buffer->" << buffer << endl;
-				char hello[100] = "Hello from server";
-
-    			write(new_socket, hello, strlen(hello));
-    			close(new_socket);
+				(*iter3)->receive_data();
 			}
-		//}
+		}
 
 	}
 
@@ -225,25 +190,6 @@ void Webserver::setup(void)
 	//When writing server programs using sockets , it becomes necessary to handle multiple connections at a time , since a server needs to serve multiple clients.
 
 }
-
-void Webserver::stop(void)
-{
-
-	for (set<server *>::iterator iter1 = servers.begin(); iter1 != servers.end(); iter1++)
-	{
-		delete (*iter1);
-		//*iter1 = 0;
-	}
-	servers.clear();
-	for (set<WebBrowsers *>::iterator iter2 = Browsers.begin(); iter2 != Browsers.end(); iter2++)
-	{
-		delete (*iter2);
-		//*iter2 = 0;
-	}
-	Browsers.clear();
-	exit(0);
-}
-
 
 struct sockaddr* Webserver::get_address(void)
 {

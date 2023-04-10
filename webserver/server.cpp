@@ -158,10 +158,23 @@ int server::get_fd_socket(void)
 	return fd_socket;
 }
 
+struct sockaddr* server::get_address(void)
+{
+	return (struct sockaddr*)(&address);
+}
 
+int server::get_new_socket()
+{
+	return new_socket;
+}
 
 
 // ********************************setters
+
+void  server::set_new_socket(int new_socket)
+{
+	this->new_socket = new_socket;
+}
 
 void	server::set_port_listen(const unsigned int port_listen)
 {
@@ -238,4 +251,38 @@ void	server::push_in_server_name(std::string server_name)
 void	server::push_in_location(Location location)
 {
 	this->locations.push_back(location);
+}
+
+
+int server::receive_data()
+{
+
+	int recv_s;
+	char buffer[1000];
+	value = 0;
+
+	recv_s = recv(new_socket, buffer, 1000, 0 ); 
+	std::cout << "reading->" << buffer << endl;
+
+	// if(recv_s <= 0)
+	// {
+	// 	std::cout << "No message are available to be received\n";
+	// 	value = 1;
+	// 	return 2;
+	// }else{
+	// 	read_buffer = read_buffer + string(buffer, recv_s);
+	// }
+
+	// if(recv_s < 1000)
+	// {
+	// 	// send request
+	// 	// if(request == 0)
+	// 	// {
+	// 	// 	request = new Request(recv_s);
+	// 	// }
+	// 	// read_buffer.clear();
+	// 	value = 1;
+	// }
+	return value;
+
 }

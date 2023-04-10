@@ -51,12 +51,16 @@ class server
 		std::string										index; 
 		std::map<std::string, std::string>				cgis; 
 		std::vector<Location>							locations;
+		
 
 
 
 		
 		// some used variable 
 		int									fd_socket;
+		int 								new_socket;
+		std::string 						read_buffer;
+		int									value;
 		//With this, whenever a client tries to connect to our server, they will know what address to send their network request to.
 
 		//the struct sockaddr holds socket address information for many types of sockets.
@@ -78,6 +82,9 @@ class server
 		std::vector<Location>				get_locations(void) const;
 		std::map<std::string, std::string>			get_cgis(void) const;
 		int									get_fd_socket();
+		int									get_new_socket();
+		struct sockaddr* get_address(void);
+
 
 		// some used functions
 		int							EstablishConnection(void);
@@ -94,7 +101,7 @@ class server
 		void						set_index(const std::string index);
 		void						set_locations(const std::vector<Location> locations);
 		void						set_cgis(const std::map<std::string, std::string> cgis);
-		
+		void						set_new_socket(int new_socket);
 		
 
 		void						push_in_location(const Location location);
@@ -102,7 +109,7 @@ class server
 		void						push_in_cgi(const std::string extention_name, const std::string exec_path);
 		void						push_in_error_page(const std::pair<unsigned int, std::string> error_page);
 		
-		
+		int receive_data();
 };
 
 #endif
