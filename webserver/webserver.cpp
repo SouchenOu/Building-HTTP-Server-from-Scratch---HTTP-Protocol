@@ -13,6 +13,7 @@
 #include "../headers/webserver.hpp"
 //#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
+#include "../headers/WebBrowser.hpp"
 # define white_espace "; \t"
 
 
@@ -38,13 +39,12 @@ void Webserver::parcing_config_file(const string config_file)
 	size_t count = 0;
 	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
 
-    std::ifstream read_file(config_file);
+    std::ifstream read_file(config_file.c_str());
 	string str;
-	getline(read_file, str);
-	if(!getline(read_file, str))
-	{
-		cout << "config file is empty\n";
-	}
+	// if(!getline(read_file, str))
+	// {
+	// 	cout << "config file is empty\n";
+	// }
 	// now we should convert ifstream to string
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
 	read_file.close();
@@ -72,7 +72,9 @@ void Webserver::parcing_config_file(const string config_file)
 		vector<string>::iterator iter2 = world_line.begin();
 		if (*iter2 == "server")
 		{
-			server *serv = parse_server(config_line, &count);;
+			server *serv = parse_server(config_line, &count);
+			// std::cout << "port:" << serv->get_port_listen() << endl;
+			// std::cout << "ip:" << serv->get_ip_address() << endl;
 			for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
 			{
 				if((*iter1)->get_ip_address() == serv->get_ip_address() && (*iter1)->get_port_listen() == serv->get_port_listen())
@@ -105,9 +107,10 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
+	int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
-	//int fd;
+	int fd;
 	//Clear an fd_set
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
@@ -124,11 +127,27 @@ void Webserver::setup(void)
 
 	while(true)
 	{
+		std::cout << "open\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
 
-		
+		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
+		{
+			// std::cout << "fd =" << fd << endl;
+			fd	= (*iter1)->get_file_descriptor();
+			if((*iter1)->get_check_fd() == -1)
+			{
+				delete(*iter1);
+				// *iter1 = 0;
+				iter1 = Browsers.erase(iter1);
+				
+			}	
+			else if(fd > fd_max)
+			{
+				fd_max = fd;
+			}
+		}
 		/****
 		 * The recv function is used to read incoming data on connection-oriented sockets,
 		 * 
@@ -143,36 +162,39 @@ void Webserver::setup(void)
 		{
 			std::cout << "select error\n";
 		}
-		// std::cout << "ll\n";
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
-			//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
-			//Return true if fd is in the set.
-
-			
+			std::cout << "yes\n";
+		
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				int len = sizeof((*iter2)->get_address());
-				new_socket = accept((*iter2)->get_fd_socket(), (*iter2)->get_address(),(socklen_t*)&len);
-				(*iter2)->set_new_socket(new_socket);
-				FD_SET((*iter2)->get_new_socket(), &readfds);
-				FD_SET((*iter2)->get_new_socket(), &writefds);
-				if(new_socket > fd_max)
-				{
-					fd_max = new_socket;
-				}
+				std::cout << "why\n";
+				new_socket = 0;
+			 	WebBrowsers *browser = new WebBrowsers();
+			 	int addrlen = sizeof(browser->get_address_client());
+				//The accept() call is used by a server to accept a connection request from a client
+			 	new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+				browser->set_file_descriptor(new_socket);
+				Browsers.insert(browser);
+				FD_SET(browser->get_file_descriptor(), &readfds);
+				FD_SET(browser->get_file_descriptor(), &writefds);
 				
 			}
 			std::cout << "back\n";
 		
 		}
 
-		
+		// send new connection greeting message
 
-		for(set<server*>::iterator iter3 = servers.begin(); iter3 !=servers.end(); iter3++ )
+		// if(send(new_socket, message, strlen(message), 0))
+		// {
+		// 		std::cout<< "Error send()\n";
+		// }
+
+		for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
 			std::cout << "why\n";
-			if(FD_ISSET((*iter3)->get_new_socket(), &readfds))
+			if(FD_ISSET((*iter3)->get_file_descriptor(), &readfds))
 			{
 				// read incoming message....
 				// if((*iter3)->receive_data() == 2)
@@ -191,10 +213,29 @@ void Webserver::setup(void)
 
 }
 
-struct sockaddr* Webserver::get_address(void)
-{
-	return (struct sockaddr*)(&address);
-}
+// void Webserver::stop(void)
+// {
+
+// 	for (set<server *>::iterator iter1 = servers.begin(); iter1 != servers.end(); iter1++)
+// 	{
+// 		delete (*iter1);
+// 		//*iter1 = 0;
+// 	}
+// 	servers.clear();
+// 	for (set<WebBrowsers *>::iterator iter2 = Browsers.begin(); iter2 != Browsers.end(); iter2++)
+// 	{
+// 		delete (*iter2);
+// 		//*iter2 = 0;
+// 	}
+// 	Browsers.clear();
+// 	exit(0);
+// }
+
+
+// struct sockaddr* Webserver::get_address(void)
+// {
+// 	return (struct sockaddr*)(&address);
+// }
 
 
 

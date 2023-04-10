@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webserver.hpp                                         :+:      :+:    :+:   */
+/*   webserver.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: souchen <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -21,8 +21,7 @@
 
 //# include "server.hpp"
 
-class server;
-
+class server;;
 
 class Webserver
 {
@@ -32,7 +31,7 @@ class Webserver
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
 		std::set<server*>		servers;
-	
+		std::set<WebBrowsers*>   Browsers;
 		// fd_set      		set_fd;
 		int 				fd_max;
 		fd_set				readfds;
@@ -40,8 +39,8 @@ class Webserver
 		fd_set				r_fds;
 		fd_set				w_fds;
 		int					activity;
-		int new_socket;
-		struct sockaddr_in					address;
+		//int new_socket;
+		//struct sockaddr_in					address;
 	
 
 	public:
@@ -56,7 +55,6 @@ class Webserver
 		void	push_in_server(server *serv);
 		void stop();
 		void accept_connection();
-		struct sockaddr* get_address(void);
 };
 
 #endif

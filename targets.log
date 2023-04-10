@@ -1,0 +1,418 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+
+# Make data base, printed on Mon Apr 10 16:58:44 2023
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+VSCODE_CRASH_REPORTER_PROCESS_TYPE = extensionHost
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+ 
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /goinfre/souchen/web-server
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","osLocale":"en","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# environment
+VSCODE_CWD = /
+# environment
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.dO2mHP3rtK/Render
+# environment
+PATH = /Users/souchen/.brew/bin:/Users/souchen/goinfre/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+LS_COLORS = di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.sQcpwE4Njs/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+HOMEBREW_TEMP = /tmp/souchen/Homebrew/Temp
+# environment
+PWD = /goinfre/souchen/web-server
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /Users/souchen
+# default
+MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/souchen/Library/Application Support/Code/CachedData/b7886d7461186a5eac768481578c1d7ca80e2d21
+# environment
+LOGNAME = souchen
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+ZSH = /Users/souchen/.oh-my-zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+HOMEBREW_CACHE = /tmp/souchen/Homebrew/Caches
+# environment
+SHLVL = 1
+# environment
+VSCODE_CRASH_REPORTER_SANDBOXED_HINT = 1
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = souchen
+# makefile
+.DEFAULT_GOAL := all
+# makefile (from `Makefile', line 14)
+NAME = WebServ
+# environment
+LESS = -R
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# default
+MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# makefile (from `Makefile', line 18)
+INC = headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/request.hpp headers/response.hpp
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/zz/zyxvpxvq6csfxvn_n000cd8h0033_4/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/souchen/Library/Application Support/Code/1.77-main.sock
+# environment
+MallocNanoZone = 0
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000001.Electron
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+__CF_USER_TEXT_ENCODING = 0x18D44:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
+# environment
+HOMEBREW_NO_AUTO_UPDATE = 1
+# automatic
+<F = $(notdir $<)
+# environment
+PAGER = less
+# environment
+LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a8
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# makefile (from `Makefile', line 21)
+FLAGS = -Wall -Wextra -Werror -std=c++98 
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# environment
+LANG = C
+# environment
+VSCODE_PID = 27624
+# makefile (from `Makefile', line 16)
+FILES = webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp
+# variable set hash-table stats:
+# Load=73/1024=7%, Rehash=0, Collisions=1/106=1%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777223, inode 12908650563): 14 files, no impossibilities.
+
+# 14 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+all: WebServ
+#  Phony target (prerequisite of .PHONY).
+#  Command-line target.
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+
+WebServ: webserver/functions_help.cpp webserver/Location.cpp webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/response.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := WebServ
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := webserver/functions_help.cpp webserver/Location.cpp webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/request.hpp headers/response.hpp
+# automatic
+# | := 
+# automatic
+ 
+# < := webserver/functions_help.cpp
+# automatic
+# ^ := webserver/functions_help.cpp webserver/Location.cpp webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/response.hpp
+# automatic
+# ? := webserver/functions_help.cpp webserver/Location.cpp webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/response.hpp
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/13=8%
+#  commands to execute (from `Makefile', line 27):
+	c++ $(FLAGS) $(FILES) -o $(NAME)
+	
+
+.PHONY: all clean fclean re
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+headers/webserver.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:48:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/WebBrowser.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:52:22
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/functions_help.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:07
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:58:24
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+headers/response.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:06
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/server.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 15:59:35
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/Location.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:07
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/parce_config_file.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:07
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/main.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:01:55
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/request.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:07
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+fclean: clean
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+headers/WebBrowser.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:52:14
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+re: fclean all
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 30):
+	rm -rf $(NAME)
+	
+
+# Not a target:
+webserver/webserver.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 16:54:18
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+headers/server.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 15:59:48
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+headers/Location.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:06
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+webserver/response.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:07
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+headers/request.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2023-04-10 10:14:06
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# files hash-table stats:
+# Load=24/1024=2%, Rehash=0, Collisions=0/62=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+ 
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Mon Apr 10 16:58:44 2023
+
+ 

@@ -1,0 +1,5 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/goinfre/souchen/web-server'
+c++ -Wall -Wextra -Werror -std=c++98  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp -o WebServ
+make: Leaving directory `/goinfre/souchen/web-server'
+ 
