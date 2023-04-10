@@ -29,6 +29,7 @@ class   WebBrowsers
             //Request     *request;
             int value;
             int check_fd;
+            socklen_t address_len;
 
     public:
         // constructer
@@ -44,16 +45,21 @@ class   WebBrowsers
         int get_recvStatus();
         int get_value();
         int get_check_fd();
+
+        socklen_t* get_address_len(void);
+        
+        struct sockaddr* get_address_client(void);
        
        //setters
         void set_file_descriptor(int fd);
         void set_recvStatus(int recvStatus);
-        struct sockaddr* get_address_client(void);
+        void set_address_len(socklen_t* len);
+        
 
 
         // some used functions
 
-        int receive_data();
+        void receive_data();
         
 };
 

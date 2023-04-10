@@ -106,7 +106,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
-	
+	// string message = "hello souchen";
 	fd_max = 0;
 	int fd;
 	//Clear an fd_set
@@ -127,6 +127,8 @@ void Webserver::setup(void)
 	{
 		r_fds = readfds;
 		w_fds = writefds;
+		activity = 0;
+
 		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 			// std::cout << "fd =" << fd << endl;
@@ -149,33 +151,73 @@ void Webserver::setup(void)
 		*/
 		//What if you’re blocking on an accept() call? How are you going to recv() data at the same time? “Use non-blocking sockets!” No way! You don’t want to be a CPU hog. What, then?
 		/*****select() gives you the power to monitor several sockets at the same time. It’ll tell you which ones are ready for reading, which are ready for writing, and which sockets have raised exceptions, if you really want to know that.*/
-		select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
+
+		// wait for an activity on one of the sockets
+		// so wait indefinitely
+		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
+		if((activity < 0) && (errno != EINTR))
+		{
+			std::cout << "select error\n";
+		}
 		// std::cout << "ll\n";
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
 			//When select() returns, readfds will be modified to reflect which of the file descriptors you selected which is ready for reading. You can test them with the macro FD_ISSET()
 			//Return true if fd is in the set.
+
+			//WebBrowsers *browser = new WebBrowsers();
+			//(void) browser;
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket());
-				(void) browser;
-				// Browsers.insert(browser);
-				// FD_SET(browser->get_file_descriptor(), &readfds);
-				// FD_SET(browser->get_file_descriptor(), &writefds);
+				int len = sizeof(address);
+				new_socket = accept((*iter2)->get_fd_socket(), get_address(), (socklen_t*)&len);
+			// 	std::cout << "here\n";
+			// 	WebBrowsers *browser = new WebBrowsers();
+			// 	 //(void) browser;
+			// 	//WebBrowsers *browser = new WebBrowsers();
+
+			// 	//Browsers.insert(browser);
+			 FD_SET(new_socket, &readfds);
+			 FD_SET(new_socket, &writefds);
+			// 	// int addrlen = sizeof(browser->get_address_client());
+			// 	// new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+			// 	// browser->set_file_descriptor(new_socket);
+			// 	// Browsers.insert(browser);
 				
 			}
+			std::cout << "back\n";
+		
 		}
+
+		// send new connection greeting message
+
+		// if(send(new_socket, message, strlen(message), 0))
+		// {
+		// 		std::cout<< "Error send()\n";
+		// }
+
 		// for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		// {
-		// 	if(FD_ISSET((*iter3)->get_file_descriptor(), &readfds))
-		// 	{
-		// 		if((*iter3)->receive_data() == 2)
-		// 		{
-		// 			iter3 = Browsers.erase(iter3);
-		// 			iter3--;
-		// 		}
-		// 	}
-		// }
+			std::cout << "why\n";
+			if(FD_ISSET(new_socket, &readfds))
+			{
+				
+				// read incoming message....
+				// if((*iter3)->receive_data() == 2)
+				// {
+				// 	iter3 = Browsers.erase(iter3);
+				// 	iter3--;
+				// }
+				//(*iter3)->receive_data();
+				char buffer[1000];
+	 			read(new_socket, buffer, 30000);
+				std::cout << "buffer->" << buffer << endl;
+				char hello[100] = "Hello from server";
+
+    			write(new_socket, hello, strlen(hello));
+    			close(new_socket);
+			}
+		//}
 
 	}
 
@@ -183,5 +225,30 @@ void Webserver::setup(void)
 	//When writing server programs using sockets , it becomes necessary to handle multiple connections at a time , since a server needs to serve multiple clients.
 
 }
+
+void Webserver::stop(void)
+{
+
+	for (set<server *>::iterator iter1 = servers.begin(); iter1 != servers.end(); iter1++)
+	{
+		delete (*iter1);
+		//*iter1 = 0;
+	}
+	servers.clear();
+	for (set<WebBrowsers *>::iterator iter2 = Browsers.begin(); iter2 != Browsers.end(); iter2++)
+	{
+		delete (*iter2);
+		//*iter2 = 0;
+	}
+	Browsers.clear();
+	exit(0);
+}
+
+
+struct sockaddr* Webserver::get_address(void)
+{
+	return (struct sockaddr*)(&address);
+}
+
 
 

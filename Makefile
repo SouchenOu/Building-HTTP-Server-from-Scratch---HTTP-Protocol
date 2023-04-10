@@ -18,7 +18,8 @@ FILES =  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_co
 INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/request.hpp headers/response.hpp
 
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 
+#-fsanitize=address
 
 all: $(NAME)
 

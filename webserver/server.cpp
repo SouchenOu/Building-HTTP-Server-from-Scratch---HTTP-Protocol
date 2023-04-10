@@ -68,8 +68,10 @@ int server::EstablishConnection(void)
 	//convert IPv4 and IPv6 addresses from text to binary form
 	//inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
 
-	// int test = 1;
-	// setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
+	//set master socket to allow multiple connections, this is just a good habit, it will work without this
+
+	int test = 1;
+	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
 
 
 	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.

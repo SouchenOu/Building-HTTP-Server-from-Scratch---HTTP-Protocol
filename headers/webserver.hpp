@@ -39,6 +39,9 @@ class Webserver
 		fd_set				writefds;
 		fd_set				r_fds;
 		fd_set				w_fds;
+		int					activity;
+		int new_socket;
+		struct sockaddr_in					address;
 	
 
 	public:
@@ -51,6 +54,9 @@ class Webserver
 		void parcing_config_file(const std::string config_file);
 		void	setup(void);
 		void	push_in_server(server *serv);
+		void stop();
+		void accept_connection();
+		struct sockaddr* get_address(void);
 };
 
 #endif
