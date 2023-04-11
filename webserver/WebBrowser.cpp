@@ -14,25 +14,33 @@
 #include "../headers/server.hpp"
 #include "../headers/Request.hpp"
 
-WebBrowsers::WebBrowsers(): file_descriptor(0), recvStatus(0), read_buffer(0)
-{
-	std::cout << "hello, thie is new client\n";
-}
-
-// WebBrowsers::WebBrowsers(int fd_socket) : file_descriptor(0), recvStatus(0), read_buffer(0)
+// WebBrowsers::WebBrowsers()
 // {
-// 	std::cout<< "here\n";
-// 	// struct sockaddr_in *address = get_address_client();
-//     int addrlen = sizeof(address_client);
-// 	//The accept() system call is used to process each connection thread in the queue created by listen()
-// 	//Accept incoming client connections.
-// 	file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
-// 	if(file_descriptor < 0)
-// 	{
-// 		std::cout << "server failed to accept incoming connection " << endl;
-//         check_fd = -1; 
-// 	}
+// 	file_descriptor = 0;
+// 	//file_descriptor = 0;
+// 	std::cout << "hello, thie is new client\n";
 // }
+
+WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers):servers(servers)
+{
+	// std::cout<< "here\n";
+	// // struct sockaddr_in *address = get_address_client();
+    // int addrlen = sizeof(address_client);
+	// //The accept() system call is used to process each connection thread in the queue created by listen()
+	// //Accept incoming client connections.
+	// file_descriptor = accept(fd_socket,get_address_client(), (socklen_t*)&addrlen);
+	// if(file_descriptor < 0)
+	// {
+	// 	std::cout << "server failed to accept incoming connection " << endl;
+    //     check_fd = -1; 
+	// }
+	std::cout << "Connection......\n";
+	client_len = sizeof(address_client);
+	file_descriptor = accept(fd_socket, get_address_client(), get_addr_len() );
+	inet_ntop(AF_INET, &(address_client.sin_addr), client_ipv4_str, INET_ADDRSTRLEN);
+
+	
+}
 WebBrowsers::~WebBrowsers()
 {
 
@@ -46,7 +54,7 @@ int WebBrowsers::receive_data()
 	value = 0;
 
 	recv_s = recv(file_descriptor, buffer, 1000, 0 ); 
-	std::cout << "reading->" << recv_s << endl;
+	std::cout << "reading->" << buffer << endl;
 
 	if(recv_s <= 0)
 	{
@@ -84,6 +92,11 @@ struct sockaddr* WebBrowsers::get_address_client(void)
 int WebBrowsers::get_file_descriptor()
 {
     return file_descriptor;
+}
+
+socklen_t			*WebBrowsers::get_addr_len(void)
+{
+	return (&client_len);
 }
 
 // setters

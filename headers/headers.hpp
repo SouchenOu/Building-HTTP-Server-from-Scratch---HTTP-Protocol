@@ -32,6 +32,7 @@
 # include <vector>
 #include <set>
 # include <map>
+# include <list>
 # include "server.hpp"
 #include "WebBrowser.hpp"
 #include "Location.hpp"

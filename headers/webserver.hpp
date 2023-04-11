@@ -30,8 +30,8 @@ class Webserver
 	 * because each instance defines a specific virtual server to handle client 
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
-		std::set<server*>		servers;
-		std::set<WebBrowsers*>   Browsers;
+		set<server*>		servers;
+		set<WebBrowsers*>   Browsers;
 		// fd_set      		set_fd;
 		int 				fd_max;
 		fd_set				readfds;

@@ -107,7 +107,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
-	int new_socket;
+	//int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
 	int fd;
@@ -127,7 +127,6 @@ void Webserver::setup(void)
 
 	while(true)
 	{
-		std::cout << "open\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
@@ -139,7 +138,7 @@ void Webserver::setup(void)
 			if((*iter1)->get_check_fd() == -1)
 			{
 				delete(*iter1);
-				// *iter1 = 0;
+				//*iter1 = 0;
 				iter1 = Browsers.erase(iter1);
 				
 			}	
@@ -162,25 +161,27 @@ void Webserver::setup(void)
 		{
 			std::cout << "select error\n";
 		}
+		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
-			std::cout << "yes\n";
 		
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "why\n";
-				new_socket = 0;
-			 	WebBrowsers *browser = new WebBrowsers();
-			 	int addrlen = sizeof(browser->get_address_client());
-				//The accept() call is used by a server to accept a connection request from a client
-			 	new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
-				browser->set_file_descriptor(new_socket);
-				Browsers.insert(browser);
-				FD_SET(browser->get_file_descriptor(), &readfds);
-				FD_SET(browser->get_file_descriptor(), &writefds);
+				// new_socket = 0;
+			 	// WebBrowsers *browser = new WebBrowsers();
+			 	// int addrlen = sizeof(browser->get_address_client());
+				// //The accept() call is used by a server to accept a connection request from a client
+			 	// new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+				// browser->set_file_descriptor(new_socket);
+				// Browsers.insert(browser);
+				// FD_SET(browser->get_file_descriptor(), &readfds);
+				// FD_SET(browser->get_file_descriptor(), &writefds);
+				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(),servers);
+				(void) browser;
+				
+
 				
 			}
-			std::cout << "back\n";
 		
 		}
 
