@@ -27,16 +27,14 @@ class   WebBrowsers
             int     recvStatus;
             std::string read_buffer;
             //Request     *request;
-            std::set<server*>& servers;
             int value;
             int check_fd;
-            char				client_ipv4_str[INET_ADDRSTRLEN];
-	        socklen_t			client_len;
+
 
     public:
         // constructer
         WebBrowsers();
-        WebBrowsers(int new_listen_fd, std::set<server*>& servers);
+        WebBrowsers(int new_listen_fd);
         //destructer
         ~WebBrowsers();
 
@@ -52,12 +50,11 @@ class   WebBrowsers
         void set_file_descriptor(int fd);
         void set_recvStatus(int recvStatus);
         struct sockaddr* get_address_client(void);
-        socklen_t	*get_addr_len(void);
+   
 
 
         // some used functions
 
-        int receive_data();
         
 };
 

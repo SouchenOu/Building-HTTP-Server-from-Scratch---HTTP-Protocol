@@ -133,12 +133,11 @@ void Webserver::setup(void)
 
 		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
-			// std::cout << "fd =" << fd << endl;
+			
 			fd	= (*iter1)->get_file_descriptor();
 			if((*iter1)->get_check_fd() == -1)
 			{
 				delete(*iter1);
-				//*iter1 = 0;
 				iter1 = Browsers.erase(iter1);
 				
 			}	
@@ -164,7 +163,6 @@ void Webserver::setup(void)
 		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
-		
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
 				// new_socket = 0;
@@ -176,11 +174,11 @@ void Webserver::setup(void)
 				// Browsers.insert(browser);
 				// FD_SET(browser->get_file_descriptor(), &readfds);
 				// FD_SET(browser->get_file_descriptor(), &writefds);
-				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(),servers);
-				(void) browser;
-				
+				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket());
+				Browsers.insert(browser);
+				FD_SET(browser->get_file_descriptor(), &readfds);
+				FD_SET(browser->get_file_descriptor(), &writefds);
 
-				
 			}
 		
 		}
@@ -194,16 +192,41 @@ void Webserver::setup(void)
 
 		for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
-			std::cout << "why\n";
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &readfds))
 			{
 				// read incoming message....
-				// if((*iter3)->receive_data() == 2)
-				// {
-				// 	iter3 = Browsers.erase(iter3);
-				// 	iter3--;
-				// }
-				(*iter3)->receive_data();
+				std::cout << BLUE << "Read incoming message" << endl;
+				int recv_s;
+				char buffer[10000];
+				std::string read_buffer;
+				int value = 0;
+
+				//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
+				recv_s = recv((*iter3)->get_file_descriptor(), buffer, 10000, 0 ); 
+				//std::cout << buffer << endl;
+
+				if(recv_s <= 0)
+				{
+					std::cout << "No message are available to be received\n";
+					value = 1;
+					//return 2;
+				}else{
+					read_buffer = read_buffer + buffer;
+			}
+				std::cout << "read_buffer :\n";
+				std::cout << read_buffer << endl;
+			// If the datagram or message is not larger than the buffer specified,
+			// if(recv_s < 10000)
+			// {
+			// 	// send request
+			// 	// if(request == 0)
+			// 	// {
+			// 	// 	request = new Request(recv_s);
+			// 	// }
+			// 	// read_buffer.clear();
+			// 	value = 1;
+			// }
+				
 			}
 		}
 
