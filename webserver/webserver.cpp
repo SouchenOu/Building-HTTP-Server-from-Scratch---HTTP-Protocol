@@ -14,10 +14,11 @@
 //#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
 #include "../headers/WebBrowser.hpp"
+// #include "../headers/Request.hpp"
 # define white_espace "; \t"
 
 
-Webserver::Webserver()
+Webserver::Webserver():request_Headers(0)
 {
 	std::cout << "Welcome this is my server\n";
 }
@@ -107,6 +108,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
+	int value;
 	//int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
@@ -199,9 +201,11 @@ void Webserver::setup(void)
 				int recv_s;
 				char buffer[10000];
 				std::string read_buffer;
-				int value = 0;
+				value = 0;
 
 				//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
+
+				
 				recv_s = recv((*iter3)->get_file_descriptor(), buffer, 10000, 0 ); 
 				//std::cout << buffer << endl;
 
@@ -212,20 +216,23 @@ void Webserver::setup(void)
 					//return 2;
 				}else{
 					read_buffer = read_buffer + buffer;
-			}
+				}
 				std::cout << "read_buffer :\n";
 				std::cout << read_buffer << endl;
-			// If the datagram or message is not larger than the buffer specified,
-			// if(recv_s < 10000)
-			// {
-			// 	// send request
-			// 	// if(request == 0)
-			// 	// {
-			// 	// 	request = new Request(recv_s);
-			// 	// }
-			// 	// read_buffer.clear();
-			// 	value = 1;
-			// }
+				// If the datagram or message is not larger than the buffer specified,
+				if(recv_s < 10000 && recv_s > 0)
+				{
+					// send request
+					if(request_Headers == NULL)
+					{
+						request_Headers = new Request(read_buffer);
+					}
+					read_buffer.clear();
+					value = 1;
+				}
+				
+			}else if(value == 1)
+			{
 				
 			}
 		}

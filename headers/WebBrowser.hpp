@@ -26,7 +26,6 @@ class   WebBrowsers
             struct sockaddr_in	address_client;
             int     recvStatus;
             std::string read_buffer;
-            //Request     *request;
             int value;
             int check_fd;
 

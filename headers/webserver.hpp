@@ -21,7 +21,7 @@
 
 //# include "server.hpp"
 
-class server;;
+class server;
 
 class Webserver
 {
@@ -39,6 +39,7 @@ class Webserver
 		fd_set				r_fds;
 		fd_set				w_fds;
 		int					activity;
+		Request     		*request_Headers;
 		//int new_socket;
 		//struct sockaddr_in					address;
 	

@@ -11,3 +11,14 @@
 /* ************************************************************************** */
 
 
+#include "../headers/response.hpp"
+
+response::response()
+{
+   
+}
+
+response::~response()
+{
+
+}
