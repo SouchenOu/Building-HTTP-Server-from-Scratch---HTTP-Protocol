@@ -16,6 +16,10 @@
 
 class Request
 {
+
+    private:
+
+        map<string, string> headers;
    
     public:
 
