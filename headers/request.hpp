@@ -13,13 +13,15 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
+#include "headers.hpp"
+
 
 class Request
 {
 
     private:
 
-        map<string, string> headers;
+        std::map<std::string, std::string> headers;
    
     public:
 
@@ -27,7 +29,14 @@ class Request
 
         Request();
         Request(const std::string buffer);
+        // destructer
         ~Request();
+
+
+        //some used functions
+        std::map<std::string, std::string> get_headers();
+
+       
         
 
 

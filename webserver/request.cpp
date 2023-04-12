@@ -77,3 +77,10 @@ Request::~Request()
 {
 
 }
+
+//getters
+
+std::map<string, string> Request::get_headers()
+{
+    return headers;
+}

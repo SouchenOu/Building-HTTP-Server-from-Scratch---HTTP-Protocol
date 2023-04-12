@@ -21,7 +21,7 @@
 // 	std::cout << "hello, thie is new client\n";
 // }
 
-WebBrowsers::WebBrowsers(int fd_socket)
+WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : servers(servers)
 {
 	
 	std::cout << "Connection......\n";
@@ -69,4 +69,11 @@ void WebBrowsers::set_file_descriptor(int fd)
     file_descriptor = fd;
 }
 
+
+// some used functions
+
+void WebBrowsers::set_response(std::map<std::string, std::string> headers)
+{
+	res->response_preparation(servers, headers);
+}
 

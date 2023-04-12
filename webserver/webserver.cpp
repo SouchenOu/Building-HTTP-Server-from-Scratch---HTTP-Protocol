@@ -176,7 +176,7 @@ void Webserver::setup(void)
 				// Browsers.insert(browser);
 				// FD_SET(browser->get_file_descriptor(), &readfds);
 				// FD_SET(browser->get_file_descriptor(), &writefds);
-				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket());
+				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
 				Browsers.insert(browser);
 				FD_SET(browser->get_file_descriptor(), &readfds);
 				FD_SET(browser->get_file_descriptor(), &writefds);
@@ -233,34 +233,18 @@ void Webserver::setup(void)
 				
 			}else if(value == 1)
 			{
-				
+				(*iter3)->set_response(request_Headers->get_headers());
 			}
-		}
+			
 
-	}
+		}
 
 	//handle multiple socket connections with fd_set and select 
 	//When writing server programs using sockets , it becomes necessary to handle multiple connections at a time , since a server needs to serve multiple clients.
 
+	}
 }
 
-// void Webserver::stop(void)
-// {
-
-// 	for (set<server *>::iterator iter1 = servers.begin(); iter1 != servers.end(); iter1++)
-// 	{
-// 		delete (*iter1);
-// 		//*iter1 = 0;
-// 	}
-// 	servers.clear();
-// 	for (set<WebBrowsers *>::iterator iter2 = Browsers.begin(); iter2 != Browsers.end(); iter2++)
-// 	{
-// 		delete (*iter2);
-// 		//*iter2 = 0;
-// 	}
-// 	Browsers.clear();
-// 	exit(0);
-// }
 
 
 // struct sockaddr* Webserver::get_address(void)

@@ -14,6 +14,10 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
+#include "../headers/headers.hpp"
+
+class server;
+
 class response
 {
 
@@ -24,9 +28,13 @@ class response
 
         //constructers
         response();
+        //~destructer
         ~response();
 
-        //destructers
+        //used function
+
+        void server_s();
+        void response_preparation(const std::set<server*> &servers, std::map<string, string> headers);
 };
 
 

@@ -18,7 +18,7 @@
 //#include "Request.hpp"
 
 class server;
-
+class response;
 class   WebBrowsers
 {
     private:
@@ -28,12 +28,14 @@ class   WebBrowsers
             std::string read_buffer;
             int value;
             int check_fd;
+            response			*res;
+            std::set<server*>&		servers;
 
 
     public:
         // constructer
         WebBrowsers();
-        WebBrowsers(int new_listen_fd);
+        WebBrowsers(int new_listen_fd, std::set<server*>& servers);
         //destructer
         ~WebBrowsers();
 
@@ -53,6 +55,7 @@ class   WebBrowsers
 
 
         // some used functions
+        void set_response(std::map<string, string>headers);
 
         
 };
