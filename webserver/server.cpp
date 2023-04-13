@@ -55,6 +55,11 @@ int server::EstablishConnection(void)
 	}
 	//Before calling bind, we need to fill out this structure. The three key parts we need to set are:
 
+
+
+
+//** This is where the information about the incoming connection will go**///
+
 	//The address family or a domain we used when we set up the socket. In our case, it’s AF_INET .
 	address.sin_family = AF_INET;
 	// transport address or a port number
@@ -74,8 +79,8 @@ int server::EstablishConnection(void)
 
 
 //**Sometimes, you might notice, you try to rerun a server and bind() fails, claiming “Address already in use.” What does that mean? Well, a little bit of a socket that was connected is still hanging around in the kernel, and it’s hogging the port. You can either wait for it to clear (a minute or so), or add code to your program allowing it to reuse the port,***/////
-	//int test = 1;
-	//setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
+	int test = 1;
+	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
 
 
 	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.

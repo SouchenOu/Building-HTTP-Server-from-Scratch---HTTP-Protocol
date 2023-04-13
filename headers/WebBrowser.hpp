@@ -28,7 +28,7 @@ class   WebBrowsers
             std::string read_buffer;
             int value;
             int check_fd;
-            response			*res;
+            response			*Response;
             std::set<server*>&		servers;
 
 
@@ -55,7 +55,7 @@ class   WebBrowsers
 
 
         // some used functions
-        void set_response(std::map<string, string>headers);
+        void set_request(std::map<std::string, std::string>headers);
 
         
 };

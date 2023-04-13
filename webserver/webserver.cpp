@@ -204,7 +204,10 @@ void Webserver::setup(void)
 				value = 0;
 
 				//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
+				
+				/****recv() returns the number of bytes actually read into the buffer, or -1 on error (with errno set, accordingly).
 
+				Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 				
 				recv_s = recv((*iter3)->get_file_descriptor(), buffer, 10000, 0 ); 
 				//std::cout << buffer << endl;
@@ -230,10 +233,10 @@ void Webserver::setup(void)
 					read_buffer.clear();
 					value = 1;
 				}
-				
+				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}else if(value == 1)
 			{
-				(*iter3)->set_response(request_Headers->get_headers());
+				(*iter3)->set_request(request_Headers->get_headers());
 			}
 			
 

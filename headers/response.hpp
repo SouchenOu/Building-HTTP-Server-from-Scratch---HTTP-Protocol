@@ -20,6 +20,10 @@ class server;
 
 class response
 {
+    private:
+
+        unsigned int code;
+        server  *Servers;
 
 
 
@@ -34,7 +38,7 @@ class response
         //used function
 
         void server_s();
-        void response_preparation(const std::set<server*> &servers, std::map<string, string> headers);
+        int response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers);
 };
 
 

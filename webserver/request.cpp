@@ -30,11 +30,17 @@ Request::Request(const std::string buffer)
     string content_type;
   
 	vector<string> request_Headers = ft_divise(buffer, "\r\n");
+    
+
     vector<string>::iterator iter = request_Headers.begin();
     while(iter != request_Headers.end())
     {
         vector<string> First_line = ft_divise(*iter, ": ");
+        // std::cout << "First_line[0]-->" << First_line[0] << endl;
+        // std::cout << "First_line[1]-->" << First_line[1] << endl;
+        // std::cout << "First_line[2]-->" << First_line[2] << endl;
         vector<string>::iterator i = First_line.begin();
+
 
         if(First_line.size() < 2)
         {
@@ -44,6 +50,7 @@ Request::Request(const std::string buffer)
         if(*i == "Host")
         {
             vector<string> split = ft_divise(First_line[1], ":");
+         
             if((First_line.size() != 3  && !(First_line.size() == 2 && First_line[1] == "localhost")) || First_line[1].size() == 0)
             {
                 break ;
@@ -54,6 +61,18 @@ Request::Request(const std::string buffer)
             }
         }else
             headers.insert(pair<string, string>(First_line[0], First_line[1]));
+        
+
+            // std::map<string, string>::iterator it;
+            // std::cout << "Headers******\n";
+            // for(it = headers.begin(); it != headers.end(); it++)
+            // {
+            //     std::cout <<"*************\n";
+            //     std::cout << it->first << endl;
+            //     std::cout << it->second  << endl;
+            //     std::cout <<"*************\n";
+
+            // }
 
         iter++;
 
