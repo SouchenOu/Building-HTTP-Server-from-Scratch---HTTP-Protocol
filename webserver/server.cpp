@@ -70,8 +70,12 @@ int server::EstablishConnection(void)
 
 	//set master socket to allow multiple connections, this is just a good habit, it will work without this
 
-	int test = 1;
-	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
+
+
+
+//**Sometimes, you might notice, you try to rerun a server and bind() fails, claiming “Address already in use.” What does that mean? Well, a little bit of a socket that was connected is still hanging around in the kernel, and it’s hogging the port. You can either wait for it to clear (a minute or so), or add code to your program allowing it to reuse the port,***/////
+	//int test = 1;
+	//setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
 
 
 	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
@@ -93,6 +97,8 @@ int server::EstablishConnection(void)
        connection requests using accept().*/
 
 	//SOMAXCONN : Use the SOMAXCONN statement to specify the maximum number of connection requests queued for any listening socket.cle
+
+	std::cout << "Will somebody please call me?\n";
 	if(listen(fd_socket, SOMAXCONN) == -1)
 	{
 		perror("Error: Problem in listening\n");
