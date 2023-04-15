@@ -390,6 +390,8 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		
 			string path;
 			path = words2[1];
+
+			location.set_path(path);
 		
 			if(path.size() > 1 && path[path.size() - 1] == '/')
 			{

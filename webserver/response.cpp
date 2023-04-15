@@ -27,10 +27,12 @@ response::~response()
 }
 
 
-int response::response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers)
+int response::response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path)
 {
 	string Host;
 	unsigned int port;
+	string path_navigate;
+	path_navigate = path;
 	std::set<server*>::iterator iter1;
 	std::set<string>::iterator iter2;
 	this->Servers =  NULL;
@@ -45,12 +47,18 @@ int response::response_preparation(const std::set<server*> &servers, std::map<st
 		std::cout << "Bad request\n";
 		return 0;
 	}
+	std::cout << "Host-->" << Host << endl;
 
 	if(headers.find("Port") != headers.end())
 	{
 		port = atoi(headers.find("Port")->second.c_str());
+	}else
+	{
+		port = 0;
+		code = 400;
+		return 0;
 	}
-	
+	std::cout << "Port-->" << port << endl;
 	for(iter1 = servers.begin(); iter1 != servers.end(); iter1++)
 	{
 		set<string> server_names = (*iter1)->get_server_name();
@@ -69,8 +77,29 @@ int response::response_preparation(const std::set<server*> &servers, std::map<st
 		std::cout << "No Server is compatible\n";
 		return 0;
 	}
-}
 
+	//For location
+	std::list<Location> locations = Servers->get_locations();
+	if(locations.size() == 0)
+	{
+		Locations = NULL;
+		return 0;
+	}
+	//std::set<Location>::iterator i1;
+
+	for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	{
+		if((i1)->get_path() == path_navigate)
+		{
+			this->Locations = new Location(*i1);
+			return 1;
+		}
+	}
+
+	
+	return 1;
+
+}
 
 
 

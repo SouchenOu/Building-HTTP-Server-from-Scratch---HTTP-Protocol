@@ -225,18 +225,21 @@ void Webserver::setup(void)
 				// If the datagram or message is not larger than the buffer specified,
 				if(recv_s < 10000 && recv_s > 0)
 				{
+					
 					// send request
 					if(request_Headers == NULL)
 					{
 						request_Headers = new Request(read_buffer);
 					}
+					std::cout << "yes\n";
 					read_buffer.clear();
 					value = 1;
 				}
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}else if(value == 1)
 			{
-				(*iter3)->set_request(request_Headers->get_headers());
+				std::cout << "yes\n";
+				(*iter3)->set_request(request_Headers->get_headers(), request_Headers->get_Path());
 			}
 			
 

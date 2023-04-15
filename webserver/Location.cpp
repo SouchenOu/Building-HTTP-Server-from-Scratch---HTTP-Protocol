@@ -60,6 +60,11 @@ string Location::get_index()
     return index;
 }
 
+string Location::get_path()
+{
+    return path;
+}
+
 // setters
 
 void Location::set_root(std::string root)
@@ -94,6 +99,11 @@ void Location::set_autoindex(std::string autoindex)
 void Location::set_index(std::string index)
 {
     this->index = index;
+}
+
+void Location::set_path(std::string Path)
+{
+    this->path = Path;
 }
 
 

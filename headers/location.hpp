@@ -30,6 +30,7 @@ class Location
         int http_redirection;
         std::string  autoindex;
         std::string index;
+        std::string path;
     public:
     // constructer
         Location();
@@ -45,6 +46,7 @@ class Location
     void set_http_redirection(int http_redirection);
     void set_autoindex(std::string autoindex);
     void set_index(std::string index);
+    void set_path(std::string Path);
 
     // getters
 
@@ -55,6 +57,7 @@ class Location
     int  get_http_redirection();
     std::string get_autoindex();
     std::string get_index();
+    std::string get_path();
 
 
     // function push_in_location

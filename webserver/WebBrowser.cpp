@@ -72,8 +72,8 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 // some used functions
 
-void WebBrowsers::set_request(std::map<std::string, std::string> headers)
+void WebBrowsers::set_request(std::map<std::string, std::string> headers, std::string path)
 {
-	Response->response_preparation(servers, headers);
+	Response->response_preparation(servers, headers, path);
 }
 

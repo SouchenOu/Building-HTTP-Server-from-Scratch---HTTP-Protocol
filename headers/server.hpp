@@ -50,7 +50,7 @@ class server
 		std::string										root; 
 		std::string										index; 
 		std::map<std::string, std::string>				cgis; 
-		std::vector<Location>							locations;
+		std::list<Location>							locations;
 		
 
 
@@ -79,7 +79,7 @@ class server
 		long long							get_client_max_body_size(void) const;
 		std::string							get_root(void) const;
 		std::string							get_index(void) const;
-		std::vector<Location>				get_locations(void) const;
+		std::list<Location>				get_locations(void) const;
 		std::map<std::string, std::string>			get_cgis(void) const;
 		int									get_fd_socket();
 		int									get_new_socket();
@@ -99,7 +99,7 @@ class server
 		void						set_client_max_body_size(const long long max_client_body_size);
 		void						set_root(const std::string root);
 		void						set_index(const std::string index);
-		void						set_locations(const std::vector<Location> locations);
+		void						set_locations(const std::list<Location> locations);
 		void						set_cgis(const std::map<std::string, std::string> cgis);
 		void						set_new_socket(int new_socket);
 		

@@ -24,6 +24,8 @@ class response
 
         unsigned int code;
         server  *Servers;
+        Location    *Locations;
+        std::string        path;
 
 
 
@@ -38,7 +40,7 @@ class response
         //used function
 
         void server_s();
-        int response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers);
+        int response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
 };
 
 

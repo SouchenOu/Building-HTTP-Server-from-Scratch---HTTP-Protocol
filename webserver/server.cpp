@@ -152,7 +152,7 @@ long long		server::get_client_max_body_size() const
 	return client_max_body_size;
 }
 
-vector<Location>	server::get_locations() const
+list<Location>	server::get_locations() const
 {
 	return locations;
 }
@@ -226,7 +226,7 @@ void	server::set_index(const std::string index)
 	this->index = index;
 }
 
-void	server::set_locations(const vector<Location> locations)
+void	server::set_locations(const list<Location> locations)
 {
 	this->locations = locations;
 }

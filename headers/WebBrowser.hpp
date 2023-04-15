@@ -55,7 +55,7 @@ class   WebBrowsers
 
 
         // some used functions
-        void set_request(std::map<std::string, std::string>headers);
+        void set_request(std::map<std::string, std::string>headers, std::string path);
 
         
 };

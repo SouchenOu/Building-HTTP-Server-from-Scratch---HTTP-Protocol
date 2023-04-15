@@ -12,7 +12,7 @@
 
 
 #include "../headers/headers.hpp"
-
+# define white_espace "; \t"
 
 
 
@@ -33,6 +33,10 @@ Request::Request(const std::string buffer)
     
 
     vector<string>::iterator iter = request_Headers.begin();
+    // std::cout << "First-->" << *iter << endl;
+    vector<string> First_line = ft_divise(*iter, white_espace);
+    //path = *iter + 1;
+
     while(iter != request_Headers.end())
     {
         vector<string> First_line = ft_divise(*iter, ": ");
@@ -61,15 +65,15 @@ Request::Request(const std::string buffer)
             }
         }else
             headers.insert(pair<string, string>(First_line[0], First_line[1]));
-        
+
 
             // std::map<string, string>::iterator it;
             // std::cout << "Headers******\n";
             // for(it = headers.begin(); it != headers.end(); it++)
             // {
             //     std::cout <<"*************\n";
-            //     std::cout << it->first << endl;
-            //     std::cout << it->second  << endl;
+            //     std::cout << "First->" <<it->first << endl;
+            //     std::cout << "Second->"<<it->second  << endl;
             //     std::cout <<"*************\n";
 
             // }
@@ -103,3 +107,14 @@ std::map<string, string> Request::get_headers()
 {
     return headers;
 }
+
+std::string Request::get_Path()
+{
+    return Path;
+}
+
+void Request::set_Path(std::string path)
+{
+    this->Path = path;
+}
+
