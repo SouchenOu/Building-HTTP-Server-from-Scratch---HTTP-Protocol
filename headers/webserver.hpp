@@ -40,6 +40,7 @@ class Webserver
 		fd_set				w_fds;
 		int					activity;
 		Request     		*request_Headers;
+		int 				value;
 		//int new_socket;
 		//struct sockaddr_in					address;
 	
@@ -56,6 +57,11 @@ class Webserver
 		void	push_in_server(server *serv);
 		void stop();
 		void accept_connection();
+
+		// getters
+
+		int get_value();
+		
 };
 
 #endif

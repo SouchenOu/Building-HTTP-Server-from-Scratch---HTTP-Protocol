@@ -108,7 +108,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
-	int value;
+
 	//int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
@@ -259,4 +259,8 @@ void Webserver::setup(void)
 // }
 
 
+int Webserver::get_value()
+{
+	return value;
+}
 
