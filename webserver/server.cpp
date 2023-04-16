@@ -101,10 +101,10 @@ int server::EstablishConnection(void)
        socket, that is, as a socket that will be used to accept incoming
        connection requests using accept().*/
 
-	//SOMAXCONN : Use the SOMAXCONN statement to specify the maximum number of connection requests queued for any listening socket.cle
 
 	std::cout << "Will somebody please call me?\n";
-	if(listen(fd_socket, SOMAXCONN) == -1)
+	
+	if(listen(fd_socket, 1000) == -1)
 	{
 		perror("Error: Problem in listening\n");
 	}

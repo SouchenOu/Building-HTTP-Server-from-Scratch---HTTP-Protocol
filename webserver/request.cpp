@@ -34,7 +34,7 @@ Request::Request(const std::string buffer)
 
     vector<string>::iterator iter = request_Headers.begin();
     // std::cout << "First-->" << *iter << endl;
-    vector<string> First_line = ft_divise(*iter, white_espace);
+    //vector<string> First_line = ft_divise(*iter, white_espace);
     //path = *iter + 1;
 
     while(iter != request_Headers.end())
@@ -48,7 +48,7 @@ Request::Request(const std::string buffer)
 
         if(First_line.size() < 2)
         {
-            std::cout << "Error-->should have at least 1 argument\n";
+            std::cout << "empty line\n";
             break ;
         }
         if(*i == "Host")

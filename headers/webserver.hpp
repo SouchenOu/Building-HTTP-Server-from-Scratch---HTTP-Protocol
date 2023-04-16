@@ -39,7 +39,7 @@ class Webserver
 		fd_set				r_fds;
 		fd_set				w_fds;
 		int					activity;
-		Request     		*request_Headers;
+		// Request     		*request_Headers;
 		int 				value;
 		//int new_socket;
 		//struct sockaddr_in					address;

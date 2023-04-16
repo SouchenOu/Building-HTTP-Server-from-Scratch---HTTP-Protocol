@@ -15,7 +15,7 @@
 #define WEBBROWSER_HPP
 
 #include "headers.hpp"
-//#include "Request.hpp"
+#include "Request.hpp"
 
 class server;
 class response;
@@ -30,6 +30,7 @@ class   WebBrowsers
             int check_fd;
             response			*Response;
             std::set<server*>&		servers;
+            Request     		*request_Headers;
 
 
     public:
@@ -56,7 +57,8 @@ class   WebBrowsers
 
         // some used functions
         void set_request(std::map<std::string, std::string>headers, std::string path);
-
+        void Connection(int new_listen_fd);
+        int Read_request();
         
 };
 

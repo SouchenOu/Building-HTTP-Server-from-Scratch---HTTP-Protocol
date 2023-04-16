@@ -18,7 +18,7 @@
 # define white_espace "; \t"
 
 
-Webserver::Webserver():request_Headers(0)
+Webserver::Webserver()
 {
 	std::cout << "Welcome this is my server\n";
 }
@@ -137,7 +137,7 @@ void Webserver::setup(void)
 		{
 			
 			fd	= (*iter1)->get_file_descriptor();
-			if((*iter1)->get_check_fd() == -1)
+			if(fd == -1)
 			{
 				delete(*iter1);
 				iter1 = Browsers.erase(iter1);
@@ -194,52 +194,24 @@ void Webserver::setup(void)
 
 		for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
-			if(FD_ISSET((*iter3)->get_file_descriptor(), &readfds))
+			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
 				std::cout << BLUE << "Read incoming message" << endl;
-				int recv_s;
-				char buffer[10000];
-				std::string read_buffer;
-				value = 0;
-
-				//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
 				
-				/****recv() returns the number of bytes actually read into the buffer, or -1 on error (with errno set, accordingly).
 
-				Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
-				
-				recv_s = recv((*iter3)->get_file_descriptor(), buffer, 10000, 0 ); 
-				//std::cout << buffer << endl;
-
-				if(recv_s <= 0)
+				if((*iter3)->Read_request() == 2)
 				{
-					std::cout << "No message are available to be received\n";
-					value = 1;
-					//return 2;
-				}else{
-					read_buffer = read_buffer + buffer;
-				}
-				std::cout << "read_buffer :\n";
-				std::cout << read_buffer << endl;
-				// If the datagram or message is not larger than the buffer specified,
-				if(recv_s < 10000 && recv_s > 0)
-				{
-					
-					// send request
-					if(request_Headers == NULL)
-					{
-						request_Headers = new Request(read_buffer);
-					}
-					std::cout << "yes\n";
-					read_buffer.clear();
-					value = 1;
+					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
+					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
+					close((*iter3)->get_file_descriptor());
+					(*iter3)->set_file_descriptor(-1);
 				}
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}else if(value == 1)
 			{
-				std::cout << "yes\n";
-				(*iter3)->set_request(request_Headers->get_headers(), request_Headers->get_Path());
+				std::cout << "nop\n";
+				//(*iter3)->set_request(request_Headers->get_headers(), request_Headers->get_Path());
 			}
 			
 
