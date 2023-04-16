@@ -45,7 +45,6 @@ Request::Request(const std::string buffer)
         // std::cout << "First_line[2]-->" << First_line[2] << endl;
         vector<string>::iterator i = First_line.begin();
 
-
         if(First_line.size() < 2)
         {
             std::cout << "empty line\n";
@@ -53,7 +52,7 @@ Request::Request(const std::string buffer)
         }
         if(*i == "Host")
         {
-            vector<string> split = ft_divise(First_line[1], ":");
+            vector<string> split_Host = ft_divise(First_line[1], ":");
          
             if((First_line.size() != 3  && !(First_line.size() == 2 && First_line[1] == "localhost")) || First_line[1].size() == 0)
             {
@@ -111,6 +110,11 @@ std::map<string, string> Request::get_headers()
 std::string Request::get_Path()
 {
     return Path;
+}
+
+std::string Request::get_type_request()
+{
+    return type_request;
 }
 
 void Request::set_Path(std::string path)

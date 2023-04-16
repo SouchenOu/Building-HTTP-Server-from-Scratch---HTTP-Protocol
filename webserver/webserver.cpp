@@ -167,6 +167,7 @@ void Webserver::setup(void)
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "here1\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());
@@ -194,6 +195,7 @@ void Webserver::setup(void)
 
 		for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
+			//std::cout << "browsers\n";
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
@@ -208,11 +210,15 @@ void Webserver::setup(void)
 					(*iter3)->set_file_descriptor(-1);
 				}
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
-			}else if(value == 1)
+			}else if((*iter3)->get_value() == 1)
 			{
-				std::cout << "nop\n";
-				//(*iter3)->set_request(request_Headers->get_headers(), request_Headers->get_Path());
+				
+				(*iter3)->check_request();
 			}
+			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)
+			// {
+			// 	std::cout << "hereeeeee\n";
+			// }
 			
 
 		}

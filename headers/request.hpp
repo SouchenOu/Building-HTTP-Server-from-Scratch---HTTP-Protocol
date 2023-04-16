@@ -23,6 +23,7 @@ class Request
 
         std::map<std::string, std::string> headers;
         std::string Path;
+        std::string type_request;
         
    
     public:
@@ -42,6 +43,7 @@ class Request
         // getters
 
         std::string get_Path();
+        std::string get_type_request();
 
         // setters
         void set_Path(std::string path);
