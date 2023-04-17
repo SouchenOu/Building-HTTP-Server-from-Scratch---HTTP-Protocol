@@ -15,7 +15,8 @@
 
 #include "headers.hpp"
 
-
+class server;
+class Location;
 class Request
 {
 
@@ -24,6 +25,11 @@ class Request
         std::map<std::string, std::string> headers;
         std::string Path;
         std::string type_request;
+        server  *Servers;
+        Location    *Locations;
+        int code;
+        std::string path_of_file_dm;
+        std::string version_http;
         
    
     public:
@@ -44,10 +50,14 @@ class Request
 
         std::string get_Path();
         std::string get_type_request();
+        std::string get_path_of_file_dm();
 
         // setters
         void set_Path(std::string path);
-       
+        void set_path_of_file_dm(std::string path_of_file);
+
+        int check_request_with_config_file(const std::set<server*> &servers);
+        void path_of_file();
 
        
         

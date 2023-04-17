@@ -81,10 +81,10 @@ int WebBrowsers::Read_request()
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
-		if(request_Headers != NULL)
-		{
-			// request_Headers->give_head("Body") += buffer;
-		}
+		// if(request_Headers != NULL)
+		// {
+		// 	// request_Headers->give_head("Body") += buffer;
+		// }
 ;		// If the datagram or message is not larger than the buffer specified,
 		if(recv_s < 10000)
 		{		
@@ -135,88 +135,12 @@ void WebBrowsers::set_file_descriptor(int fd)
 void WebBrowsers::check_request()
 {
 	//Response->response_preparation(servers, request_Headers->get_headers(), request_Headers->get_Path());
-	check_request_with_config_file(servers,request_Headers->get_headers(), request_Headers->get_Path());
+	request_Headers->check_request_with_config_file(servers);
 
-	
+	//file_path
+	request_Headers->path_of_file();
 
-}
 
-
-int WebBrowsers::check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path)
-{
-	(void) servers;
-	(void) path;
-	(void) headers;
-	// string Host;
-	// unsigned int port;
-	// string path_navigate;
-	// path_navigate = path;
-	// std::set<server*>::iterator iter1;
-	// std::set<string>::iterator iter2;
-	// this->Servers =  NULL;
-	// std::cout << "yes\n";
-	// if(headers.find("Host") != headers.end())
-	// {
-	// 	Host = headers.find("Host")->second;
-	// }
-	// else 
-	// {
-	// 	Host = "";
-	// 	code = 400;
-	// 	std::cout << "Bad request\n";
-	// 	return 0;
-	// }
-	// //std::cout << "Host-->" << Host << endl;
-
-	// if(headers.find("Port") != headers.end())
-	// {
-	// 	port = atoi(headers.find("Port")->second.c_str());
-	// }else
-	// {
-	// 	port = 0;
-	// 	code = 400;
-	// 	return 0;
-	// }
-	// std::cout << "Port-->" << port << endl;
-	// for(iter1 = servers.begin(); iter1 != servers.end(); iter1++)
-	// {
-	// 	set<string> server_names = (*iter1)->get_server_name();
-	// 	for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
-	// 	{
-	// 		if((*iter2) == Host && (*iter1)->get_port_listen() == port)
-	// 		{
-	// 			this->Servers = (*iter1);
-	// 		}
-	// 	}
-
-	// }
-
-	// if(this->Servers == NULL)
-	// {
-	// 	std::cout << "No Server is compatible\n";
-	// 	return 0;
-	// }
-
-	// //For location
-	// std::list<Location> locations = Servers->get_locations();
-	// if(locations.size() == 0)
-	// {
-	// 	Locations = NULL;
-	// 	return 0;
-	// }
-	// //std::set<Location>::iterator i1;
-
-	// for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	// {
-	// 	if((i1)->get_path() == path_navigate)
-	// 	{
-	// 		this->Locations = new Location(*i1);
-	// 		return 1;
-	// 	}
-	// }
-
-	
-	return 1;
 
 }
 
@@ -227,27 +151,3 @@ int WebBrowsers::check_request_with_config_file(const std::set<server*> &servers
 
 
 
-
-
-
-/******
- * if (!already_calculated)
-	{
-		ifstream file(filepath.c_str(), ofstream::in);
-		file.seekg(0, ios::end);
-		fileSize = file.tellg();
-	}
-	DEBUG("GET HEADER");
-	DEBUG("CODE IS " << code);
-	stringstream header;
-	header << "HTTP/1.1 " << codes[code] << endl;
-	header << "Date: " << get_time_stamp() << endl;
-	header << "Server: webserv/0.01" << endl;
-	header << "Content-Type: " << ::get_type(filepath, passed_cgi || already_calculated) << endl;
-	header << "Content-Length: " << fileSize << endl;
-	header << "Connection: Closed" << endl;
-	if (location && location->get_HTTP_redirection_type() > 0)
-		header << "Location: " << location->get_HTTP_redirection() << endl;
-	header << endl;
-	DEBUG("RET HEADER :" << header.str());
-	return (header.str());*/

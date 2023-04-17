@@ -133,7 +133,7 @@ void Webserver::setup(void)
 		w_fds = writefds;
 		activity = 0;
 
-		for(set<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
+		for(list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 			
 			fd	= (*iter1)->get_file_descriptor();
@@ -141,6 +141,7 @@ void Webserver::setup(void)
 			{
 				delete(*iter1);
 				iter1 = Browsers.erase(iter1);
+				(*iter1) = 0;
 				
 			}	
 			else if(fd > fd_max)
@@ -167,7 +168,6 @@ void Webserver::setup(void)
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "here1\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());
@@ -178,7 +178,7 @@ void Webserver::setup(void)
 				// FD_SET(browser->get_file_descriptor(), &readfds);
 				// FD_SET(browser->get_file_descriptor(), &writefds);
 				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
-				Browsers.insert(browser);
+				Browsers.push_back(browser);
 				FD_SET(browser->get_file_descriptor(), &readfds);
 				FD_SET(browser->get_file_descriptor(), &writefds);
 
@@ -193,7 +193,7 @@ void Webserver::setup(void)
 		// 		std::cout<< "Error send()\n";
 		// }
 
-		for(set<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
+		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
 			//std::cout << "browsers\n";
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
@@ -212,7 +212,6 @@ void Webserver::setup(void)
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}else if((*iter3)->get_value() == 1)
 			{
-				
 				(*iter3)->check_request();
 			}
 			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)

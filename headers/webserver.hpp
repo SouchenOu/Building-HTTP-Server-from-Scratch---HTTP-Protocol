@@ -31,7 +31,7 @@ class Webserver
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
 		set<server*>		servers;
-		set<WebBrowsers*>   Browsers;
+		list<WebBrowsers*>   Browsers;
 		// fd_set      		set_fd;
 		int 				fd_max;
 		fd_set				readfds;

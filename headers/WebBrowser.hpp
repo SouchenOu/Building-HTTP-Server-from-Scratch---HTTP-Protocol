@@ -57,7 +57,7 @@ class   WebBrowsers
 
         // some used functions
         void check_request();
-        int32_t check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
+        // int check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
         void Connection(int new_listen_fd);
         int Read_request();
         
