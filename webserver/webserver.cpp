@@ -214,6 +214,7 @@ void Webserver::setup(void)
 			else if((*iter3)->get_value() == 1)
 			{
 				(*iter3)->check_request();
+				//(*iter3)->send_response();
 			}
 			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)
 			// {

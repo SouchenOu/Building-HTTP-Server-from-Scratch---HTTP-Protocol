@@ -57,8 +57,8 @@ class Request
         void set_path_of_file_dm(std::string path_of_file);
 
         int check_request_with_config_file(const std::set<server*> &servers);
-        void path_of_file();
-        void give_the_header();
+        std::string path_of_file();
+        std::string give_the_header(int fileSize);
 
        
         

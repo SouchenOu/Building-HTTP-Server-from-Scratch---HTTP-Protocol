@@ -169,6 +169,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		if((*iter3)->get_port_listen() == port )
 		{
 			this->Servers = (*iter3);
+			break ;
 		}
 	}
 
@@ -204,6 +205,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		if((i1)->get_path() == path_navigate)
 		{
+			
 			this->Locations = new Location(*i1);
 			return 1;
 		}
@@ -214,45 +216,51 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 }
 
-void Request::path_of_file()
+std::string Request::path_of_file()
 {
 	string target_tmp;
-    if(Locations == NULL || Servers == NULL)
+	string tmp;
+    if(Locations == NULL && Servers == NULL)
     {
         path_of_file_dm = "";
-		return ;
+		return path_of_file_dm;
     }
 
 	path_of_file_dm =  Servers->get_root();
-	target_tmp = Path;
+	target_tmp = path_of_file_dm;
+	tmp = Path;
+
 	//if(strcmp(target_tmp, "/") == 0)
-	if (target_tmp.compare("/") == 0)
+	if (tmp.compare("/") == 0)
 	{
-		if (Locations->get_index().length())
+		
+		if (Locations && Locations->get_index().length())
 			target_tmp += '/' + Locations->get_index();
 		else
 			target_tmp += '/' + Servers->get_index();
 	}
-
-	if (target_tmp.find(Locations->get_path()) == 0)
-	{
-		target_tmp = target_tmp.substr(Locations->get_path().length());
-		path_of_file_dm += Locations->get_root();
-	}
+	return target_tmp;
+	// if (target_tmp.find(Locations->get_path()) == 0)
+	// {
+	// 	target_tmp = target_tmp.substr(Locations->get_path().length());
+	// 	path_of_file_dm += Locations->get_root();
+	// }
 
 
 }
 
-void Request::give_the_header()
+std::string Request::give_the_header(int fileSize)
 {
 	string line;
-	ifstream our_file(path_of_file_dm.c_str());
-	if(our_file.is_open())
-	{
-		while(getline(our_file, line))
-		{
-			std::cout << "My file :\n";
-			std::cout << line << endl;
-		}
-	}
+	std::string file_path = path_of_file();
+	ifstream our_file(file_path.c_str());
+	our_file.seekg(0, ios::end);
+	fileSize = our_file.tellg();
+
+	stringstream header;
+	header << "Content-Length: " << fileSize << endl;
+	header << "Connection: Closed" << endl;
+
+	return header.str();
+	
 }

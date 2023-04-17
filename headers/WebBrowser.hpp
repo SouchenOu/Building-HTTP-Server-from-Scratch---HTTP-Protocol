@@ -32,6 +32,7 @@ class   WebBrowsers
             std::set<server*>&		servers;
             Request     		*request_Headers;
             std::string send_buffer;
+            unsigned int send_byte;
 
 
     public:

@@ -134,31 +134,29 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 void WebBrowsers::check_request()
 {
-
+	send_byte = 0;
 	//Response->response_preparation(servers, request_Headers->get_headers(), request_Headers->get_Path());
 	request_Headers->check_request_with_config_file(servers);
 
 	//file_path
 	request_Headers->path_of_file();
-	request_Headers->give_the_header();
+	send_buffer = request_Headers->give_the_header(0);
 
 
 
 }
-// void WebBrowsers::send_response()
-// {
-// 	int total = 10000;
-// 	int send_offset;
+void WebBrowsers::send_response()
+{
+	int total = 10000;
 
-// 	if(send_offset + total > send_buffer.size())
-// 	{
-// 		total = send_buffer.size() - send_offset;
-// 	}
-// 	send(file_descriptor, send_buffer.c_str() + send_offset, total, 0);
-// 	send_offset = send_offset + total;
+	if(send_byte + total > send_buffer.size())
+	{
+		total = send_buffer.size() - send_byte;
+	}
+	send(file_descriptor, send_buffer.c_str() + send_byte, total, 0);
+	send_byte = send_byte + total;
 
-// }
-
+}
 
 
 
@@ -166,4 +164,10 @@ void WebBrowsers::check_request()
 
 
 
+/******if (!already_calculated)
+	{
+		ifstream file(filepath.c_str(), ofstream::in);
+		file.seekg(0, ios::end);
+		fileSize = file.tellg();
+	}*/
 
