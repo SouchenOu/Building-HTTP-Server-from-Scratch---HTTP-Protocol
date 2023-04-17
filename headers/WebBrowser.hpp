@@ -31,6 +31,7 @@ class   WebBrowsers
             response			*Response;
             std::set<server*>&		servers;
             Request     		*request_Headers;
+            std::string send_buffer;
 
 
     public:
@@ -60,6 +61,7 @@ class   WebBrowsers
         // int check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
         void Connection(int new_listen_fd);
         int Read_request();
+        void send_response();
         
 };
 

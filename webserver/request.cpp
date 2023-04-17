@@ -216,31 +216,43 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 void Request::path_of_file()
 {
-	// string target_tmp;
-    // if(Locations == NULL || Servers == NULL)
-    // {
-    //     path_of_file_dm = "";
-	// 	return ;
-    // }
+	string target_tmp;
+    if(Locations == NULL || Servers == NULL)
+    {
+        path_of_file_dm = "";
+		return ;
+    }
 
-	// path_of_file_dm =  Servers->get_root();
-	// target_tmp = Path;
-	// //if(strcmp(target_tmp, "/") == 0)
-	// if (target_tmp.compare("/") == 0)
-	// {
-	// 	if (Locations->get_index().length() != NULL)
-	// 		target_tmp += '/' + Locations->get_index();
-	// 	else
-	// 		target_tmp += '/' + Servers->get_index();
-	// }
+	path_of_file_dm =  Servers->get_root();
+	target_tmp = Path;
+	//if(strcmp(target_tmp, "/") == 0)
+	if (target_tmp.compare("/") == 0)
+	{
+		if (Locations->get_index().length())
+			target_tmp += '/' + Locations->get_index();
+		else
+			target_tmp += '/' + Servers->get_index();
+	}
 
-	// if (target_tmp.find(Locations->get_path()) == 0)
-	// {
-	// 	target_tmp = target_tmp.substr(Locations->get_path().length());
-	// 	path_of_file_dm += Locations->get_root();
-	// }
-
-
+	if (target_tmp.find(Locations->get_path()) == 0)
+	{
+		target_tmp = target_tmp.substr(Locations->get_path().length());
+		path_of_file_dm += Locations->get_root();
+	}
 
 
+}
+
+void Request::give_the_header()
+{
+	string line;
+	ifstream our_file(path_of_file_dm.c_str());
+	if(our_file.is_open())
+	{
+		while(getline(our_file, line))
+		{
+			std::cout << "My file :\n";
+			std::cout << line << endl;
+		}
+	}
 }

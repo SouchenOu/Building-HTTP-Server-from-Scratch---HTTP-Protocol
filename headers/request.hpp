@@ -58,6 +58,7 @@ class Request
 
         int check_request_with_config_file(const std::set<server*> &servers);
         void path_of_file();
+        void give_the_header();
 
        
         

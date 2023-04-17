@@ -70,7 +70,7 @@ int WebBrowsers::Read_request()
 			std::cout << "No message are available to be received\n";
 			value = 1;
 			return 2;
-		}if(recv_s == 0)
+		}else if(recv_s == 0)
 		{
 			std::cout << "Client disconnected\n";
 			value = 1;
@@ -134,15 +134,31 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 void WebBrowsers::check_request()
 {
+
 	//Response->response_preparation(servers, request_Headers->get_headers(), request_Headers->get_Path());
 	request_Headers->check_request_with_config_file(servers);
 
 	//file_path
 	request_Headers->path_of_file();
+	request_Headers->give_the_header();
 
 
 
 }
+// void WebBrowsers::send_response()
+// {
+// 	int total = 10000;
+// 	int send_offset;
+
+// 	if(send_offset + total > send_buffer.size())
+// 	{
+// 		total = send_buffer.size() - send_offset;
+// 	}
+// 	send(file_descriptor, send_buffer.c_str() + send_offset, total, 0);
+// 	send_offset = send_offset + total;
+
+// }
+
 
 
 

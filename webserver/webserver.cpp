@@ -140,8 +140,9 @@ void Webserver::setup(void)
 			if(fd == -1)
 			{
 				delete(*iter1);
-				iter1 = Browsers.erase(iter1);
 				(*iter1) = 0;
+				iter1 = Browsers.erase(iter1);
+				
 				
 			}	
 			else if(fd > fd_max)
@@ -195,7 +196,6 @@ void Webserver::setup(void)
 
 		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
-			//std::cout << "browsers\n";
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
@@ -210,7 +210,8 @@ void Webserver::setup(void)
 					(*iter3)->set_file_descriptor(-1);
 				}
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
-			}else if((*iter3)->get_value() == 1)
+			}
+			else if((*iter3)->get_value() == 1)
 			{
 				(*iter3)->check_request();
 			}
