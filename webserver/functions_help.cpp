@@ -256,3 +256,12 @@ using namespace std;
 //     return (1);
 // }
 
+bool is_directory(const string &filename)
+{
+	struct stat st_buf;
+	int status = stat(filename.c_str(), &st_buf);
+	if (status != 0) {
+		return false;
+	}
+	return (S_ISDIR(st_buf.st_mode) == 1);
+}

@@ -15,20 +15,36 @@
 #define HEADERS_HPP
 
 
+// # include <iostream>
+// # include <fstream>
+// # include <sstream>
+// # include <string>
+// # include <cstdlib>
+// #include <fcntl.h>
+// # include <unistd.h>
+// #include "string.h"
+
+// # include <netinet/in.h>
+// # include <arpa/inet.h>
+// # include <sys/select.h>
+// # include <sys/socket.h> 
 # include <iostream>
 # include <fstream>
 # include <sstream>
 # include <string>
 # include <cstdlib>
-#include <fcntl.h>
 # include <unistd.h>
-#include "string.h"
+# include <ctime>
+# include <sys/stat.h> // mkdir
+# include <dirent.h> // dirent readdir
+# include <sys/types.h>
+# include <sys/wait.h>
 
+//* NETWORK INCLUDES
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <sys/select.h>
-# include <sys/socket.h> 
-
+# include <sys/socket.h> // bind
 # include <vector>
 #include <set>
 # include <map>
@@ -55,6 +71,7 @@ using namespace std;
 
 vector<string> ft_divise(const std::string &str, const std::string &search_data);
 server	*parse_server(vector<string> config_file, size_t *count);
+bool is_directory(const string &filename);
 
 
 

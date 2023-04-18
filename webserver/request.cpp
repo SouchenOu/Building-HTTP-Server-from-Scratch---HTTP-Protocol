@@ -13,7 +13,19 @@
 
 #include "../headers/headers.hpp"
 # define white_espace "; \t"
-
+#include <fcntl.h>
+// #include <filesystem>
+// #include "iostream"
+// #include <iostream>
+// #include <fstream>
+// #include <cstdio>
+// #include <cstring>
+// #include <filesystem>
+// #include <unistd.h>
+// #include <sys/socket.h>
+// #include <sys/un.h>
+// # include <sys/stat.h>
+// # include <dirent.h>
 
 
 
@@ -219,19 +231,21 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 std::string Request::path_of_file()
 {
 	string target_tmp;
-	string tmp;
+	string tmp_file;
     if(Locations == NULL && Servers == NULL)
     {
         path_of_file_dm = "";
 		return path_of_file_dm;
     }
 
-	path_of_file_dm =  Servers->get_root();
-	target_tmp = path_of_file_dm;
-	tmp = Path;
+	// path_of_file_dm =  Servers->get_root();
+	// target_tmp = path_of_file_dm;
+	// tmp = Path;
+	target_tmp = Path;
+	path_of_file_dm = Servers->get_root();
 
 	//if(strcmp(target_tmp, "/") == 0)
-	if (tmp.compare("/") == 0)
+	if (target_tmp.compare("/") == 0)
 	{
 		
 		if (Locations && Locations->get_index().length())
@@ -239,12 +253,17 @@ std::string Request::path_of_file()
 		else
 			target_tmp += '/' + Servers->get_index();
 	}
-	return target_tmp;
-	// if (target_tmp.find(Locations->get_path()) == 0)
-	// {
-	// 	target_tmp = target_tmp.substr(Locations->get_path().length());
-	// 	path_of_file_dm += Locations->get_root();
-	// }
+	//return target_tmp;
+	if (target_tmp.find(Locations->get_path()) == 0)
+	{
+		target_tmp = target_tmp.substr(Locations->get_path().length());
+		path_of_file_dm += Locations->get_root();
+	}
+
+	if(is_directory(target_tmp + path_of_file_dm))
+	{
+		tmp_file = path_of_file_dm + target_tmp;
+	}
 
 
 }
