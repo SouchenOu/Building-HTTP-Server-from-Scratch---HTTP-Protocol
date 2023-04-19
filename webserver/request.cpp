@@ -228,58 +228,69 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 }
 
-std::string Request::path_of_file()
+void Request::path_of_file()
 {
-	string target_tmp;
+	string Path_in_request;
 	string tmp_file;
     if(Locations == NULL && Servers == NULL)
     {
         path_of_file_dm = "";
-		return path_of_file_dm;
+		return ;
     }
 
-	// path_of_file_dm =  Servers->get_root();
-	// target_tmp = path_of_file_dm;
-	// tmp = Path;
-	target_tmp = Path;
+	
+	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
 
-	//if(strcmp(target_tmp, "/") == 0)
-	if (target_tmp.compare("/") == 0)
+	//if(strcmp(Path_in_request, "/") == 0)
+	if (Path_in_request.compare("/") == 0)
 	{
 		
 		if (Locations && Locations->get_index().length())
-			target_tmp += '/' + Locations->get_index();
+			Path_in_request += '/' + Locations->get_index();
 		else
-			target_tmp += '/' + Servers->get_index();
+			Path_in_request += '/' + Servers->get_index();
 	}
-	//return target_tmp;
-	if (target_tmp.find(Locations->get_path()) == 0)
+	//return Path_in_request;
+	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		target_tmp = target_tmp.substr(Locations->get_path().length());
+		Path_in_request = Path_in_request.substr(Locations->get_path().length());
 		path_of_file_dm += Locations->get_root();
 	}
 
-	if(is_directory(target_tmp + path_of_file_dm))
+	if(is_directory(path_of_file_dm + Path_in_request))
 	{
-		tmp_file = path_of_file_dm + target_tmp;
+		tmp_file = path_of_file_dm + Path_in_request;
+	}
+	else if (is_directory(path_of_file_dm + Path_in_request) == 0)
+	{
+		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
 
+	if(tmp_file[tmp_file.length() - 1] == '/')
+	{
+		if(Locations->get_index().length())
+		{
+			tmp_file = tmp_file + Locations->get_index();
+		}
+	}
+	std::cout << "our file is" << tmp_file << endl;
+
 
 }
 
-std::string Request::give_the_header(int fileSize)
-{
-	string line;
-	std::string file_path = path_of_file();
-	ifstream our_file(file_path.c_str());
-	our_file.seekg(0, ios::end);
-	fileSize = our_file.tellg();
+// std::string Request::give_the_header(int fileSize)
+// {
+// 	string line;
+// 	std::string file_path = path_of_file();
+// 	ifstream our_file(file_path.c_str());
+// 	our_file.seekg(0, ios::end);
+// 	fileSize = our_file.tellg();
 
-	stringstream header;
-	header << "Content-Length: " << fileSize << endl;
-	header << "Connection: Closed" << endl;
+// 	stringstream header;
+// 	header << "Content-Length: " << fileSize << endl;
+// 	header << "Connection: Closed" << endl;
 
-	return header.str();
+// 	return header.str();
 	
-}
+// }

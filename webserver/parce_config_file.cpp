@@ -510,8 +510,21 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					}
 					location.set_index(line[1]);
 				}
-				else 
-
+				else if(line[0] == "allow")
+				{
+					if(line .size() < 2)
+					{
+						std::cout << "shold have another argument after allow" << endl;
+					}
+					//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
+					std::vector<std::string>::iterator iter;
+					for(iter = line.begin() + 1; iter != line.end(); iter++)
+					{
+						location.allow_HTTP_methods(*iter);
+					} 
+				}
+				 
+				else
 					std::cout << "It is another location \n ";
 
 				(*count)++;

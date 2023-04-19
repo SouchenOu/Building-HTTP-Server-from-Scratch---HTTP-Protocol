@@ -256,12 +256,14 @@ using namespace std;
 //     return (1);
 // }
 
-bool is_directory(const string &filename)
+bool is_directory(const string &our_file)
 {
-	struct stat st_buf;
-	int status = stat(filename.c_str(), &st_buf);
+	//The stat() function shall obtain information about the named file and write it to the area pointed to by the buf argument
+	struct stat buffer;
+	int status = stat(our_file.c_str(), &buffer);
 	if (status != 0) {
 		return false;
 	}
-	return (S_ISDIR(st_buf.st_mode) == 1);
+	//This macro returns non-zero if the file is a directory.
+	return (S_ISDIR(buffer.st_mode) == 1);
 }

@@ -31,6 +31,7 @@ class Location
         std::string  autoindex;
         std::string index;
         std::string path;
+        std::vector<std::string> http_method;
     public:
     // constructer
         Location();
@@ -58,6 +59,7 @@ class Location
     std::string get_autoindex();
     std::string get_index();
     std::string get_path();
+    void allow_HTTP_methods(std::string method_allow);
 
 
     // function push_in_location

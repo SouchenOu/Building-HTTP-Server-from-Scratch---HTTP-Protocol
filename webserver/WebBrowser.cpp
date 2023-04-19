@@ -140,7 +140,7 @@ void WebBrowsers::check_request()
 
 	//file_path
 	request_Headers->path_of_file();
-	send_buffer = request_Headers->give_the_header(0);
+	// send_buffer = request_Headers->give_the_header(0);
 
 
 

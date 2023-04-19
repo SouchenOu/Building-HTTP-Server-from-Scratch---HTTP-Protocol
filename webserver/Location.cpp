@@ -106,6 +106,11 @@ void Location::set_path(std::string Path)
     this->path = Path;
 }
 
+void Location::allow_HTTP_methods(std::string http_method_allow)
+{
+    http_method.push_back(http_method_allow);
+}
+
 
 
 
