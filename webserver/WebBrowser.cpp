@@ -21,7 +21,7 @@
 // 	std::cout << "hello, thie is new client\n";
 // }
 
-WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request_Headers(0)
+WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request_Headers(0),indice(0)
 {
 	
 	std::cout << "Connection......\n";
@@ -121,6 +121,10 @@ int WebBrowsers::get_value()
 {
 	return value;
 }
+int WebBrowsers::get_indice()
+{
+	return indice;
+}
 
 // setters
 
@@ -140,7 +144,9 @@ void WebBrowsers::check_request()
 
 	//file_path
 	request_Headers->path_of_file();
-	// send_buffer = request_Headers->give_the_header(0);
+	send_buffer = request_Headers->give_the_header(0);
+	indice = 2;
+
 
 
 

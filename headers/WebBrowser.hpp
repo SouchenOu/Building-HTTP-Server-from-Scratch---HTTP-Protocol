@@ -33,6 +33,7 @@ class   WebBrowsers
             Request     		*request_Headers;
             std::string send_buffer;
             unsigned int send_byte;
+            int indice;
 
 
     public:
@@ -49,6 +50,7 @@ class   WebBrowsers
         int get_recvStatus();
         int get_value();
         int get_check_fd();
+        int get_indice();
        
        //setters
         void set_file_descriptor(int fd);

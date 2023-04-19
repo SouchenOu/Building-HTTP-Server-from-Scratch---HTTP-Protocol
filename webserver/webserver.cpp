@@ -14,6 +14,7 @@
 //#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
 #include "../headers/WebBrowser.hpp"
+#include <fcntl.h>
 // #include "../headers/Request.hpp"
 # define white_espace "; \t"
 
@@ -120,6 +121,7 @@ void Webserver::setup(void)
 	{
 		fd_socket = (*server)->EstablishConnection();	
 		//Add a file_descriptor to an fd_set
+		/*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
 		FD_SET(fd_socket, &readfds);
 		if(fd_socket > fd_max)
 		{
@@ -159,6 +161,18 @@ void Webserver::setup(void)
 
 		// wait for an activity on one of the sockets
 		// so wait indefinitely
+
+
+/******If your application allocates sockets 3, 4, 5, 6, and 7, and you want to check all of your allocations, nfds should be set to 8, the highest socket descriptor you specified, plus 1. If your application checks sockets 3 and 4, nfds should be set to 5.*/
+
+
+//Socket numbers are assigned starting with number 3 because numbers 0, 1, and 2 are used by the C socket interface.
+
+/*****readfds
+Points to a bit set of descriptors to check for reading.
+/******writefds
+Points to a bit set of descriptors to check for writing.*/
+
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 		if((activity < 0) && (errno != EINTR))
 		{
@@ -213,8 +227,15 @@ void Webserver::setup(void)
 			}
 			else if((*iter3)->get_value() == 1)
 			{
-				(*iter3)->check_request();
-				//(*iter3)->send_response();
+				if((*iter3)->get_indice() == 0)
+				{
+					(*iter3)->check_request();
+				}else if((*iter3)->get_indice() == 2)
+				{
+					(*iter3)->send_response();
+				}
+				
+				
 			}
 			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)
 			// {

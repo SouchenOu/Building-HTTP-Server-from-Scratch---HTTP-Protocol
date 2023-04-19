@@ -232,6 +232,7 @@ void Request::path_of_file()
 {
 	string Path_in_request;
 	string tmp_file;
+	int file_des;
     if(Locations == NULL && Servers == NULL)
     {
         path_of_file_dm = "";
@@ -262,7 +263,7 @@ void Request::path_of_file()
 	{
 		tmp_file = path_of_file_dm + Path_in_request;
 	}
-	else if (is_directory(path_of_file_dm + Path_in_request) == 0)
+	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
@@ -274,23 +275,37 @@ void Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	std::cout << "our file is" << tmp_file << endl;
+	file_des = open(tmp_file.c_str(),O_RDONLY );
+	if(file_des <= 0)
+	{
+		path_of_file_dm = Servers->get_root();
+	}
+	else
+		path_of_file_dm = tmp_file;
+
+	close(file_des);
+	std::size_t found = path_of_file_dm.find("//");
+	if(found != std::string::npos)
+	{
+		path_of_file_dm.replace(found, 2 ,"/");
+	}
+	//std::cout << "our file is" << path_of_file_dm << endl;
 
 
 }
 
-// std::string Request::give_the_header(int fileSize)
-// {
-// 	string line;
-// 	std::string file_path = path_of_file();
-// 	ifstream our_file(file_path.c_str());
-// 	our_file.seekg(0, ios::end);
-// 	fileSize = our_file.tellg();
-
-// 	stringstream header;
-// 	header << "Content-Length: " << fileSize << endl;
-// 	header << "Connection: Closed" << endl;
-
-// 	return header.str();
+std::string Request::give_the_header(int fileSize)
+{
 	
-// }
+	ifstream our_file(path_of_file_dm.c_str());
+	// position at end of fileObject
+	our_file.seekg(0, ios::end);
+	fileSize = our_file.tellg();
+
+	stringstream header;
+	header << "Content-Length: " << fileSize << endl;
+	header << "Connection: Closed" << endl;
+
+	return header.str();
+	
+}
