@@ -27,7 +27,7 @@ class Request
         std::string type_request;
         server  *Servers;
         Location    *Locations;
-        int code;
+        int Status_Code;
         std::string path_of_file_dm;
         std::string version_http;
         
@@ -59,6 +59,7 @@ class Request
         int check_request_with_config_file(const std::set<server*> &servers);
         void path_of_file();
         std::string give_the_header(int fileSize);
+        int get_indice();
 
        
         

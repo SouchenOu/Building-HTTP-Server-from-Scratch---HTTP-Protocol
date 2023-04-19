@@ -131,6 +131,7 @@ void Webserver::setup(void)
 
 	while(true)
 	{
+		//std::cout << "enter\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
@@ -170,8 +171,14 @@ void Webserver::setup(void)
 
 /*****readfds
 Points to a bit set of descriptors to check for reading.
-/******writefds
+******writefds
 Points to a bit set of descriptors to check for writing.*/
+
+// here in fd_max we specified file descripters that we will check if its ready for reading or ready for writing 
+
+
+//The fd_max argument specifies the range of file descriptors to be tested. The select() function tests file descriptors in the range of 0 to nfds-1.
+
 
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 		if((activity < 0) && (errno != EINTR))
@@ -183,6 +190,7 @@ Points to a bit set of descriptors to check for writing.*/
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "two times\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());
@@ -239,7 +247,7 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)
 			// {
-			// 	std::cout << "hereeeeee\n";
+			//  	std::cout << "firts3\n";
 			// }
 			
 

@@ -37,7 +37,7 @@ Request::Request()
     std::cout << "Send a request\n";
 }
 
-Request::Request(const std::string buffer)
+Request::Request(const std::string buffer):Status_Code(0)
 {
     string content_type;
   
@@ -160,7 +160,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	else 
 	{
 		Host = "";
-		code = 400;
+		Status_Code = 400;
 		std::cout << "Bad request\n";
 		return 0;
 	}
@@ -172,10 +172,10 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}else
 	{
 		port = 0;
-		code = 400;
+		Status_Code = 400;
 		return 0;
 	}
-	// std::cout << "Port-->" << port << endl;
+	
 	for(iter3 = servers.begin(); iter3 != servers.end(); iter3++)
 	{
 		if((*iter3)->get_port_listen() == port )
@@ -308,4 +308,33 @@ std::string Request::give_the_header(int fileSize)
 
 	return header.str();
 	
+}
+
+
+int Request::get_indice()
+{
+	if(Status_Code == 0)
+	{
+		Status_Code = 200; //OK
+	}
+	else if(Status_Code == 400) // BAD_REQUEST
+	{
+		// should have error_page
+		std::cout << "error_page\n";
+		return 0;
+	}
+	if(is_directory(path_of_file_dm))
+	{
+		if(path_of_file_dm[path_of_file_dm.size() - 1] == '/')
+		{
+			Status_Code = 200;
+			return 1;
+		}
+
+	}else
+	{
+		Status_Code = 403;
+		return 
+	}
+
 }
