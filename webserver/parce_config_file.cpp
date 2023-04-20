@@ -497,8 +497,11 @@ server	*parse_server(vector<string> config_file, size_t *count)
 						std::cout << "should have another argument after autoindex" << endl;
 						exit(0);
 					}
+					if(line[1] == "0" || line[1] == "1")
+					{
 
-					location.set_autoindex(line[1]);
+					}
+					location.set_autoindex(atoi(line[1].c_str()));
 					
 				}
 				else if (line[0] == "index")

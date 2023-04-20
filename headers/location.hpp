@@ -28,7 +28,7 @@ class Location
         std::string  return_line;
         std::string  alias;
         int http_redirection;
-        std::string  autoindex;
+        int  autoindex;
         std::string index;
         std::string path;
         std::vector<std::string> http_method;
@@ -45,7 +45,7 @@ class Location
     void set_return_line(std::string return_line);
     void set_alias(std::string alias);
     void set_http_redirection(int http_redirection);
-    void set_autoindex(std::string autoindex);
+    void set_autoindex(int autoindex);
     void set_index(std::string index);
     void set_path(std::string Path);
 
@@ -56,7 +56,7 @@ class Location
     std::string get_return_line();
     std::string get_alias();
     int  get_http_redirection();
-    std::string get_autoindex();
+    int get_autoindex();
     std::string get_index();
     std::string get_path();
     void allow_HTTP_methods(std::string method_allow);

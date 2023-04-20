@@ -98,13 +98,13 @@ Request::Request(const std::string buffer):Status_Code(0)
 
     }
      // In POST request we find content-length ,content-type, origin and referer
-    size_t found;
-    found = buffer.find("content-type");
-    // npos means end of buffer
-    if(found != string::npos)
-    {
-        content_type = buffer.substr(found, buffer.find('\n', found));
-    }
+    // size_t found;
+    // found = buffer.find("content-type");
+    // // npos means end of buffer
+    // if(found != string::npos)
+    // {
+    //     content_type = buffer.substr(found, buffer.find('\n', found));
+    // }
 
 
 
@@ -289,18 +289,21 @@ void Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	//std::cout << "our file is" << path_of_file_dm << endl;
+	std::cout << "our file is" << path_of_file_dm << endl;
 
 
 }
 
-std::string Request::give_the_header(int fileSize)
+std::string Request::give_the_header(int fileSize, bool test)
 {
+	if(test == 0)
+	{
+		ifstream our_file(path_of_file_dm.c_str());
+		// position at end of fileObject
+		our_file.seekg(0, ios::end);
+		fileSize = our_file.tellg();
+	}
 	
-	ifstream our_file(path_of_file_dm.c_str());
-	// position at end of fileObject
-	our_file.seekg(0, ios::end);
-	fileSize = our_file.tellg();
 
 	stringstream header;
 	header << "Content-Length: " << fileSize << endl;
@@ -325,16 +328,56 @@ int Request::get_indice()
 	}
 	if(is_directory(path_of_file_dm))
 	{
-		if(path_of_file_dm[path_of_file_dm.size() - 1] == '/')
+		if(path_of_file_dm[path_of_file_dm.size() - 1] == '/' && Locations->get_autoindex() == 1)
 		{
 			Status_Code = 200;
 			return 1;
+		}else
+		{
+			Status_Code = 403;
 		}
 
-	}else
-	{
-		Status_Code = 403;
-		return 
 	}
+	return 1;
+}
 
+
+void Request::index_auto(std::string &test)
+{
+	stringstream auto_index;
+	auto_index << "	<html lang=\"en\">\n\
+					<body style=\"background-color: grey; color: lightgrey;\">\n\
+					<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
+						<h1>Auto Index</h1>\n";
+	auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
+	{
+		while ((ent = readdir(dir)) != NULL)
+		{
+			string link = ent->d_name;
+			
+			if (is_directory(path_of_file_dm + '/' + link))
+			{
+
+				link += '/';
+			}
+			if (is_directory(Path) && Path[Path.size() - 1] != '/')
+				Path += '/';
+			auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
+		}
+		closedir (dir);
+	}
+	else
+	{
+		
+		exit(EXIT_FAILURE);
+	}
+	auto_index << "	</div>\n\
+					</body>\n\
+					</html>";
+	Status_Code = 200;
+	test = auto_index.str();
+	std::cout << "test = " << test << endl;
 }

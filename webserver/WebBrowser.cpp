@@ -146,7 +146,25 @@ void WebBrowsers::check_request()
 	request_Headers->path_of_file();
 	int status;
 	status = request_Headers->get_indice();
-	send_buffer = request_Headers->give_the_header(0);
+	if(status == 0)
+	{
+		send_buffer = request_Headers->give_the_header(0 , 0);
+		indice = 2;
+		delete request_Headers;
+		request_Headers = 0;
+
+	}else if(status == 1)
+	{
+		std::cout << "enter here\n";
+		string test;
+		request_Headers->index_auto(test);
+		send_buffer = request_Headers->give_the_header(test.size() , 1);
+		send_buffer = send_buffer + test;
+		indice = 2;
+		delete request_Headers;
+		request_Headers = 0;
+	}
+	
 	
 
 

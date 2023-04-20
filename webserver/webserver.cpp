@@ -190,7 +190,6 @@ Points to a bit set of descriptors to check for writing.*/
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "two times\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());

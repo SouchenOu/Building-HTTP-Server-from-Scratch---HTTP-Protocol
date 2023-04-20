@@ -50,7 +50,7 @@ int Location::get_http_redirection()
     return http_redirection;
 }
 
-std::string Location::get_autoindex()
+int Location::get_autoindex()
 {
     return autoindex;
 }
@@ -90,7 +90,7 @@ void Location::set_http_redirection(int http_redirection)
     this->http_redirection = http_redirection;
 }
 
-void Location::set_autoindex(std::string autoindex)
+void Location::set_autoindex(int autoindex)
 {
     this->autoindex = autoindex;
 }
