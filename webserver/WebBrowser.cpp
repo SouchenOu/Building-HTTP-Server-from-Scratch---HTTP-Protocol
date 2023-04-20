@@ -181,19 +181,15 @@ void WebBrowsers::send_response()
 	}
 	send(file_descriptor, send_buffer.c_str() + send_byte, total, 0);
 	send_byte = send_byte + total;
-
+	if (send_byte == send_buffer.size())
+	{
+		send_buffer.clear();
+		indice = 3;
+	}
 }
 
 
 
 
 
-
-
-/******if (!already_calculated)
-	{
-		ifstream file(filepath.c_str(), ofstream::in);
-		file.seekg(0, ios::end);
-		fileSize = file.tellg();
-	}*/
 

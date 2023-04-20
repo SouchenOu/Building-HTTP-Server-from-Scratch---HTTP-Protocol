@@ -261,13 +261,13 @@ void Request::path_of_file()
 
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
+		std::cout << "yes\n";
 		tmp_file = path_of_file_dm + Path_in_request;
 	}
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
-
 	if(tmp_file[tmp_file.length() - 1] == '/')
 	{
 		if(Locations->get_index().length())
@@ -275,15 +275,16 @@ void Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	file_des = open(tmp_file.c_str(),O_RDONLY );
+	file_des = open(tmp_file.c_str(),O_RDONLY);
 	if(file_des <= 0)
 	{
+		std::cout << "herrr\n";
 		path_of_file_dm = Servers->get_root();
 	}
 	else
 		path_of_file_dm = tmp_file;
 
-	close(file_des);
+	// close(file_des);
 	std::size_t found = path_of_file_dm.find("//");
 	if(found != std::string::npos)
 	{
@@ -350,33 +351,35 @@ void Request::index_auto(std::string &test)
 					<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
 						<h1>Auto Index</h1>\n";
 	auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
-	DIR *dir;
-	struct dirent *ent;
-	if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
-	{
-		while ((ent = readdir(dir)) != NULL)
-		{
-			string link = ent->d_name;
+	std::cout << "here-->" << path_of_file_dm.substr(Servers->get_root().length() + 1) << endl;
+	std::cout << "contenue->" << auto_index.str() << endl; 
+	// DIR *dir;
+	// struct dirent *ent;
+	// if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
+	// {
+	// 	while ((ent = readdir(dir)) != NULL)
+	// 	{
+	// 		string link = ent->d_name;
 			
-			if (is_directory(path_of_file_dm + '/' + link))
-			{
+	// 		if (is_directory(path_of_file_dm + '/' + link))
+	// 		{
 
-				link += '/';
-			}
-			if (is_directory(Path) && Path[Path.size() - 1] != '/')
-				Path += '/';
-			auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
-		}
-		closedir (dir);
-	}
-	else
-	{
+	// 			link += '/';
+	// 		}
+	// 		if (is_directory(Path) && Path[Path.size() - 1] != '/')
+	// 			Path += '/';
+	// 		auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
+	// 	}
+	// 	closedir (dir);
+	// }
+	// else
+	// {
 		
-		exit(EXIT_FAILURE);
-	}
-	auto_index << "	</div>\n\
-					</body>\n\
-					</html>";
+	// 	exit(EXIT_FAILURE);
+	// }
+	// auto_index << "	</div>\n\
+	// 				</body>\n\
+	// 				</html>";
 	Status_Code = 200;
 	test = auto_index.str();
 	std::cout << "test = " << test << endl;
