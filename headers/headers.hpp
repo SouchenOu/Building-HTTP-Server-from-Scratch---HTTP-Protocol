@@ -72,7 +72,7 @@ using namespace std;
 vector<string> ft_divise(const std::string &str, const std::string &search_data);
 server	*parse_server(vector<string> config_file, size_t *count);
 bool is_directory(const string &filename);
-
+Location	parse_location(vector<string> &config_file, size_t *cmp);
 
 
 

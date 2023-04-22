@@ -180,6 +180,9 @@ Points to a bit set of descriptors to check for writing.*/
 //The fd_max argument specifies the range of file descriptors to be tested. The select() function tests file descriptors in the range of 0 to nfds-1.
 
 
+// without multeplexing , server process can entertain only one client at a time, and can not entertain other client is requests until it finishes with the current client
+
+// with multiplexing , server can entertain multiple connected clients simultaneously
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 		if((activity < 0) && (errno != EINTR))
 		{
@@ -190,6 +193,7 @@ Points to a bit set of descriptors to check for writing.*/
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "enter\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());
@@ -234,6 +238,7 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			else if((*iter3)->get_value() == 1)
 			{
+				//std::cout << "value here\n";
 				if((*iter3)->get_indice() == 0)
 				{
 					(*iter3)->check_request();

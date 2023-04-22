@@ -189,14 +189,14 @@ vector<string> ft_divise(const string &str, const string &search)
 
 
 
-server	*parse_server(vector<string> config_file, size_t *count)
+server	*parse_server(vector<string> config_file, size_t *cmp)
 {
 	string address_ip;
 	string address_port;
 	//size_t size;
 
 	server *serv = new server();
-	vector<string> word1 = ft_divise(config_file[0  + *count], white_espace);
+	vector<string> word1 = ft_divise(config_file[*cmp], white_espace);
 
 	if (word1[1] != "{")
 	{
@@ -205,14 +205,14 @@ server	*parse_server(vector<string> config_file, size_t *count)
 	}
 		
 
-	vector<string>::iterator iter = config_file.begin() + *count;
+	vector<string>::iterator iter = config_file.begin() + *cmp;
 	if (iter == config_file.end())
 	{
 		return NULL;
 	}
 		
 	iter++;
-	(*count)++;
+	(*cmp)++;
 	while (iter != config_file.end())
 	{
 		vector<string> words2 = ft_divise(*iter, white_espace);
@@ -221,7 +221,7 @@ server	*parse_server(vector<string> config_file, size_t *count)
 		if (!words2.size() || words2[0][0] == '#')
 		{
 			iter++;
-			(*count)++;
+			(*cmp)++;
 			continue;
 		}
 		if (words2[0] == "}")
@@ -381,117 +381,258 @@ server	*parse_server(vector<string> config_file, size_t *count)
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << endl;
-
 				exit(0);
 			}
-			size_t old_count = *count;
+			size_t old_cmp = *cmp;
+			serv->push_in_location(parse_location(config_file, cmp));
+			iter = iter +  *cmp - old_cmp;
+		}
+		iter++;
+		(*cmp)++;
+			// size_t old_cmp = *cmp;
 
-			// we shouls parse location
+			// // we shouls parse location
 		
-			string path;
-			path = words2[1];
+			// string path;
+			// path = words2[1];
 
-			location.set_path(path);
+			
 		
-			if(path.size() > 1 && path[path.size() - 1] == '/')
+			// if(path.size() > 1 && path[path.size() - 1] == '/')
+			// {
+			// 	path.resize(path.size() - 1);
+			// } 
+			// if(words2[2] != "{")
+			// {
+			// 	std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
+			// 	exit(0);
+			// }
+			// location.set_path(path);
+
+			// (*cmp)++;
+			// // first line after location line
+			// vector<string>::iterator iter2 = config_file.begin() + *cmp;
+			// while(iter2 != config_file.end())
+			// {
+			// 	vector<string> line = ft_divise(*iter2, white_espace);
+			// 	if(line.size() == 0 || line[0][0] == '#')
+			// 	{
+			// 		iter2++;
+			// 		(*cmp)++;
+			// 		continue;
+			// 	}
+			// 	if(line[0] ==  "}")
+			// 	{
+			// 		break ;
+			// 	}
+			// 	// root in location
+			// 	if(line[0] == "root")
+			// 	{
+			// 		// std::cout << "enter\n";
+			// 		if(line.size() == 0)
+			// 		{
+			// 			std::cout << BLUE  << "--> should have another argument after root" << endl;
+			// 			exit(0);
+			// 		}
+
+			// 		if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+			// 		{
+			// 			line[1].resize(line[1].size() - 1);
+			// 		}
+			// 		location.set_root(line[1]);
+			// 		// std::cout << "root->" << location.get_root() << endl;
+			// 	}
+			// 	// try_files in location 
+			// 	// else if(line[0] == "try_files")
+			// 	// {
+			// 	// 	if(line.size() < 2)
+			// 	// 	{
+			// 	// 		std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
+			// 	// 		exit(0);
+			// 	// 	}
+			// 	// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+			// 	// 	{
+			// 	// 		line[1].resize(line[1].size() - 1);
+			// 	// 	}
+			// 	// 	location.set_try_files(line[1]);
+			// 	// }
+			// 	// alias in location 
+
+			// 	// else if(line[0] == "alias")
+			// 	// {
+			// 	// 	if(line.size() != 2)
+			// 	// 	{
+			// 	// 		std::cout << BLUE  << "--> should have another argument after alias" << endl;
+			// 	// 		exit(0);
+			// 	// 	}
+			// 	// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
+			// 	// 	{
+			// 	// 		line[1].resize(line[1].size() - 1);
+			// 	// 	}
+			// 	// 	location.set_alias(line[1]);
+			// 	// }
+
+			// 	// return in location
+			// 	else if(line[0] == "return")
+			// 	{
+			// 		if(line.size() != 3)
+			// 		{
+			// 			std::cout << BLUE  << "--> should have two argument after return" << endl;
+			// 			exit(0);
+			// 		}
+			// 		if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
+			// 		{
+			// 			line[2].resize(line[2].size() - 1);
+			// 		}
+			// 		int number = atoi(line[1].c_str());
+
+			// 		if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
+			// 		{
+			// 			std::cout << BLUE  <<  "--> invalid number" << endl;
+			// 			exit(0);
+			// 		}
+			// 		location.set_http_redirection(number);	
+			// 		location.set_return_line(line[2]);
+					
+			// 	}
+			// 	// autoindex
+			// 	else if(line[0] == "autoindex")
+			// 	{
+			// 		if(line.size() != 2)
+			// 		{
+			// 			std::cout << "should have another argument after autoindex" << endl;
+			// 			exit(0);
+			// 		}
+			// 		if(line[1] == "0" || line[1] == "1")
+			// 		{
+
+			// 		}
+			// 		location.set_autoindex(atoi(line[1].c_str()));
+					
+			// 	}
+			// 	else if (line[0] == "index")
+			// 	{
+			// 		if(line.size() < 2)
+			// 		{
+			// 			std::cout << "should have another argument after index" << endl;
+			// 			exit(0);
+			// 		}
+			// 		location.set_index(line[1]);
+			// 	}
+			// 	else if(line[0] == "allow")
+			// 	{
+			// 		if(line .size() < 2)
+			// 		{
+			// 			std::cout << "shold have another argument after allow" << endl;
+			// 		}
+			// 		//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
+			// 		std::vector<std::string>::iterator iter;
+			// 		for(iter = line.begin() + 1; iter != line.end(); iter++)
+			// 		{
+			// 			location.allow_HTTP_methods(*iter);
+			// 		} 
+			// 	}
+				 
+			// 	else
+			// 		std::cout << "It is another location \n ";
+
+			// 	(*cmp)++;
+			// 	iter2++;
+
+			// }
+
+			// serv->push_in_location(location);
+			// iter = iter +  *cmp - old_cmp;
+		
+		
+		
+	
+		// iter++;
+		// (*cmp)++;
+	}
+	
+	
+	return serv;
+}
+
+
+Location	parse_location(vector<string> &config_file, size_t *cmp)
+{
+	Location location;
+	vector<string> words = ft_divise(config_file[*cmp], white_espace);
+	string path;
+	path = words[1];
+	if(path.size() > 1 && path[path.size() - 1] == '/')
+	{
+		path.resize(path.size() - 1);
+	}
+	if(words[2] != "{")
+	{
+		std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
+		exit(0);
+	}
+		location.set_path(path); 
+	(*cmp)++;
+
+
+	vector<string>::iterator iter2 = config_file.begin() + *cmp;
+	while(iter2 != config_file.end())
+	{
+		vector<string> line = ft_divise(*iter2, white_espace);
+		if(line.size() == 0 || line[0][0] == '#')
+		{
+			iter2++;
+			(*cmp)++;
+			continue;
+		}
+		if(line[0] ==  "}")
+		{
+			break ;
+		}
+		// root in location
+		if(line[0] == "root")
+		{
+			// std::cout << "enter\n";
+			if(line.size() == 0)
 			{
-				path.resize(path.size() - 1);
-			} 
-			if(words2[2] != "{")
-			{
-				std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
+				std::cout << BLUE  << "--> should have another argument after root" << endl;
 				exit(0);
 			}
 
-			(*count)++;
-			// first line after location line
-			vector<string>::iterator iter2 = config_file.begin() + *count;
-			while(iter2 != config_file.end())
+			if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
 			{
-				vector<string> line = ft_divise(*iter2, white_espace);
-				if(line.size() == 0 || line[0][0] == '#')
-				{
-					iter2++;
-					(*count)++;
-					continue;
-				}
-				if(line[0] ==  "}")
-				{
-					break ;
-				}
-				// root in location
-				if(line[0] == "root")
-				{
-					// std::cout << "enter\n";
-					if(line.size() == 0)
-					{
-						std::cout << BLUE  << "--> should have another argument after root" << endl;
-						exit(0);
-					}
-
-					if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-					{
-						line[1].resize(line[1].size() - 1);
-					}
-					location.set_root(line[1]);
+				line[1].resize(line[1].size() - 1);
+			}
+				location.set_root(line[1]);
 					// std::cout << "root->" << location.get_root() << endl;
-				}
-				// try_files in location 
-				// else if(line[0] == "try_files")
-				// {
-				// 	if(line.size() < 2)
-				// 	{
-				// 		std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
-				// 		exit(0);
-				// 	}
-				// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-				// 	{
-				// 		line[1].resize(line[1].size() - 1);
-				// 	}
-				// 	location.set_try_files(line[1]);
-				// }
-				// alias in location 
-
-				// else if(line[0] == "alias")
-				// {
-				// 	if(line.size() != 2)
-				// 	{
-				// 		std::cout << BLUE  << "--> should have another argument after alias" << endl;
-				// 		exit(0);
-				// 	}
-				// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-				// 	{
-				// 		line[1].resize(line[1].size() - 1);
-				// 	}
-				// 	location.set_alias(line[1]);
-				// }
-
+			}
+				
 				// return in location
-				else if(line[0] == "return")
+		else if(line[0] == "return")
+		{
+				if(line.size() != 3)
 				{
-					if(line.size() != 3)
-					{
-						std::cout << BLUE  << "--> should have two argument after return" << endl;
-						exit(0);
-					}
-					if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
-					{
-						line[2].resize(line[2].size() - 1);
-					}
-					int number = atoi(line[1].c_str());
+					std::cout << BLUE  << "--> should have two argument after return" << endl;
+					exit(0);
+				}
+				if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
+				{
+					line[2].resize(line[2].size() - 1);
+				}
+				int number = atoi(line[1].c_str());
 
-					if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
-					{
-						std::cout << BLUE  <<  "--> invalid number" << endl;
-						exit(0);
-					}
+				if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
+				{
+					std::cout << BLUE  <<  "--> invalid number" << endl;
+					exit(0);
+				}
 					location.set_http_redirection(number);	
 					location.set_return_line(line[2]);
 					
-				}
+		}
 				// autoindex
-				else if(line[0] == "autoindex")
-				{
+		else if(line[0] == "autoindex")
+		{
 					if(line.size() != 2)
 					{
 						std::cout << "should have another argument after autoindex" << endl;
@@ -503,18 +644,18 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					}
 					location.set_autoindex(atoi(line[1].c_str()));
 					
-				}
-				else if (line[0] == "index")
-				{
+		}
+		else if (line[0] == "index")
+		{
 					if(line.size() < 2)
 					{
 						std::cout << "should have another argument after index" << endl;
 						exit(0);
 					}
 					location.set_index(line[1]);
-				}
-				else if(line[0] == "allow")
-				{
+		}
+		else if(line[0] == "allow")
+		{
 					if(line .size() < 2)
 					{
 						std::cout << "shold have another argument after allow" << endl;
@@ -525,28 +666,16 @@ server	*parse_server(vector<string> config_file, size_t *count)
 					{
 						location.allow_HTTP_methods(*iter);
 					} 
-				}
-				 
-				else
-					std::cout << "It is another location \n ";
-
-				(*count)++;
-				iter2++;
-
-			}
-
-			serv->push_in_location(location);
-			iter = iter +  *count - old_count;
 		}
+				 
+		else
+			std::cout << "It is another location \n ";
 		
-		
-	
-		iter++;
-		(*count)++;
+		iter2++;
+		(*cmp)++;
 	}
-	
-	
-	return serv;
+
+	return location;
 }
 
 

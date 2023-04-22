@@ -76,7 +76,8 @@ int WebBrowsers::Read_request()
 			value = 1;
 			return 2;
 		}
-		if(request_Headers == NULL){
+		if(request_Headers == NULL)
+		{
 			read_buffer = read_buffer + buffer;
 		}
 		std::cout << "read_buffer:\n";
@@ -146,6 +147,7 @@ void WebBrowsers::check_request()
 	request_Headers->path_of_file();
 	int status;
 	status = request_Headers->get_indice();
+	std::cout << "status -->" << status << endl;
 	if(status == 0)
 	{
 		send_buffer = request_Headers->give_the_header(0 , 0);
@@ -155,7 +157,6 @@ void WebBrowsers::check_request()
 
 	}else if(status == 1)
 	{
-		std::cout << "enter here\n";
 		string test;
 		request_Headers->index_auto(test);
 		send_buffer = request_Headers->give_the_header(test.size() , 1);
