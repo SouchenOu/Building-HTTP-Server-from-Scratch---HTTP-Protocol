@@ -347,17 +347,18 @@ int Request::get_indice()
 void Request::index_auto(std::string &test)
 {
 	stringstream auto_index;
-	auto_index << "	<html lang=\"en\">\n\
-					<body style=\"background-color: grey; color: lightgrey;\">\n\
-					<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
-						<h1>Auto Index</h1>\n";
+	// auto_index << "	<html lang=\"en\">\n\
+	// 				<body style=\"background-color: grey; color: lightgrey;\">\n\
+	// 				<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
+	// 					<h1>Auto Index</h1>\n";
 	auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
 	//std::cout << "here-->" << path_of_file_dm.substr(Servers->get_root().length() + 1) << endl;
 	//std::cout << "contenue->" << auto_index.str() << endl; 
-	// DIR *dir;
+	 //DIR *dir;
 	// struct dirent *ent;
-	// if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
-	// {
+	//if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
+	//{
+	//	std::cout << "yes open\n";
 	// 	while ((ent = readdir(dir)) != NULL)
 	// 	{
 	// 		string link = ent->d_name;
@@ -372,7 +373,7 @@ void Request::index_auto(std::string &test)
 	// 		auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
 	// 	}
 	// 	closedir (dir);
-	// }
+	//}
 	// else
 	// {
 		
