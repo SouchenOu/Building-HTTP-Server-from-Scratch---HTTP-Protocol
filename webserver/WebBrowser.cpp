@@ -14,6 +14,9 @@
 #include "../headers/server.hpp"
 #include "../headers/Request.hpp"
 
+
+#define BUFFUR_SIZE 4096
+
 // WebBrowsers::WebBrowsers()
 // {
 // 	file_descriptor = 0;
@@ -52,7 +55,7 @@ int WebBrowsers::Read_request()
 
 	std::cout << "read_request\n";
 		int recv_s;
-		char buffer[100000];
+		char buffer[4096];
 		std::string read_buffer;
 		value = 0;
 
@@ -62,7 +65,7 @@ int WebBrowsers::Read_request()
 
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 				
-		recv_s = recv(file_descriptor, buffer, 100000, 0 ); 
+		recv_s = recv(file_descriptor, buffer, 4096, 0 ); 
 				//std::cout << buffer << endl;
 
 		if(recv_s < 0)

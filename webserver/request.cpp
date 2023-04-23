@@ -309,7 +309,7 @@ std::string Request::give_the_header(int fileSize, bool test)
 	
 	if(test == 0)
 	{
-		ifstream our_file(path_of_file_dm.c_str());
+		ifstream our_file(path_of_file_dm.c_str(),ofstream::in);
 		// position at end of fileObject
 		our_file.seekg(0, ios::end);
 		fileSize = our_file.tellg();
