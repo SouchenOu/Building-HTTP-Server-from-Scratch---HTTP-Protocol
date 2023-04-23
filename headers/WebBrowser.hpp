@@ -34,6 +34,7 @@ class   WebBrowsers
             std::string send_buffer;
             unsigned int send_byte;
             int indice;
+            int file_file_descriptor;
 
 
     public:
@@ -65,6 +66,8 @@ class   WebBrowsers
         void Connection(int new_listen_fd);
         int Read_request();
         void send_response();
+        void send1();
+        void send2();
         
 };
 

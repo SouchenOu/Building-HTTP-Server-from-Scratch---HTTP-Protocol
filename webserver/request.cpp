@@ -235,6 +235,7 @@ void Request::path_of_file()
 	int file_des;
     if(Locations == NULL || Servers == NULL)
     {
+		std::cout << "failed\n";
         path_of_file_dm = "";
 		return ;
     }
@@ -256,12 +257,13 @@ void Request::path_of_file()
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
 		Path_in_request = Path_in_request.substr(Locations->get_path().length());
+		// std::cout << "our path->" << Path_in_request << endl;
 		path_of_file_dm += Locations->get_root();
+		// std::cout << "path->" << path_of_file_dm << endl;
 	}
-
+	//std::cout << "after\n";
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
-		std::cout << "yes\n";
 		tmp_file = path_of_file_dm + Path_in_request;
 	}
 	else
@@ -276,14 +278,15 @@ void Request::path_of_file()
 		}
 	}
 	file_des = open(tmp_file.c_str(),O_RDONLY);
-	if(file_des <= 0)
+	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
-		path_of_file_dm = Servers->get_root();
+		std::cout << "failed or what\n";
+		path_of_file_dm = Servers->get_root() + '/';
 	}
 	else
 		path_of_file_dm = tmp_file;
 
-	// close(file_des);
+	close(file_des);
 	std::size_t found = path_of_file_dm.find("//");
 	if(found != std::string::npos)
 	{
@@ -296,6 +299,14 @@ void Request::path_of_file()
 
 std::string Request::give_the_header(int fileSize, bool test)
 {
+	// string str;
+	// ifstream our_file(path_of_file_dm.c_str());
+
+	// while(getline(our_file, str))
+	// {
+	// 	std::cout << "txt->" << str << endl;
+	// }
+	
 	if(test == 0)
 	{
 		ifstream our_file(path_of_file_dm.c_str());
@@ -303,7 +314,7 @@ std::string Request::give_the_header(int fileSize, bool test)
 		our_file.seekg(0, ios::end);
 		fileSize = our_file.tellg();
 	}
-	
+	// std::cout << "file_size == " << fileSize << endl;
 
 	stringstream header;
 	header << "Content-Length: " << fileSize << endl;
@@ -314,9 +325,9 @@ std::string Request::give_the_header(int fileSize, bool test)
 }
 
 
-int Request::get_indice()
+int Request::get_indice(int &file_des)
 {
-	std::cout << "path-->" << path_of_file_dm << endl;
+	// std::cout << "path-->" << path_of_file_dm << endl;
 	if(Status_Code == 0)
 	{
 		Status_Code = 200; //OK
@@ -329,7 +340,6 @@ int Request::get_indice()
 	}
 	if(is_directory(path_of_file_dm))
 	{
-		std::cout << "nop\n";
 		if(path_of_file_dm[path_of_file_dm.size() - 1] == '/' && Locations->get_autoindex() == 1)
 		{
 			Status_Code = 200;
@@ -340,7 +350,9 @@ int Request::get_indice()
 		}
 
 	}
-	return 1;
+	file_des = open(static_cast<const char *>(path_of_file_dm.c_str()), O_RDONLY);
+	//std::cout << "file-->" << file_des << endl;
+	return 0; 
 }
 
 
@@ -351,32 +363,34 @@ void Request::index_auto(std::string &test)
 	// 				<body style=\"background-color: grey; color: lightgrey;\">\n\
 	// 				<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
 	// 					<h1>Auto Index</h1>\n";
-	auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
-	//std::cout << "here-->" << path_of_file_dm.substr(Servers->get_root().length() + 1) << endl;
-	//std::cout << "contenue->" << auto_index.str() << endl; 
-	 //DIR *dir;
+	// auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
+	// // std::cout << "here-->" << path_of_file_dm.substr(Servers->get_root().length() + 1) << endl;
+	// // std::cout << "contenue->" << auto_index.str() << endl; 
+	//  DIR *dir;
 	// struct dirent *ent;
-	//if ((dir = opendir(path_of_file_dm.c_str())) != NULL)
-	//{
-	//	std::cout << "yes open\n";
-	// 	while ((ent = readdir(dir)) != NULL)
-	// 	{
-	// 		string link = ent->d_name;
-			
-	// 		if (is_directory(path_of_file_dm + '/' + link))
-	// 		{
 
-	// 			link += '/';
-	// 		}
-	// 		if (is_directory(Path) && Path[Path.size() - 1] != '/')
-	// 			Path += '/';
-	// 		auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
-	// 	}
-	// 	closedir (dir);
-	//}
+	// if ((dir = opendir("website")) != NULL)
+	// {
+	// 	std::cout << "yes open\n";
+	// 	 while ((ent = readdir(dir)) != NULL)
+	// 	 {
+	// 	 	string link = ent->d_name;
+	// 		std::cout << "link->" << link << endl;
+			
+	// 	 	// if (is_directory("website" + '/' + link))
+	// 	 	// {
+
+	// 	 	// 	link += '/';
+	// 	 	// }
+	// 	 	if (is_directory(Path) && Path[Path.size() - 1] != '/')
+	// 	 		Path += '/';
+	// 	 	auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
+	// 	 }
+	// 	 closedir (dir);
+	// }
 	// else
 	// {
-		
+	// 	std::cout << "why\n";
 	// 	exit(EXIT_FAILURE);
 	// }
 	// auto_index << "	</div>\n\

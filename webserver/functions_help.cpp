@@ -265,5 +265,15 @@ bool is_directory(const string &our_file)
 		return false;
 	}
 	//This macro returns non-zero if the file is a directory.
-	return (S_ISDIR(buffer.st_mode) == 1);
+	if(S_ISDIR(buffer.st_mode))
+	{
+		std::cout << "diiir\n";
+		return 1;
+	}else if(S_ISREG(buffer.st_mode))
+	{
+		std::cout << "it is a file\n";
+		return 0;
+	}
+	return 0;
+		
 }

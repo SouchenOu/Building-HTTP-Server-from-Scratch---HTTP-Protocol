@@ -109,6 +109,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
+	//int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -131,7 +132,6 @@ void Webserver::setup(void)
 
 	while(true)
 	{
-		//std::cout << "enter\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
@@ -184,6 +184,8 @@ Points to a bit set of descriptors to check for writing.*/
 
 // with multiplexing , server can entertain multiple connected clients simultaneously
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
+
+		//The select function returns the number of sockets meeting the conditions
 		if((activity < 0) && (errno != EINTR))
 		{
 			std::cout << "select error\n";
@@ -193,7 +195,6 @@ Points to a bit set of descriptors to check for writing.*/
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "enter\n";
 				// new_socket = 0;
 			 	// WebBrowsers *browser = new WebBrowsers();
 			 	// int addrlen = sizeof(browser->get_address_client());
@@ -227,12 +228,15 @@ Points to a bit set of descriptors to check for writing.*/
 				std::cout << BLUE << "Read incoming message" << endl;
 				
 
-				if((*iter3)->Read_request() == 2)
+				if((*iter3)->get_indice() == 0   && (*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
 					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
 					close((*iter3)->get_file_descriptor());
 					(*iter3)->set_file_descriptor(-1);
+					delete (*iter3);
+					iter3 = Browsers.erase(iter3);
+					--iter3;
 				}
 				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}
@@ -242,7 +246,8 @@ Points to a bit set of descriptors to check for writing.*/
 				if((*iter3)->get_indice() == 0)
 				{
 					(*iter3)->check_request();
-				}else if((*iter3)->get_indice() == 2)
+				}
+				else if((*iter3)->get_indice() > 0)
 				{
 					(*iter3)->send_response();
 				}
@@ -253,7 +258,10 @@ Points to a bit set of descriptors to check for writing.*/
 			// {
 			//  	std::cout << "firts3\n";
 			// }
-			
+			//cmp++;
+
+			// if(cmp == 3)
+			// 	exit(1);
 
 		}
 

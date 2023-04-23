@@ -52,7 +52,7 @@ int WebBrowsers::Read_request()
 
 	std::cout << "read_request\n";
 		int recv_s;
-		char buffer[10000];
+		char buffer[100000];
 		std::string read_buffer;
 		value = 0;
 
@@ -62,7 +62,7 @@ int WebBrowsers::Read_request()
 
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 				
-		recv_s = recv(file_descriptor, buffer, 10000, 0 ); 
+		recv_s = recv(file_descriptor, buffer, 100000, 0 ); 
 				//std::cout << buffer << endl;
 
 		if(recv_s < 0)
@@ -78,7 +78,7 @@ int WebBrowsers::Read_request()
 		}
 		if(request_Headers == NULL)
 		{
-			read_buffer = read_buffer + buffer;
+			read_buffer = read_buffer + string(buffer, recv_s);
 		}
 		std::cout << "read_buffer:\n";
 		//std::cout << read_buffer << endl;
@@ -87,7 +87,7 @@ int WebBrowsers::Read_request()
 		// 	// request_Headers->give_head("Body") += buffer;
 		// }
 ;		// If the datagram or message is not larger than the buffer specified,
-		if(recv_s < 10000)
+		if(recv_s < 100000)
 		{		
 			// send request
 			if(request_Headers == NULL)
@@ -146,11 +146,14 @@ void WebBrowsers::check_request()
 	//file_path
 	request_Headers->path_of_file();
 	int status;
-	status = request_Headers->get_indice();
-	std::cout << "status -->" << status << endl;
+	status = request_Headers->get_indice(file_file_descriptor);
+	// std::cout << "status -->" << status << endl;
+	// file_file_descriptor = open(static_cast<const char *>(path.c_str()), O_RDONLY);
 	if(status == 0)
 	{
 		send_buffer = request_Headers->give_the_header(0 , 0);
+		std::cout << "Response: " << endl;
+		std::cout << send_buffer << endl;
 		indice = 2;
 		delete request_Headers;
 		request_Headers = 0;
@@ -174,23 +177,63 @@ void WebBrowsers::check_request()
 }
 void WebBrowsers::send_response()
 {
-	int total = 10000;
+	if(indice == 2)
+	{
+		send1();
+	}
+	else if(indice == 3)
+	{
+		send2();
+	}
+}
 
+
+void WebBrowsers::send1()
+{
+	int total = 100000;
+	//std::cout << "size->" << send_buffer.size() << endl;
 	if(send_byte + total > send_buffer.size())
 	{
 		total = send_buffer.size() - send_byte;
 	}
-	send(file_descriptor, send_buffer.c_str() + send_byte, total, 0);
+	::send(file_descriptor, send_buffer.c_str() + send_byte, total, 0);
 	send_byte = send_byte + total;
 	if (send_byte == send_buffer.size())
 	{
 		send_buffer.clear();
 		indice = 3;
 	}
+
 }
+void WebBrowsers::send2()
+{
+	int fd;
+	char 	buff[100000];
+	if(file_file_descriptor == 0)
+	{
+		std::cout << "error1\n";
+	}
+	fd = read(file_file_descriptor, buff, 100000);
+	//std::cout << "buffer->" << buff << endl;
 
+	if(fd <= 0)
+	{
+		std::cout << "error\n";
+	}
+	::send(file_descriptor, buff, fd, 0);
+	//write(file_descriptor, "hello", 100000);
 
+	if (fd < 100000)
+	{
+		//std::cout << "enter here !\n";
+		close(file_file_descriptor);
+		indice = 0;
+		value = 0;
+		file_file_descriptor = 0;
+		request_Headers = NULL;
+	}
 
+}
 
 
 

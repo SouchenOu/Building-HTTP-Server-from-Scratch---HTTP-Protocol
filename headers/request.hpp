@@ -30,6 +30,7 @@ class Request
         int Status_Code;
         std::string path_of_file_dm;
         std::string version_http;
+        // int file_file_descriptor;
         
    
     public:
@@ -59,7 +60,7 @@ class Request
         int check_request_with_config_file(const std::set<server*> &servers);
         void path_of_file();
         std::string give_the_header(int fileSize, bool test);
-        int get_indice();
+        int get_indice(int &file_file_descriptor);
         void index_auto(std::string &test);
 
        
