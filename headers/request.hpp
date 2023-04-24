@@ -38,7 +38,7 @@ class Request
         // constructers
 
         Request();
-        Request(const std::string buffer);
+        Request(std::string buffer);
         // destructer
         ~Request();
 
@@ -61,7 +61,7 @@ class Request
         void path_of_file();
         std::string give_the_header(int fileSize, bool test);
         int get_indice(int &file_file_descriptor);
-        void index_auto(std::string &test);
+        void Parcing_request(std::string buffer);
 
        
         

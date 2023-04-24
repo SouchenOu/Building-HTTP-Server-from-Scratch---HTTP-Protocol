@@ -37,10 +37,20 @@ Request::Request()
     std::cout << "Send a request\n";
 }
 
-Request::Request(const std::string buffer):Status_Code(0)
+Request::Request(std::string buffer):Status_Code(0)
 {
-    string content_type;
   
+	Parcing_request(buffer);
+
+}
+
+// // destructer
+Request::~Request()
+{
+	std::cout << "request destructer\n";
+}
+void Request::Parcing_request(std::string buffer)
+{
 	vector<string> request_Headers = ft_divise(buffer, "\r\n");
     
 
@@ -97,26 +107,7 @@ Request::Request(const std::string buffer):Status_Code(0)
         iter++;
 
     }
-     // In POST request we find content-length ,content-type, origin and referer
-    // size_t found;
-    // found = buffer.find("content-type");
-    // // npos means end of buffer
-    // if(found != string::npos)
-    // {
-    //     content_type = buffer.substr(found, buffer.find('\n', found));
-    // }
-
-
-
-	
 }
-
-// // destructer
-Request::~Request()
-{
-
-}
-
 //getters
 
 std::map<string, string> Request::get_headers()
