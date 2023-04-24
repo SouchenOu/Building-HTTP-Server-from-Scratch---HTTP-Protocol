@@ -58,7 +58,7 @@ void WebBrowsers::Connection(int fd_socket)
 		std::cout << "server failed to accept incoming connection " << endl;
         check_fd = -1; 
 	}
-		inet_ntop(AF_INET, &(address_client.sin_addr), client_ipv4_str, INET_ADDRSTRLEN);
+		
 
 }
 int WebBrowsers::Read_request()
@@ -82,12 +82,10 @@ int WebBrowsers::Read_request()
 		if(recv_s < 0)
 		{
 			std::cout << "No message are available to be received\n";
-			value = 1;
 			return 2;
 		}else if(recv_s == 0)
 		{
 			std::cout << "Client disconnected\n";
-			value = 1;
 			return 2;
 		}
 		if(request_Headers == NULL)
@@ -96,10 +94,7 @@ int WebBrowsers::Read_request()
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
-		// if(request_Headers != NULL)
-		// {
-		// 	// request_Headers->give_head("Body") += buffer;
-		// }
+	
 ;		// If the datagram or message is not larger than the buffer specified,
 		if(recv_s < BUFFUR_SIZE)
 		{		

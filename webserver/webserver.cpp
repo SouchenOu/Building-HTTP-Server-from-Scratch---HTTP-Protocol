@@ -139,17 +139,12 @@ void Webserver::setup(void)
 		for(list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 			fd	= (*iter1)->get_file_descriptor();
-			if(fd > fd_max)
-			{
-				fd_max = fd;
-			}
-			else if(fd == -1)
+			if(fd == -1)
 			{
 				delete(*iter1);
 				(*iter1) = 0;
 				iter1 = Browsers.erase(iter1);
-				if (iter1 == Browsers.end())
-				break;
+				
 				
 			}	
 			
@@ -224,13 +219,17 @@ Points to a bit set of descriptors to check for writing.*/
 
 		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
+			if((*iter3)->get_file_descriptor() > fd_max)
+			{
+				fd_max = (*iter3)->get_file_descriptor();
+			}
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
 				std::cout << BLUE << "Read incoming message" << endl;
 				
 
-				if((*iter3)->get_indice() == 0   && (*iter3)->Read_request() == 2)
+				if((*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
 					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
