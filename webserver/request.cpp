@@ -223,7 +223,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		}
 	}
 
-	
+	this->Locations = NULL;
 	return 1;
 
 }
@@ -262,13 +262,16 @@ void Request::path_of_file()
 		// std::cout << "path->" << path_of_file_dm << endl;
 	}
 	//std::cout << "after\n";
+	std::cout << "path_of_file_dm + Path_in_request->" << path_of_file_dm + Path_in_request << endl;
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
+		std::cout << "nop\n";
 		tmp_file = path_of_file_dm + Path_in_request;
 	}
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
+		std::cout << "tmp file->" << tmp_file << endl;
 	}
 	if(tmp_file[tmp_file.length() - 1] == '/')
 	{
@@ -292,14 +295,14 @@ void Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	//std::cout << "our file is" << path_of_file_dm << endl;
+	std::cout << "our file is" << path_of_file_dm << endl;
 
 
 }
 
 std::string Request::give_the_header(int fileSize, bool test)
 {
-	// string str;
+	string str;
 	// ifstream our_file(path_of_file_dm.c_str());
 
 	// while(getline(our_file, str))
@@ -309,12 +312,20 @@ std::string Request::give_the_header(int fileSize, bool test)
 	
 	if(test == 0)
 	{
-		ifstream our_file(path_of_file_dm.c_str(),ofstream::in);
+		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
+		// while(getline(our_file, str))
+		// {
+		// 		std::cout<< "str-->\n";
+
+		// 		std::cout << str << endl;
+		// }
 		// position at end of fileObject
 		our_file.seekg(0, ios::end);
+		//Say we have entered 20 characters in a text file, and you want to read it.
+//		But along with reading you also want to know the position of the last position in the text file.
 		fileSize = our_file.tellg();
 	}
-	// std::cout << "file_size == " << fileSize << endl;
+	//  std::cout << "file_size == " << fileSize << endl;
 
 	stringstream header;
 	header << "Content-Length: " << fileSize << endl;
@@ -338,65 +349,10 @@ int Request::get_indice(int &file_des)
 		std::cout << "error_page\n";
 		return 0;
 	}
-	if(is_directory(path_of_file_dm))
-	{
-		if(path_of_file_dm[path_of_file_dm.size() - 1] == '/' && Locations->get_autoindex() == 1)
-		{
-			Status_Code = 200;
-			return 1;
-		}else
-		{
-			Status_Code = 403;
-		}
-
-	}
+	
 	file_des = open(static_cast<const char *>(path_of_file_dm.c_str()), O_RDONLY);
 	//std::cout << "file-->" << file_des << endl;
 	return 0; 
 }
 
 
-void Request::index_auto(std::string &test)
-{
-	stringstream auto_index;
-	// auto_index << "	<html lang=\"en\">\n\
-	// 				<body style=\"background-color: grey; color: lightgrey;\">\n\
-	// 				<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
-	// 					<h1>Auto Index</h1>\n";
-	// auto_index << path_of_file_dm.substr(Servers->get_root().length() + 1);
-	// // std::cout << "here-->" << path_of_file_dm.substr(Servers->get_root().length() + 1) << endl;
-	// // std::cout << "contenue->" << auto_index.str() << endl; 
-	//  DIR *dir;
-	// struct dirent *ent;
-
-	// if ((dir = opendir("website")) != NULL)
-	// {
-	// 	std::cout << "yes open\n";
-	// 	 while ((ent = readdir(dir)) != NULL)
-	// 	 {
-	// 	 	string link = ent->d_name;
-	// 		std::cout << "link->" << link << endl;
-			
-	// 	 	// if (is_directory("website" + '/' + link))
-	// 	 	// {
-
-	// 	 	// 	link += '/';
-	// 	 	// }
-	// 	 	if (is_directory(Path) && Path[Path.size() - 1] != '/')
-	// 	 		Path += '/';
-	// 	 	auto_index << "<p><a href=\"" << link << "\" class=\"active\">" << link << "</a></p>\n";
-	// 	 }
-	// 	 closedir (dir);
-	// }
-	// else
-	// {
-	// 	std::cout << "why\n";
-	// 	exit(EXIT_FAILURE);
-	// }
-	// auto_index << "	</div>\n\
-	// 				</body>\n\
-	// 				</html>";
-	Status_Code = 200;
-	test = auto_index.str();
-	//std::cout << "test = " << test << endl;
-}

@@ -138,20 +138,22 @@ void Webserver::setup(void)
 
 		for(list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
-			
 			fd	= (*iter1)->get_file_descriptor();
-			if(fd == -1)
+			if(fd > fd_max)
+			{
+				fd_max = fd;
+			}
+			else if(fd == -1)
 			{
 				delete(*iter1);
 				(*iter1) = 0;
 				iter1 = Browsers.erase(iter1);
-				
+				if (iter1 == Browsers.end())
+				break;
 				
 			}	
-			else if(fd > fd_max)
-			{
-				fd_max = fd;
-			}
+			
+			
 		}
 		/****
 		 * The recv function is used to read incoming data on connection-oriented sockets,
@@ -242,7 +244,6 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			else if((*iter3)->get_value() == 1)
 			{
-				//std::cout << "value here\n";
 				if((*iter3)->get_indice() == 0)
 				{
 					(*iter3)->check_request();
@@ -254,13 +255,10 @@ Points to a bit set of descriptors to check for writing.*/
 				
 				
 			}
-			// else if(fcntl((*iter3)->get_file_descriptor(), F_GETFL) < 0)
-			// {
-			//  	std::cout << "firts3\n";
-			// }
-			//cmp++;
+		
+			// cmp++;
 
-			// if(cmp == 3)
+			// if(cmp == 10)
 			// 	exit(1);
 
 		}

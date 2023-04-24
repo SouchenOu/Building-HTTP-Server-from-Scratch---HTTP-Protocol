@@ -640,9 +640,9 @@ Location	parse_location(vector<string> &config_file, size_t *cmp)
 					}
 					if(line[1] == "0" || line[1] == "1")
 					{
-
+						location.set_autoindex(atoi(line[1].c_str()));
 					}
-					location.set_autoindex(atoi(line[1].c_str()));
+					
 					
 		}
 		else if (line[0] == "index")
@@ -674,6 +674,7 @@ Location	parse_location(vector<string> &config_file, size_t *cmp)
 		iter2++;
 		(*cmp)++;
 	}
+
 
 	return location;
 }

@@ -12,7 +12,7 @@
 
 #include "../headers/WebBrowser.hpp"
 #include "../headers/server.hpp"
-#include "../headers/Request.hpp"
+#include "../headers/request.hpp"
 
 
 #define BUFFUR_SIZE 4096
@@ -35,6 +35,15 @@ WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : file_desc
 }
 WebBrowsers::~WebBrowsers()
 {
+		// Log("Client disconnected");
+	std::cout << "destructer\n";
+	if (file_descriptor > 0)
+		close(file_descriptor);
+	if (request_Headers != 0)
+	{
+		delete request_Headers;
+		request_Headers = 0;
+	}
 
 }
 
@@ -49,13 +58,15 @@ void WebBrowsers::Connection(int fd_socket)
 		std::cout << "server failed to accept incoming connection " << endl;
         check_fd = -1; 
 	}
+		inet_ntop(AF_INET, &(address_client.sin_addr), client_ipv4_str, INET_ADDRSTRLEN);
+
 }
 int WebBrowsers::Read_request()
 {
 
 	std::cout << "read_request\n";
 		int recv_s;
-		char buffer[4096];
+		char buffer[BUFFUR_SIZE];
 		std::string read_buffer;
 		value = 0;
 
@@ -65,7 +76,7 @@ int WebBrowsers::Read_request()
 
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 				
-		recv_s = recv(file_descriptor, buffer, 4096, 0 ); 
+		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
 				//std::cout << buffer << endl;
 
 		if(recv_s < 0)
@@ -81,16 +92,16 @@ int WebBrowsers::Read_request()
 		}
 		if(request_Headers == NULL)
 		{
-			read_buffer = read_buffer + string(buffer, recv_s);
+			read_buffer = read_buffer + buffer;
 		}
 		std::cout << "read_buffer:\n";
-		//std::cout << read_buffer << endl;
+		std::cout << read_buffer << endl;
 		// if(request_Headers != NULL)
 		// {
 		// 	// request_Headers->give_head("Body") += buffer;
 		// }
 ;		// If the datagram or message is not larger than the buffer specified,
-		if(recv_s < 100000)
+		if(recv_s < BUFFUR_SIZE)
 		{		
 			// send request
 			if(request_Headers == NULL)
@@ -155,22 +166,13 @@ void WebBrowsers::check_request()
 	if(status == 0)
 	{
 		send_buffer = request_Headers->give_the_header(0 , 0);
-		std::cout << "Response: " << endl;
-		std::cout << send_buffer << endl;
 		indice = 2;
 		delete request_Headers;
 		request_Headers = 0;
 
-	}else if(status == 1)
-	{
-		string test;
-		request_Headers->index_auto(test);
-		send_buffer = request_Headers->give_the_header(test.size() , 1);
-		send_buffer = send_buffer + test;
-		indice = 2;
-		delete request_Headers;
-		request_Headers = 0;
 	}
+	
+
 	
 	
 
@@ -180,56 +182,41 @@ void WebBrowsers::check_request()
 }
 void WebBrowsers::send_response()
 {
+	
 	if(indice == 2)
-	{
-		send1();
-	}
-	else if(indice == 3)
 	{
 		send2();
 	}
 }
 
 
-void WebBrowsers::send1()
-{
-	int total = 100000;
-	//std::cout << "size->" << send_buffer.size() << endl;
-	if(send_byte + total > send_buffer.size())
-	{
-		total = send_buffer.size() - send_byte;
-	}
-	::send(file_descriptor, send_buffer.c_str() + send_byte, total, 0);
-	send_byte = send_byte + total;
-	if (send_byte == send_buffer.size())
-	{
-		send_buffer.clear();
-		indice = 3;
-	}
 
-}
 void WebBrowsers::send2()
 {
 	int fd;
-	char 	buff[100000];
+	//char hello[100] = "hello souchen";
+	char 	buff[BUFFUR_SIZE];
 	if(file_file_descriptor == 0)
 	{
 		std::cout << "error1\n";
 	}
-	fd = read(file_file_descriptor, buff, 100000);
-	//std::cout << "buffer->" << buff << endl;
-
+	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
+	std::cout << "buffer->" << buff << endl;
+	std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
 		std::cout << "error\n";
 	}
-	::send(file_descriptor, buff, fd, 0);
-	//write(file_descriptor, "hello", 100000);
+	std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 278\r\n\r\n";
+	send(file_descriptor, str.c_str(), str.length(), 0);
+	send(file_descriptor, buff, fd, 0);
+	//write(file_descriptor, hello, strlen(hello));
 
-	if (fd < 100000)
+	if (fd < BUFFUR_SIZE)
 	{
-		//std::cout << "enter here !\n";
+		std::cout << "sendig file to client !\n";
 		close(file_file_descriptor);
+		delete(request_Headers);
 		indice = 0;
 		value = 0;
 		file_file_descriptor = 0;

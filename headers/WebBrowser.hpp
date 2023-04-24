@@ -15,7 +15,7 @@
 #define WEBBROWSER_HPP
 
 #include "headers.hpp"
-#include "Request.hpp"
+#include "request.hpp"
 
 class server;
 class response;
@@ -35,6 +35,7 @@ class   WebBrowsers
             unsigned int send_byte;
             int indice;
             int file_file_descriptor;
+            char				client_ipv4_str[INET_ADDRSTRLEN];
 
 
     public:

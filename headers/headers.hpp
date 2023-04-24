@@ -51,8 +51,8 @@
 # include <list>
 # include "server.hpp"
 #include "WebBrowser.hpp"
-#include "Location.hpp"
-#include "Request.hpp"
+#include "location.hpp"
+#include "request.hpp"
 #include "response.hpp"
 
 #define BLUE    "\033[34m"
