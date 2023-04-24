@@ -14,7 +14,7 @@
 #ifndef WEBBROWSER_HPP
 #define WEBBROWSER_HPP
 
-#include "headers.hpp"
+#include "tools.hpp"
 #include "request.hpp"
 
 class server;
