@@ -81,21 +81,21 @@ void Request::Parcing_request(std::string buffer)
         {
             vector<string> split_Host = ft_divise(First_line[1], ":");
          
-            if((First_line.size() != 3  && !(First_line.size() == 2 && First_line[1] == "localhost")) || First_line[1].size() == 0)
+            if(First_line.size() != 3)
             {
                 break ;
             }else{
                 // server and browser exchange meta information about the document via the HTTP header.
-                headers.insert(pair<string,string>("Host", First_line[1]));
-                headers.insert(pair<string,string>("Port",First_line[2]));
+                request_headers.insert(pair<string,string>("Host", First_line[1]));
+                request_headers.insert(pair<string,string>("Port",First_line[2]));
             }
         }else
-            headers.insert(pair<string, string>(First_line[0], First_line[1]));
+            request_headers.insert(pair<string, string>(First_line[0], First_line[1]));
 
 
             // std::map<string, string>::iterator it;
-            // std::cout << "Headers******\n";
-            // for(it = headers.begin(); it != headers.end(); it++)
+            // std::cout << "request_headers******\n";
+            // for(it = request_headers.begin(); it != request_headers.end(); it++)
             // {
             //     std::cout <<"*************\n";
             //     std::cout << "First->" <<it->first << endl;
@@ -110,9 +110,9 @@ void Request::Parcing_request(std::string buffer)
 }
 //getters
 
-std::map<string, string> Request::get_headers()
+std::map<string, string> Request::get_request_headers()
 {
-    return headers;
+    return request_headers;
 }
 
 std::string Request::get_Path()
@@ -135,7 +135,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 {
 	// (void) servers;
 	// (void) path;
-	// (void) headers;
+	// (void) request_headers;
 	string Host;
 	unsigned int port;
 	string path_navigate;
@@ -144,9 +144,9 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	std::set<string>::iterator iter2;
 	std::set<server*>::iterator iter3;
 	this->Servers =  NULL;
-	if(headers.find("Host") != headers.end())
+	if(request_headers.find("Host") != request_headers.end())
 	{
-		Host = headers.find("Host")->second;
+		Host = request_headers.find("Host")->second;
 	}
 	else 
 	{
@@ -157,9 +157,9 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	//std::cout << "Host-->" << Host << endl;
 
-	if(headers.find("Port") != headers.end())
+	if(request_headers.find("Port") != request_headers.end())
 	{
-		port = atoi(headers.find("Port")->second.c_str());
+		port = atoi(request_headers.find("Port")->second.c_str());
 	}else
 	{
 		port = 0;
@@ -253,7 +253,6 @@ void Request::path_of_file()
 		// std::cout << "path->" << path_of_file_dm << endl;
 	}
 	//std::cout << "after\n";
-	std::cout << "path_of_file_dm + Path_in_request->" << path_of_file_dm + Path_in_request << endl;
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
 		std::cout << "nop\n";
@@ -262,7 +261,6 @@ void Request::path_of_file()
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
-		std::cout << "tmp file->" << tmp_file << endl;
 	}
 	if(tmp_file[tmp_file.length() - 1] == '/')
 	{
@@ -286,12 +284,11 @@ void Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	std::cout << "our file is" << path_of_file_dm << endl;
 
 
 }
 
-std::string Request::give_the_header(int fileSize, bool test)
+std::string Request::give_the_header(int fileSize, bool var)
 {
 	string str;
 	// ifstream our_file(path_of_file_dm.c_str());
@@ -301,7 +298,7 @@ std::string Request::give_the_header(int fileSize, bool test)
 	// 	std::cout << "txt->" << str << endl;
 	// }
 	
-	if(test == 0)
+	if(var == 0)
 	{
 		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
 		// while(getline(our_file, str))
@@ -318,11 +315,11 @@ std::string Request::give_the_header(int fileSize, bool test)
 	}
 	//  std::cout << "file_size == " << fileSize << endl;
 
-	stringstream header;
-	header << "Content-Length: " << fileSize << endl;
-	header << "Connection: Closed" << endl;
+	stringstream response_header;
+	response_header << "Content-Length: " << fileSize << endl;
+	response_header << "Connection: Closed" << endl;
 
-	return header.str();
+	return response_header.str();
 	
 }
 

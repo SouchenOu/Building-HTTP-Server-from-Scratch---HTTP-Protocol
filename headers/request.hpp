@@ -22,7 +22,7 @@ class Request
 
     private:
 
-        std::map<std::string, std::string> headers;
+        std::map<std::string, std::string> request_headers;
         std::string Path;
         std::string type_request;
         server  *Servers;
