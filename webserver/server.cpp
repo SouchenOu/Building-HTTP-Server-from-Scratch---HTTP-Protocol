@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../headers/server.hpp"
+#include "../headers/binding_socket.hpp"
 #define BLUE    "\033[34m"
 # define white_espace "; \t"
 
@@ -79,14 +80,13 @@ int server::EstablishConnection(void)
 
 
 //**Sometimes, you might notice, you try to rerun a server and bind() fails, claiming “Address already in use.” What does that mean? Well, a little bit of a socket that was connected is still hanging around in the kernel, and it’s hogging the port. You can either wait for it to clear (a minute or so), or add code to your program allowing it to reuse the port,***/////
-	int test = 1;
-	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &test, sizeof(test));
+	int var = 1;
+	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &var, sizeof(var));
 
 
 	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
-	if (bind(fd_socket, (const struct sockaddr *)&address, sizeof(address)) == -1)
+	if (binding_socket(fd_socket,address) == -1)
 	{
-		
 		perror("Error : Problem binding");
 		exit(1);
 	}

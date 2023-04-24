@@ -110,10 +110,7 @@ void Request::Parcing_request(std::string buffer)
 }
 //getters
 
-std::map<string, string> Request::get_request_headers()
-{
-    return request_headers;
-}
+
 
 std::string Request::get_Path()
 {
