@@ -14,19 +14,6 @@
 #include "../headers/tools.hpp"
 # define white_espace "; \t"
 #include <fcntl.h>
-// #include <filesystem>
-// #include "iostream"
-// #include <iostream>
-// #include <fstream>
-// #include <cstdio>
-// #include <cstring>
-// #include <filesystem>
-// #include <unistd.h>
-// #include <sys/socket.h>
-// #include <sys/un.h>
-// # include <sys/stat.h>
-// # include <dirent.h>
-
 
 
 // constructers
@@ -108,9 +95,8 @@ void Request::Parcing_request(std::string buffer)
 
     }
 }
+
 //getters
-
-
 
 std::string Request::get_Path()
 {

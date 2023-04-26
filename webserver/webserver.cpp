@@ -103,8 +103,6 @@ void Webserver::parcing_config_file(const string config_file)
 }
 
 
-
-
 void Webserver::setup(void)
 {
 	
