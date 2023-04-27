@@ -101,92 +101,6 @@ vector<string> ft_divise(const string &str, const string &search)
 }
 
 
-// vector<string> ft_divise(const std::string &str, const std::string &search_data)
-// {
-
-//     std::vector<std::string> split_set;
-//     size_t          i;
-//     size_t          j;
-//     string          the_str;
-//     int             indice1;
-// 	int 			indice2;
-
-//     i = 0;
-//     the_str = "";
-//     while (i < str.length())
-//     {
-		
-// 		indice1 = 0;
-// 		//j = 0;
-//         while (i < str.length())
-//         {
-// 			indice1 = 0;
-// 			j = 0;
-// 			while(search_data[j] != '\0')
-// 			{
-// 				if(str[i] == search_data[j])
-//             	{
-// 					std::cout << "yes\n";
-//                 	indice1 = indice1 + 1;
-// 					i++;
-// 					break ;
-//             	}
-// 				j++;
-// 			}
-            
-//             if(indice1 == 0)
-//             {
-//                 break ;
-//             }
-//         }
-		
-//         if (i < str.length())
-//         {
-// 			std::cout << "str =" << str[i] << endl;
-// 			j = 0;
-// 			the_str = "";
-//             while (i < str.length())
-//             {
-// 				j = 0;
-// 				indice2 = 0;
-// 				while(search_data[j] != '\0' && str[i] != search_data[j])
-// 				{
-					
-// 					indice2++;
-// 					j++;
-// 				}
-// 				// exit(0);
-// 				if(indice2 != 0)
-// 				{
-// 					the_str = the_str + str[i];
-// 					i++;
-// 				}else if(indice2 == 0 && the_str != "")
-// 				{
-// 					split_set.push_back(the_str);
-// 					break ;
-// 				}
-              
-               
-//             }
-		
-                          
-//         }
-		
-        
-//     }
-	
-// 	std::vector<string>::iterator iter ;
-	
-// 	for(iter = split_set.begin(); iter != split_set.end(); iter++)
-// 	{
-// 		std::cout << "*********************\n";
-// 		std::cout << "Element : "<<*iter << std::endl;
-// 		std::cout << "*********************\n";
-// 	}
-
-//     return split_set;
-// }
-
 
 
 server	*parse_server(vector<string> config_file, size_t *cmp)
@@ -206,10 +120,10 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		
 
 	vector<string>::iterator iter = config_file.begin() + *cmp;
-	if (iter == config_file.end())
-	{
-		return NULL;
-	}
+	// if (iter == config_file.end())
+	// {
+	// 	return NULL;
+	// }
 		
 	iter++;
 	(*cmp)++;
@@ -263,7 +177,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				address_ip = "127.0.0.1";
 			}
 				
-			serv->set_ip_address(address_ip);
+			
 
 			if (is_integer(address_port) == 0)
 			{
@@ -271,6 +185,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				exit(0);
 			}
 			serv->set_port_listen(atoi(address_port.c_str()));
+			serv->set_ip_address(address_ip);
 
 			// std::cout << "ip_address->" << serv->get_ip_address() << endl;
 			// std::cout << "ip_port-->" << serv->get_port_listen() << endl;
@@ -289,21 +204,28 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 			}
 			for (vector<string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
 			{
-				serv->push_in_server_name(*server_name);
+				serv->insert_in_server_name(*server_name);
 				 
 			}
 			
 		}
-		
-		else if (words2[0] == "error_page")
+		else if (words2[0] == "root")
 		{
-			if (words2.size() != 3)
+			if (words2.size() != 2)
 			{
-				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << endl;
+				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after root" << endl;
+
 				exit(0);
 			}
-			//The C++ pair allows you to store two disparate items as a single entity.
-			serv->push_in_error_page(pair<unsigned int, string>((unsigned int)atoi(words2[1].c_str()), words2[2]));
+			string root_tmp = words2[1];
+			if (root_tmp.size() > 0 && root_tmp[0] == '/')
+			{
+				root_tmp = root_tmp.substr(1);
+			}
+				
+			if (root_tmp.size() > 1 && root_tmp[root_tmp.size() - 1] == '/')
+				root_tmp.resize(root_tmp.size() - 1);
+			serv->set_root(root_tmp);
 		}
 		// the index directive defines the index file is name (The default value is index.html)
 		else if (words2[0] == "index")
@@ -325,13 +247,23 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after client_max_body_size" << endl;
 				exit(0);
 			}
-			if (!is_integer(words2[1]))
+			if (is_integer(words2[1]) == 0)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have a number after client_max_body_size" << endl;
 	
 				exit(0);
 			}
 			serv->set_client_max_body_size(atoi(words2[1].c_str()));
+		}
+		else if (words2[0] == "error_page")
+		{
+			if (words2.size() != 3)
+			{
+				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << endl;
+				exit(0);
+			}
+			//The C++ pair allows you to store two disparate items as a single entity.
+			serv->insert_in_error_page(pair<unsigned int, string>((unsigned int)atoi(words2[1].c_str()), words2[2]));
 		}
 		/******Nginx fastcgi is used to translate requests of clients from an application server which was not handled the request of the client directly.*/
 		/****We can say that the nginx fastcgi protocol means improving the performance by running each request in a process that was separate in nginx.*/
@@ -344,32 +276,14 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after cgi" << endl;
 				exit(0);
 			}
-			serv->push_in_cgi(words2[1], words2[2]);
+			serv->insert_in_cgi(words2[1], words2[2]);
 		
 		}
 		
-		else if (words2[0] == "root")
-		{
-			if (words2.size() != 2)
-			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after root" << endl;
-
-				exit(0);
-			}
-			string root_tmp = words2[1];
-			if (root_tmp.size() > 0 && root_tmp[0] == '/')
-			{
-				root_tmp = root_tmp.substr(1);
-			}
-				
-			if (root_tmp.size() > 1 && root_tmp[root_tmp.size() - 1] == '/')
-				root_tmp.resize(root_tmp.size() - 1);
-			serv->set_root(root_tmp);
-		}
+		
 
 		/***** each location is used to handle a certain type of client request,
 		 *  and each location is selected by matching the location definition against the client request through a selection algorithm.*/
-
 
 		/*****NGINX’s location setting helps you set up the way in which NGINX responds to requests for resources inside the server.*/
 
@@ -384,171 +298,130 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				exit(0);
 			}
 			size_t old_cmp = *cmp;
-			serv->push_in_location(parse_location(config_file, cmp));
+			//serv->insert_in_location(parse_location(config_file, cmp));
+
+			string path;
+			path = words2[1];
+
+			if(path.size() > 1 && path[path.size() - 1] == '/')
+			{
+				path.resize(path.size() - 1);
+			} 
+			if(words2[2] != "{")
+			{
+				std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
+				exit(0);
+			}
+
+			location.set_path(path);
+
+			(*cmp)++; // go to the next line
+
+			vector<string>::iterator iter2 = config_file.begin() + *cmp;
+			while(iter2 != config_file.end())
+			{
+				vector<string> w_o_r_d = ft_divise(*iter2, white_espace);
+				if(w_o_r_d.size() == 0 || w_o_r_d[0][0] == '#')
+				{
+					iter2++;
+					(*cmp)++;
+					continue;
+				}
+				if(w_o_r_d[0] ==  "}")
+				{
+					break ;
+				}
+				// 	// root in location
+				if(w_o_r_d[0] == "root")
+				{
+					// std::cout << "enter\n";
+					if(w_o_r_d.size() != 2)
+					{
+						std::cout << BLUE  << "--> should have another argument after root" << endl;
+						exit(0);
+					}
+					if(w_o_r_d[1].size() > 1 && w_o_r_d[1][w_o_r_d[1].size() - 1] == '/')
+					{
+						w_o_r_d[1].resize(w_o_r_d[1].size() - 1);
+					}
+					location.set_root(w_o_r_d[1]);
+					
+			
+				}
+				// return in location
+				else if(w_o_r_d[0] == "return")
+				{
+					if(w_o_r_d.size() != 3)
+					{
+						std::cout << BLUE  << "--> should have two argument after return" << endl;
+						exit(0);
+					}
+					if(w_o_r_d[2].size() > 1 && w_o_r_d[2][w_o_r_d[2].size() - 1] == '/')
+					{
+						w_o_r_d[2].resize(w_o_r_d[2].size() - 1);
+					}
+					int number = atoi(w_o_r_d[1].c_str());
+
+					if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
+					{
+						std::cout << BLUE  <<  "--> invalid number" << endl;
+						exit(0);
+					}
+					location.set_http_redirection(number);	
+					location.set_return_line(w_o_r_d[2]);
+				}
+				// 	// autoindex
+				else if(w_o_r_d[0] == "autoindex")
+				{
+					if(w_o_r_d.size() != 2)
+					{
+						std::cout << "should have another argument after autoindex" << endl;
+						exit(0);
+					}
+					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
+					{
+						location.set_autoindex(atoi(w_o_r_d[1].c_str()));
+					}
+						
+				}
+				else if (w_o_r_d[0] == "index")
+				{
+					if(w_o_r_d.size() < 2)
+					{
+						std::cout << "should have another argument after index" << endl;
+						exit(0);
+					}
+					location.set_index(w_o_r_d[1]);
+				}
+				else if(w_o_r_d[0] == "allow_method")
+				{
+					if(w_o_r_d.size() < 2)
+					{
+						std::cout << "shold have another argument after allow" << endl;
+					}
+					//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
+					std::vector<std::string>::iterator iter;
+					for(iter = w_o_r_d.begin() + 1; iter != w_o_r_d.end(); iter++)
+					{
+						location.allow_HTTP_methods(*iter);
+					} 
+				}
+				 
+				else
+					std::cout << "It is another location \n ";
+
+				(*cmp)++;
+				iter2++;
+			}
+			serv->insert_in_location(location);
 			iter = iter +  *cmp - old_cmp;
 		}
+		
+		
 		iter++;
 		(*cmp)++;
-			// size_t old_cmp = *cmp;
-
-			// // we shouls parse location
-		
-			// string path;
-			// path = words2[1];
-
 			
-		
-			// if(path.size() > 1 && path[path.size() - 1] == '/')
-			// {
-			// 	path.resize(path.size() - 1);
-			// } 
-			// if(words2[2] != "{")
-			// {
-			// 	std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
-			// 	exit(0);
-			// }
-			// location.set_path(path);
 
-			// (*cmp)++;
-			// // first line after location line
-			// vector<string>::iterator iter2 = config_file.begin() + *cmp;
-			// while(iter2 != config_file.end())
-			// {
-			// 	vector<string> line = ft_divise(*iter2, white_espace);
-			// 	if(line.size() == 0 || line[0][0] == '#')
-			// 	{
-			// 		iter2++;
-			// 		(*cmp)++;
-			// 		continue;
-			// 	}
-			// 	if(line[0] ==  "}")
-			// 	{
-			// 		break ;
-			// 	}
-			// 	// root in location
-			// 	if(line[0] == "root")
-			// 	{
-			// 		// std::cout << "enter\n";
-			// 		if(line.size() == 0)
-			// 		{
-			// 			std::cout << BLUE  << "--> should have another argument after root" << endl;
-			// 			exit(0);
-			// 		}
-
-			// 		if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-			// 		{
-			// 			line[1].resize(line[1].size() - 1);
-			// 		}
-			// 		location.set_root(line[1]);
-			// 		// std::cout << "root->" << location.get_root() << endl;
-			// 	}
-			// 	// try_files in location 
-			// 	// else if(line[0] == "try_files")
-			// 	// {
-			// 	// 	if(line.size() < 2)
-			// 	// 	{
-			// 	// 		std::cout << BLUE  << "--> should have minimum one argument after try_files argument" << endl;
-			// 	// 		exit(0);
-			// 	// 	}
-			// 	// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-			// 	// 	{
-			// 	// 		line[1].resize(line[1].size() - 1);
-			// 	// 	}
-			// 	// 	location.set_try_files(line[1]);
-			// 	// }
-			// 	// alias in location 
-
-			// 	// else if(line[0] == "alias")
-			// 	// {
-			// 	// 	if(line.size() != 2)
-			// 	// 	{
-			// 	// 		std::cout << BLUE  << "--> should have another argument after alias" << endl;
-			// 	// 		exit(0);
-			// 	// 	}
-			// 	// 	if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-			// 	// 	{
-			// 	// 		line[1].resize(line[1].size() - 1);
-			// 	// 	}
-			// 	// 	location.set_alias(line[1]);
-			// 	// }
-
-			// 	// return in location
-			// 	else if(line[0] == "return")
-			// 	{
-			// 		if(line.size() != 3)
-			// 		{
-			// 			std::cout << BLUE  << "--> should have two argument after return" << endl;
-			// 			exit(0);
-			// 		}
-			// 		if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
-			// 		{
-			// 			line[2].resize(line[2].size() - 1);
-			// 		}
-			// 		int number = atoi(line[1].c_str());
-
-			// 		if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
-			// 		{
-			// 			std::cout << BLUE  <<  "--> invalid number" << endl;
-			// 			exit(0);
-			// 		}
-			// 		location.set_http_redirection(number);	
-			// 		location.set_return_line(line[2]);
-					
-			// 	}
-			// 	// autoindex
-			// 	else if(line[0] == "autoindex")
-			// 	{
-			// 		if(line.size() != 2)
-			// 		{
-			// 			std::cout << "should have another argument after autoindex" << endl;
-			// 			exit(0);
-			// 		}
-			// 		if(line[1] == "0" || line[1] == "1")
-			// 		{
-
-			// 		}
-			// 		location.set_autoindex(atoi(line[1].c_str()));
-					
-			// 	}
-			// 	else if (line[0] == "index")
-			// 	{
-			// 		if(line.size() < 2)
-			// 		{
-			// 			std::cout << "should have another argument after index" << endl;
-			// 			exit(0);
-			// 		}
-			// 		location.set_index(line[1]);
-			// 	}
-			// 	else if(line[0] == "allow")
-			// 	{
-			// 		if(line .size() < 2)
-			// 		{
-			// 			std::cout << "shold have another argument after allow" << endl;
-			// 		}
-			// 		//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
-			// 		std::vector<std::string>::iterator iter;
-			// 		for(iter = line.begin() + 1; iter != line.end(); iter++)
-			// 		{
-			// 			location.allow_HTTP_methods(*iter);
-			// 		} 
-			// 	}
-				 
-			// 	else
-			// 		std::cout << "It is another location \n ";
-
-			// 	(*cmp)++;
-			// 	iter2++;
-
-			// }
-
-			// serv->push_in_location(location);
-			// iter = iter +  *cmp - old_cmp;
-		
-		
-		
-	
-		// iter++;
-		// (*cmp)++;
 	}
 	
 	
@@ -556,128 +429,6 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 }
 
 
-Location	parse_location(vector<string> &config_file, size_t *cmp)
-{
-	Location location;
-	vector<string> words = ft_divise(config_file[*cmp], white_espace);
-	string path;
-	path = words[1];
-	if(path.size() > 1 && path[path.size() - 1] == '/')
-	{
-		path.resize(path.size() - 1);
-	}
-	if(words[2] != "{")
-	{
-		std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
-		exit(0);
-	}
-		location.set_path(path); 
-	(*cmp)++;
-
-
-	vector<string>::iterator iter2 = config_file.begin() + *cmp;
-	while(iter2 != config_file.end())
-	{
-		vector<string> line = ft_divise(*iter2, white_espace);
-		if(line.size() == 0 || line[0][0] == '#')
-		{
-			iter2++;
-			(*cmp)++;
-			continue;
-		}
-		if(line[0] ==  "}")
-		{
-			break ;
-		}
-		// root in location
-		if(line[0] == "root")
-		{
-			// std::cout << "enter\n";
-			if(line.size() == 0)
-			{
-				std::cout << BLUE  << "--> should have another argument after root" << endl;
-				exit(0);
-			}
-
-			if(line[1].size() > 0 && line[1][line[1].size() - 1] == '/')
-			{
-				line[1].resize(line[1].size() - 1);
-			}
-				location.set_root(line[1]);
-					// std::cout << "root->" << location.get_root() << endl;
-			}
-				
-				// return in location
-		else if(line[0] == "return")
-		{
-				if(line.size() != 3)
-				{
-					std::cout << BLUE  << "--> should have two argument after return" << endl;
-					exit(0);
-				}
-				if(line[2].size() > 0 && line[2][line[2].size() - 1] == '/')
-				{
-					line[2].resize(line[2].size() - 1);
-				}
-				int number = atoi(line[1].c_str());
-
-				if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
-				{
-					std::cout << BLUE  <<  "--> invalid number" << endl;
-					exit(0);
-				}
-					location.set_http_redirection(number);	
-					location.set_return_line(line[2]);
-					
-		}
-				// autoindex
-		else if(line[0] == "autoindex")
-		{
-					if(line.size() != 2)
-					{
-						std::cout << "should have another argument after autoindex" << endl;
-						exit(0);
-					}
-					if(line[1] == "0" || line[1] == "1")
-					{
-						location.set_autoindex(atoi(line[1].c_str()));
-					}
-					
-					
-		}
-		else if (line[0] == "index")
-		{
-					if(line.size() < 2)
-					{
-						std::cout << "should have another argument after index" << endl;
-						exit(0);
-					}
-					location.set_index(line[1]);
-		}
-		else if(line[0] == "allow")
-		{
-					if(line .size() < 2)
-					{
-						std::cout << "shold have another argument after allow" << endl;
-					}
-					//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
-					std::vector<std::string>::iterator iter;
-					for(iter = line.begin() + 1; iter != line.end(); iter++)
-					{
-						location.allow_HTTP_methods(*iter);
-					} 
-		}
-				 
-		else
-			std::cout << "It is another location \n ";
-		
-		iter2++;
-		(*cmp)++;
-	}
-
-
-	return location;
-}
 
 
 

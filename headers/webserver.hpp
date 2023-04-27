@@ -52,7 +52,7 @@ class Webserver
     // Destructer
 		~Webserver();
 
-		void parcing_config_file(const std::string config_file);
+		void parcing_config_file(std::string config_file);
 		void	setup(void);
 		void	push_in_server(server *serv);
 		void stop();

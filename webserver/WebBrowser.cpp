@@ -35,8 +35,7 @@ WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : file_desc
 }
 WebBrowsers::~WebBrowsers()
 {
-		// Log("Client disconnected");
-	std::cout << "destructer\n";
+	std::cout << "Destructer client---> Client disconnected\n";
 	if (file_descriptor > 0)
 		close(file_descriptor);
 	if (request_Headers != 0)
@@ -53,11 +52,11 @@ void WebBrowsers::Connection(int fd_socket)
 	//The accept() system call is used to process each connection thread in the queue created by listen()
 	//Accept incoming client connections.
 	file_descriptor = accept(fd_socket, get_address_client(), (socklen_t*)&addrlen);
-	if(file_descriptor < 0)
-	{
-		std::cout << "server failed to accept incoming connection " << endl;
-        check_fd = -1; 
-	}
+	// if(file_descriptor < 0)
+	// {
+	// 	std::cout << "server failed to accept incoming connection " << endl;
+    //     check_fd = -1; 
+	// }
 		
 
 }
@@ -93,7 +92,7 @@ int WebBrowsers::Read_request()
 			read_buffer = read_buffer + buffer;
 		}
 		std::cout << "read_buffer:\n";
-		std::cout << read_buffer << endl;
+		//std::cout << read_buffer << endl;
 	
 ;		// If the datagram or message is not larger than the buffer specified,
 		if(recv_s < BUFFUR_SIZE)
@@ -196,11 +195,11 @@ void WebBrowsers::send2()
 		std::cout << "error1\n";
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
-	std::cout << "buffer->" << buff << endl;
-	std::cout << "fd = " << fd << endl;
+	//std::cout << "buffer->" << buff << endl;
+	//std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
-		std::cout << "error\n";
+		std::cout << "error read faild \n";
 	}
 	std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 278\r\n\r\n";
 	send(file_descriptor, str.c_str(), str.length(), 0);

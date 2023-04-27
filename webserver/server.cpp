@@ -240,12 +240,12 @@ void	server::set_cgis(const std::map<std::string, std::string> cgis)
 
 
 
-void	server::push_in_cgi(const std::string extention_name, const std::string exec_path)
+void	server::insert_in_cgi(const std::string extention_name, const std::string exec_path)
 {
 	this->cgis.insert(std::pair<std::string, std::string>(extention_name, exec_path));
 }
 
-void	server::push_in_error_page(const std::pair<unsigned int, std::string> error_page)
+void	server::insert_in_error_page(const std::pair<unsigned int, std::string> error_page)
 {
 	this->error_pages.insert(error_page);
 	// std::map<unsigned int, string>::iterator i;
@@ -254,12 +254,12 @@ void	server::push_in_error_page(const std::pair<unsigned int, std::string> error
 	// std::cout << "error_page :" << i->second << endl;
 }
 
-void	server::push_in_server_name(std::string server_name)
+void	server::insert_in_server_name(std::string server_name)
 {
 	this->server_name.insert(server_name);
 }
 
-void	server::push_in_location(Location location)
+void	server::insert_in_location(Location location)
 {
 	this->locations.push_back(location);
 }

@@ -35,14 +35,23 @@ void	Webserver::push_in_server(server *serv)
 }
 
 
-void Webserver::parcing_config_file(const string config_file)
+void Webserver::parcing_config_file(string config_file)
 {
 
-	size_t count = 0;
+	size_t cmp = 0;
+	//int size;
 	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
 
     std::ifstream read_file(config_file.c_str());
-	string str;
+	// firstly we need to change the get position value to know the size of our file
+	// here it will stop in the end of our file (to calcule the number exact of our character in the file)
+	// read_file.seekg(0, ios::end);
+	// size = read_file.tellg();
+	// if(size == 0)
+	// {
+	// 	std::cout << "Error: File is empty\n";
+	// }
+	//string str;
 	// if(!getline(read_file, str))
 	// {
 	// 	cout << "config file is empty\n";
@@ -51,18 +60,16 @@ void Webserver::parcing_config_file(const string config_file)
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
 	read_file.close();
 	vector<string> config_line = ft_divise(the_str, "\n");
-	//exit(0);
 	// vector<string>::iterator ii ;
-
 	// for(ii = config_line.begin(); ii != config_line.end(); ii++)
 	// {
 	// 	std::cout << "Line by line -->" << *ii << std::endl; 
 	// }
 	// exit(0);
-	while (count < config_line.size())
+	while (cmp < config_line.size())
 	{
-		vector<string>::iterator iter1 = config_line.begin() + count;
-		vector<string> world_line = ft_divise(*iter1, white_espace);
+		vector<string>::iterator iter1 = config_line.begin() + cmp;
+		vector<string> world_line = ft_divise(*iter1, " ");
 		// std::cout << "word[0] -->" << world_line[0] << endl;
 		// std::cout << "word[1] -->" << world_line[1] << endl;
 
@@ -74,7 +81,7 @@ void Webserver::parcing_config_file(const string config_file)
 		vector<string>::iterator iter2 = world_line.begin();
 		if (*iter2 == "server")
 		{
-			server *serv = parse_server(config_line, &count);
+			server *serv = parse_server(config_line, &cmp);
 			// std::cout << "port:" << serv->get_port_listen() << endl;
 			// std::cout << "ip:" << serv->get_ip_address() << endl;
 			for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
@@ -97,7 +104,7 @@ void Webserver::parcing_config_file(const string config_file)
 			}
 			push_in_server(serv);
 		}
-		count++;
+		cmp++;
 	}
 
 }

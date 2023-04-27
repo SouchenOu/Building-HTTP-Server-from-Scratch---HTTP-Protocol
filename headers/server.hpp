@@ -104,10 +104,10 @@ class server
 		void						set_new_socket(int new_socket);
 		
 
-		void						push_in_location(const Location location);
-		void						push_in_server_name(const std::string server_name);
-		void						push_in_cgi(const std::string extention_name, const std::string exec_path);
-		void						push_in_error_page(const std::pair<unsigned int, std::string> error_page);
+		void						insert_in_location(const Location location);
+		void						insert_in_server_name(const std::string server_name);
+		void						insert_in_cgi(const std::string extention_name, const std::string exec_path);
+		void						insert_in_error_page(const std::pair<unsigned int, std::string> error_page);
 		
 		int receive_data();
 };

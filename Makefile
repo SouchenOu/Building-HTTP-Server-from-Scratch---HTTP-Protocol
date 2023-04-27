@@ -13,7 +13,7 @@
 
 NAME = WebServ
 
-FILES =  webserver/functions_help.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/binding_socket.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp
+FILES =  webserver/it_is_dir_or_file.cpp webserver/Location.cpp  webserver/parce_config_file.cpp webserver/server.cpp webserver/binding_socket.cpp webserver/webserver.cpp webserver/main.cpp webserver/WebBrowser.cpp webserver/request.cpp webserver/response.cpp
 
 INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/binding_socket.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/request.hpp headers/response.hpp headers/tools.hpp
 
