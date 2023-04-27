@@ -114,7 +114,7 @@ void Webserver::setup(void)
 {
 	
 	int fd_socket;
-	//int cmp = 0;
+	int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -128,6 +128,10 @@ void Webserver::setup(void)
 		fd_socket = (*server)->EstablishConnection();	
 		//Add a file_descriptor to an fd_set
 		/*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
+
+		/****FD_SET() adds the file descriptor "fd_socket" to the fd_set,
+		so that select() will return if a connection comes in
+		on that socket (which means you have to do accept(), etc. */
 		FD_SET(fd_socket, &readfds);
 		if(fd_socket > fd_max)
 		{
@@ -185,6 +189,9 @@ Points to a bit set of descriptors to check for writing.*/
 // without multeplexing , server process can entertain only one client at a time, and can not entertain other client is requests until it finishes with the current client
 
 // with multiplexing , server can entertain multiple connected clients simultaneously
+
+// select() works by blocking until something happens on a file descriptor.
+//--> Data coming in or being able to write to a file descriptor
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
@@ -195,18 +202,16 @@ Points to a bit set of descriptors to check for writing.*/
 		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
+			std::cout << "yes1\n";
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				// new_socket = 0;
-			 	// WebBrowsers *browser = new WebBrowsers();
-			 	// int addrlen = sizeof(browser->get_address_client());
+				std::cout << "yes2\n";
+				int new_socket = 0;
+			 	WebBrowsers *browser = new WebBrowsers(servers);
+			 	int addrlen = sizeof(browser->get_address_client());
 				// //The accept() call is used by a server to accept a connection request from a client
-			 	// new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
-				// browser->set_file_descriptor(new_socket);
-				// Browsers.insert(browser);
-				// FD_SET(browser->get_file_descriptor(), &readfds);
-				// FD_SET(browser->get_file_descriptor(), &writefds);
-				WebBrowsers *browser = new WebBrowsers((*iter2)->get_fd_socket(), servers);
+			 	new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+				browser->set_file_descriptor(new_socket);
 				Browsers.push_back(browser);
 				FD_SET(browser->get_file_descriptor(), &readfds);
 				FD_SET(browser->get_file_descriptor(), &writefds);
@@ -260,10 +265,10 @@ Points to a bit set of descriptors to check for writing.*/
 				
 			}
 		
-			// cmp++;
+			cmp++;
 
-			// if(cmp == 10)
-			// 	exit(1);
+			if(cmp == 10)
+				exit(1);
 
 		}
 

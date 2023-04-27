@@ -24,11 +24,10 @@
 // 	std::cout << "hello, thie is new client\n";
 // }
 
-WebBrowsers::WebBrowsers(int fd_socket, std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request_Headers(0),indice(0)
+WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request_Headers(0),indice(0)
 {
 	
 	std::cout << "Connection......\n";
-    Connection(fd_socket);
 
 
 	
@@ -46,20 +45,6 @@ WebBrowsers::~WebBrowsers()
 
 }
 
-void WebBrowsers::Connection(int fd_socket)
-{
-	int addrlen = sizeof(address_client);
-	//The accept() system call is used to process each connection thread in the queue created by listen()
-	//Accept incoming client connections.
-	file_descriptor = accept(fd_socket, get_address_client(), (socklen_t*)&addrlen);
-	// if(file_descriptor < 0)
-	// {
-	// 	std::cout << "server failed to accept incoming connection " << endl;
-    //     check_fd = -1; 
-	// }
-		
-
-}
 int WebBrowsers::Read_request()
 {
 

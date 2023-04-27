@@ -40,7 +40,7 @@ class   WebBrowsers
     public:
         // constructer
         WebBrowsers();
-        WebBrowsers(int new_listen_fd, std::set<server*>& servers);
+        WebBrowsers(std::set<server*>& servers);
         //destructer
         ~WebBrowsers();
 
