@@ -53,7 +53,7 @@ class Webserver
 		~Webserver();
 
 		void parcing_config_file(std::string config_file);
-		void	setup(void);
+		void	Establish_connection(void);
 		void	push_in_server(server *serv);
 		void stop();
 		void accept_connection();

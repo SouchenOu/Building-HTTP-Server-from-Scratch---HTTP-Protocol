@@ -29,52 +29,53 @@ server::~server()
 	
 }
 
-int server::EstablishConnection(void)
+int server::Create_server_socket(void)
 {
-	//first arg (domain or address family): For communicating between processes on different hosts connected by IPV4, we use AF_INET (IP) and AF_INET6 for processes connected by IPV6.
+//first arg (domain or address family): For communicating between processes on different hosts connected by IPV4, we use AF_INET (IP) and AF_INET6 for processes connected by IPV6.
 
-	/*	second arg (type) : SOCK_STREAM: TCP(reliable, connection oriented)
-		SOCK_DGRAM: UDP(unreliable, connectionless)*/
+/*	second arg (type) : SOCK_STREAM: TCP(reliable, connection oriented)
+SOCK_DGRAM: UDP(unreliable, connectionless)*/
 
-	/**Third arg: (protocol)  Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.*/
+/**Third arg: (protocol)  Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.*/
 
 
-	/****For TCP/IP sockets, we want to specify the IP address family ( AF_INET ) and virtual
-		circuit service ( SOCK_STREAM ). Since there’s only one form of virtual circuit service, there
-		are no variations of the protocol, so the last argument, protocol, is zero. Our code for
-		creating a TCP socket looks like this:*/
+/****For TCP/IP sockets, we want to specify the IP address family ( AF_INET ) and virtual
+circuit service ( SOCK_STREAM ). Since there’s only one form of virtual circuit service, there
+are no variations of the protocol, so the last argument, protocol, is zero. Our code for
+creating a TCP socket looks like this:*/
 
 //Creating a TCP/IP socket
 
 
 //---> When you first create the socket descriptor with socket(), the kernel sets it to blocking. If you don’t want a socket to be blocking, you have to make a call to fcntl():
+	
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{
 		perror("Error: Problem creation a socket");
 		exit(1);
 	}
-	//Before calling bind, we need to fill out this structure. The three key parts we need to set are:
+//Before calling bind, we need to fill out this structure. The three key parts we need to set are:
 
 
 
 
 //** This is where the information about the incoming connection will go**///
 
-	//The address family or a domain we used when we set up the socket. In our case, it’s AF_INET .
+//The address family or a domain we used when we set up the socket. In our case, it’s AF_INET .
 	address.sin_family = AF_INET;
-	// transport address or a port number
-	//The htons function can be used to convert an IP port number in host byte order to the IP port number in network byte order.
-	//We will need to call htons() to ensure that the port is stored in network byte order.
+// transport address or a port number
+//The htons function can be used to convert an IP port number in host byte order to the IP port number in network byte order.
+//We will need to call htons() to ensure that the port is stored in network byte order.
 	address.sin_port = htons(port_listen);
-	// This is your machine is IP address
-	//convert the IP address from a char * to an unsigned long and have it stored in network byte order.
+// This is your machine is IP address
+//convert the IP address from a char * to an unsigned long and have it stored in network byte order.
 	address.sin_addr.s_addr = inet_addr(ip_address.c_str());
 
-	//convert IPv4 and IPv6 addresses from text to binary form
-	//inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
+//convert IPv4 and IPv6 addresses from text to binary form
+//inet_pton(AF_INET, ip_address.c_str(), &(address.sin_addr));
 
-	//set master socket to allow multiple connections, this is just a good habit, it will work without this
+//set master socket to allow multiple connections, this is just a good habit, it will work without this
 
 
 
@@ -84,22 +85,22 @@ int server::EstablishConnection(void)
 	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &var, sizeof(var));
 
 
-	//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
+//By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
 	if (binding_socket(fd_socket,address) == -1)
 	{
 		perror("Error : Problem binding");
 		exit(1);
 	}
 
-	// listen for incoming requests......
+// listen for incoming requests......
 
-	//Start Listening for Requests...
-	//listen(fd_socket, backlog)
-	//The backlog is the maximum number of connections that can be waiting to be accepted.
+//Start Listening for Requests...
+//listen(fd_socket, backlog)
+//The backlog is the maximum number of connections that can be waiting to be accepted.
 
-	/****marks the socket referred to by fd_socket as a passive
-       socket, that is, as a socket that will be used to accept incoming
-       connection requests using accept().*/
+/****marks the socket referred to by fd_socket as a passive
+socket, that is, as a socket that will be used to accept incoming
+connection requests using accept().*/
 
 
 	std::cout << "Will somebody please call me?\n";

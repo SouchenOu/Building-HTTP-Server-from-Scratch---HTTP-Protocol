@@ -87,7 +87,7 @@ class server
 
 
 		// some used functions
-		int							EstablishConnection(void);
+		int							Create_server_socket(void);
 		//server* 					parse_server(vector<string> config_file, size_t *count);
 		
 		//settters

@@ -13,6 +13,7 @@
 #include "../headers/WebBrowser.hpp"
 #include "../headers/server.hpp"
 #include "../headers/request.hpp"
+#include <fcntl.h>
 
 
 #define BUFFUR_SIZE 4096
@@ -77,7 +78,7 @@ int WebBrowsers::Read_request()
 			read_buffer = read_buffer + buffer;
 		}
 		std::cout << "read_buffer:\n";
-		//std::cout << read_buffer << endl;
+		std::cout << read_buffer << endl;
 	
 ;		// If the datagram or message is not larger than the buffer specified,
 		if(recv_s < BUFFUR_SIZE)
@@ -133,32 +134,29 @@ void WebBrowsers::set_file_descriptor(int fd)
 void WebBrowsers::check_request()
 {
 	send_byte = 0;
-	//Response->response_preparation(servers, request_Headers->get_headers(), request_Headers->get_Path());
 	request_Headers->check_request_with_config_file(servers);
 
-	//file_path
-	request_Headers->path_of_file();
+}
+
+void WebBrowsers::ThePath_of_acces_file()
+{
+	path_access = request_Headers->path_of_file();
+}
+void WebBrowsers::prepareResponse()
+{
 	int status;
-	status = request_Headers->get_indice(file_file_descriptor);
-	// std::cout << "status -->" << status << endl;
-	// file_file_descriptor = open(static_cast<const char *>(path.c_str()), O_RDONLY);
+	status = request_Headers->get_indice();
+	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	if(status == 0)
 	{
-		send_buffer = request_Headers->give_the_header(0 , 0);
+		send_buffer = request_Headers->response_header(0 , 0);
 		indice = 2;
 		delete request_Headers;
 		request_Headers = 0;
 
 	}
-	
-
-	
-	
-
-
-
-
 }
+
 void WebBrowsers::send_response()
 {
 	
@@ -186,7 +184,7 @@ void WebBrowsers::send2()
 	{
 		std::cout << "error read faild \n";
 	}
-	std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 278\r\n\r\n";
+	std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
 	send(file_descriptor, str.c_str(), str.length(), 0);
 	send(file_descriptor, buff, fd, 0);
 	//write(file_descriptor, hello, strlen(hello));

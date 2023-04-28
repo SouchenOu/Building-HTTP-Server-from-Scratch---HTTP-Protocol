@@ -31,6 +31,7 @@ class   WebBrowsers
             response			*Response;
             std::set<server*>&		servers;
             Request     		*request_Headers;
+            std::string path_access;
             std::string send_buffer;
             unsigned int send_byte;
             int indice;
@@ -62,6 +63,8 @@ class   WebBrowsers
 
         // some used functions
         void check_request();
+        void ThePath_of_acces_file();
+        void prepareResponse();
         // int check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
         void Connection(int new_listen_fd);
         int Read_request();

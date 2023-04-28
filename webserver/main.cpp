@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     }
     Webserver webserver;
     webserver.parcing_config_file(argv[1]);
-    webserver.setup();
+    webserver.Establish_connection();
 
     
 

@@ -110,11 +110,11 @@ void Webserver::parcing_config_file(string config_file)
 }
 
 
-void Webserver::setup(void)
+void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	int cmp = 0;
+	//int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -125,14 +125,14 @@ void Webserver::setup(void)
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
-		fd_socket = (*server)->EstablishConnection();	
-		//Add a file_descriptor to an fd_set
-		/*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
+		fd_socket = (*server)->Create_server_socket();	
+//Add a file_descriptor to an fd_set
+/*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
 
-		/****FD_SET() adds the file descriptor "fd_socket" to the fd_set,
-		so that select() will return if a connection comes in
-		on that socket (which means you have to do accept(), etc. */
-		FD_SET(fd_socket, &readfds);
+/****FD_SET() adds the file descriptor "fd_socket" to the fd_set,
+so that select() will return if a connection comes in
+on that socket (which means you have to do accept(), etc. */
+	FD_SET(fd_socket, &readfds);
 		if(fd_socket > fd_max)
 		{
 			fd_max = fd_socket;
@@ -159,15 +159,13 @@ void Webserver::setup(void)
 			
 			
 		}
-		/****
-		 * The recv function is used to read incoming data on connection-oriented sockets,
-		 * 
-		*/
-		//What if you’re blocking on an accept() call? How are you going to recv() data at the same time? “Use non-blocking sockets!” No way! You don’t want to be a CPU hog. What, then?
-		/*****select() gives you the power to monitor several sockets at the same time. It’ll tell you which ones are ready for reading, which are ready for writing, and which sockets have raised exceptions, if you really want to know that.*/
 
-		// wait for an activity on one of the sockets
-		// so wait indefinitely
+
+//What if you’re blocking on an accept() call? How are you going to recv() data at the same time? “Use non-blocking sockets!” No way! You don’t want to be a CPU hog. What, then?
+/*****select() gives you the power to monitor several sockets at the same time. It’ll tell you which ones are ready for reading, which are ready for writing, and which sockets have raised exceptions, if you really want to know that.*/
+
+// wait for an activity on one of the sockets
+// so wait indefinitely
 
 
 /******If your application allocates sockets 3, 4, 5, 6, and 7, and you want to check all of your allocations, nfds should be set to 8, the highest socket descriptor you specified, plus 1. If your application checks sockets 3 and 4, nfds should be set to 5.*/
@@ -192,6 +190,9 @@ Points to a bit set of descriptors to check for writing.*/
 
 // select() works by blocking until something happens on a file descriptor.
 //--> Data coming in or being able to write to a file descriptor
+		
+		
+		
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
@@ -202,12 +203,11 @@ Points to a bit set of descriptors to check for writing.*/
 		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
-			std::cout << "yes1\n";
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "yes2\n";
 				int new_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
+				std::cout << "Confirmation, accepting to receive a call from a sender\n";
 			 	int addrlen = sizeof(browser->get_address_client());
 				// //The accept() call is used by a server to accept a connection request from a client
 			 	new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
@@ -220,13 +220,7 @@ Points to a bit set of descriptors to check for writing.*/
 		
 		}
 
-		// send new connection greeting message
-
-		// if(send(new_socket, message, strlen(message), 0))
-		// {
-		// 		std::cout<< "Error send()\n";
-		// }
-
+	
 		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
 			if((*iter3)->get_file_descriptor() > fd_max)
@@ -255,20 +249,24 @@ Points to a bit set of descriptors to check for writing.*/
 			{
 				if((*iter3)->get_indice() == 0)
 				{
+					std::cout << "check_request\n";
 					(*iter3)->check_request();
+					(*iter3)->ThePath_of_acces_file();
+					(*iter3)->prepareResponse();
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
+					std::cout << "send_response()\n";
 					(*iter3)->send_response();
 				}
 				
 				
 			}
 		
-			cmp++;
+			// cmp++;
 
-			if(cmp == 10)
-				exit(1);
+			// if(cmp == 10)
+			// 	exit(1);
 
 		}
 

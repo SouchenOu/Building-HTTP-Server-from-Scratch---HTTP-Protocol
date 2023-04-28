@@ -38,20 +38,22 @@ Request::~Request()
 }
 void Request::Parcing_request(std::string buffer)
 {
-	vector<string> request_Headers = ft_divise(buffer, "\r\n");
+	vector<string> request_divise = ft_divise(buffer, "\r\n");
     
 
-    vector<string>::iterator iter = request_Headers.begin();
+    vector<string>::iterator iter = request_divise.begin();
     // std::cout << "First-->" << *iter << endl;
     //vector<string> First_line = ft_divise(*iter, white_espace);
     // path = *iter + 1;
 
-	vector<string> line = ft_divise(*iter , white_espace);
+	vector<string> w_o_r_d = ft_divise(*iter, white_espace);
 
-	Path = line[1];
-	version_http = line[2];
+    type_request = w_o_r_d[0];
+	Path = w_o_r_d[1];
+	version_http = w_o_r_d[2];
 
-    while(iter != request_Headers.end())
+
+    while(iter != request_divise.end())
     {
         vector<string> First_line = ft_divise(*iter, ": ");
         // std::cout << "First_line[0]-->" << First_line[0] << endl;
@@ -191,7 +193,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		if((i1)->get_path() == path_navigate)
 		{
-			
 			this->Locations = new Location(*i1);
 			return 1;
 		}
@@ -202,22 +203,24 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 }
 
-void Request::path_of_file()
+std::string Request::path_of_file()
 {
 	string Path_in_request;
 	string tmp_file;
 	int file_des;
     if(Locations == NULL || Servers == NULL)
     {
-		std::cout << "failed\n";
+		std::cout << "There is no server or location\n";
         path_of_file_dm = "";
-		return ;
+		return path_of_file_dm;
     }
 
 	
 	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
 
+    // std::cout << "server root->" << Servers->get_root() << endl;
+    // std::cout << "Location root->" << Locations->get_root() << endl;
 	//if(strcmp(Path_in_request, "/") == 0)
 	if (Path_in_request.compare("/") == 0)
 	{
@@ -231,7 +234,12 @@ void Request::path_of_file()
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
 		Path_in_request = Path_in_request.substr(Locations->get_path().length());
-		// std::cout << "our path->" << Path_in_request << endl;
+        std::string root;
+        root = Locations->get_root();
+        if(root[0] != '/')
+        {
+            Locations->get_root() = '/' + Locations->get_root();
+        }
 		path_of_file_dm += Locations->get_root();
 		// std::cout << "path->" << path_of_file_dm << endl;
 	}
@@ -267,11 +275,11 @@ void Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-
+    return path_of_file_dm;
 
 }
 
-std::string Request::give_the_header(int fileSize, bool var)
+std::string Request::response_header(int fileSize, bool var)
 {
 	string str;
 	// ifstream our_file(path_of_file_dm.c_str());
@@ -280,7 +288,7 @@ std::string Request::give_the_header(int fileSize, bool var)
 	// {
 	// 	std::cout << "txt->" << str << endl;
 	// }
-	
+	std::cout << "The path is ->" << path_of_file_dm << endl;
 	if(var == 0)
 	{
 		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
@@ -296,7 +304,7 @@ std::string Request::give_the_header(int fileSize, bool var)
 //		But along with reading you also want to know the position of the last position in the text file.
 		fileSize = our_file.tellg();
 	}
-	//  std::cout << "file_size == " << fileSize << endl;
+	std::cout << "file_size == " << fileSize << endl;
 
 	stringstream response_header;
 	response_header << "Content-Length: " << fileSize << endl;
@@ -307,9 +315,8 @@ std::string Request::give_the_header(int fileSize, bool var)
 }
 
 
-int Request::get_indice(int &file_des)
+int Request::get_indice()
 {
-	// std::cout << "path-->" << path_of_file_dm << endl;
 	if(Status_Code == 0)
 	{
 		Status_Code = 200; //OK
@@ -321,8 +328,7 @@ int Request::get_indice(int &file_des)
 		return 0;
 	}
 	
-	file_des = open(static_cast<const char *>(path_of_file_dm.c_str()), O_RDONLY);
-	//std::cout << "file-->" << file_des << endl;
+	
 	return 0; 
 }
 
