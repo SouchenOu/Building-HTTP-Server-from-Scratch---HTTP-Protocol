@@ -133,7 +133,7 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 void WebBrowsers::check_request()
 {
-	send_byte = 0;
+	
 	request_Headers->check_request_with_config_file(servers);
 
 }
@@ -145,6 +145,7 @@ void WebBrowsers::ThePath_of_acces_file()
 void WebBrowsers::prepareResponse()
 {
 	int status;
+	send_byte = 0;
 	status = request_Headers->get_indice();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	if(status == 0)
@@ -197,6 +198,11 @@ void WebBrowsers::send2()
 	char 	buff[BUFFUR_SIZE];
 	if(file_file_descriptor == 0)
 	{
+		delete request_Headers;
+		value = 0;
+		indice = 0;
+		request_Headers = NULL;
+		return ;
 		std::cout << "error1\n";
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
@@ -204,12 +210,19 @@ void WebBrowsers::send2()
 	std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
+		close(file_file_descriptor);
+		delete request_Headers;
+		indice = 0;
+		value = 0;
+		file_file_descriptor = 0;
+		request_Headers = NULL;
+
 		std::cout << "error read faild \n";
 	}
 	// std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
 	// send(file_descriptor, str.c_str(), str.length(), 0);
 	std::cout << "befaure\n";
-	send(file_descriptor, buff, fd, 0);
+	::send(file_descriptor, buff, fd, 0);
 	//write(file_descriptor, hello, strlen(hello));
 	std::cout << "after\n";
 	if (fd < BUFFUR_SIZE)

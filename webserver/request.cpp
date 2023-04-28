@@ -24,7 +24,7 @@ Request::Request()
     std::cout << "Send a request\n";
 }
 
-Request::Request(std::string buffer):Status_Code(0)
+Request::Request(std::string buffer):Locations(0),Status_Code(0)
 {
   
 	Parcing_request(buffer);
@@ -188,15 +188,37 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		return 0;
 	}
 	//std::set<Location>::iterator i1;
+    while(path_navigate != "")
+    {
+        for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	    {
+		    if((i1)->get_path() == path_navigate)
+		    {
+			    this->Locations = new Location(*i1);
+			    return 1;
+		    }
+	    }
+        size_t count = path_navigate.find_last_of("/");
+        if(count == string::npos)
+        {
+            break ;
+        }
+        path_navigate = path_navigate.substr(0, count);
+		std::cout << "path_navigate-->" << path_navigate << endl;
+		path_navigate  = "/";
+		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	    {
+		    if((i1)->get_path() == path_navigate)
+		    {
+			    this->Locations = new Location(*i1);
+			    return 1;
+		    }
+	    }
 
-	for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	{
-		if((i1)->get_path() == path_navigate)
-		{
-			this->Locations = new Location(*i1);
-			return 1;
-		}
-	}
+    }
+
+ 
+	
 
 	this->Locations = NULL;
 	return 1;
@@ -225,6 +247,7 @@ std::string Request::path_of_file()
 	//if(strcmp(Path_in_request, "/") == 0)
 	if (Path_in_request.compare("/") == 0)
 	{
+		std::cout << "her noooooooooo\n";
 		
 		if (Locations && Locations->get_index().length())
 			Path_in_request += '/' + Locations->get_index();
@@ -235,20 +258,31 @@ std::string Request::path_of_file()
 	//return Path_in_request;
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		//Path_in_request = Path_in_request.substr(Locations->get_path().length());
-        
+		
+		Path_in_request = Path_in_request.substr(Locations->get_path().length());
         if(is_directory(path_of_file_dm + Locations->get_root()))
         {
             path_of_file_dm += Locations->get_root();
         }else
-            path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
+		{
+			path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
+		}
+            
 		
 		// std::cout << "path->" << path_of_file_dm << endl;
 	}
 	//std::cout << "after\n";
+	if(Path_in_request.length() == 0)
+	{
+		Path_in_request = Path;
+		if (Locations && Locations->get_index().length())
+			Path_in_request  += '/' + Locations->get_index();
+		else
+			Path_in_request  += '/' + Servers->get_index();
+
+	}
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
-		std::cout << "nop\n";
 		tmp_file = path_of_file_dm + Path_in_request;
 	}
 	else
@@ -262,14 +296,14 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-    if(value == 0)
-    {
-        std::cout << "yes\n";
-        if (Locations && Locations->get_index().length())
-			tmp_file  += '/' + Locations->get_index();
-		else
-			tmp_file  += '/' + Servers->get_index();
-    }
+    // if(value == 0)
+    // {
+    //     std::cout << "yes\n";
+    //     if (Locations && Locations->get_index().length())
+	// 		tmp_file  += '/' + Locations->get_index();
+	// 	else
+	// 		tmp_file  += '/' + Servers->get_index();
+    // }
 	file_des = open(tmp_file.c_str(),O_RDONLY);
 	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
@@ -299,7 +333,7 @@ std::string Request::response_header(int fileSize, bool var)
 	// {
 	// 	std::cout << "txt->" << str << endl;
 	// }
-	std::cout << "The path is ->" << path_of_file_dm << endl;
+	// std::cout << "The path is ->" << path_of_file_dm << endl;
 	if(var == 0)
 	{
 		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
@@ -315,7 +349,6 @@ std::string Request::response_header(int fileSize, bool var)
 //		But along with reading you also want to know the position of the last position in the text file.
 		fileSize = our_file.tellg();
 	}
-	std::cout << "file_size == " << fileSize << endl;
 
 	stringstream response_header;
     response_header << "HTTP/1.1 200 OK\r\n";

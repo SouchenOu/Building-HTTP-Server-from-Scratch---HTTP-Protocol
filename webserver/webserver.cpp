@@ -233,7 +233,7 @@ Points to a bit set of descriptors to check for writing.*/
 				std::cout << BLUE << "Read incoming message" << endl;
 				
 
-				if((*iter3)->Read_request() == 2)
+				if((*iter3)->get_indice() == 0 && (*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
 					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
@@ -260,8 +260,7 @@ Points to a bit set of descriptors to check for writing.*/
 					(*iter3)->send_response();
 				}
 				
-				
-			}
+			}	
 		
 			// cmp++;
 
