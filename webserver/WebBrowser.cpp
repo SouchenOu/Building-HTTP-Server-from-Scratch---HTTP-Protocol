@@ -149,7 +149,9 @@ void WebBrowsers::prepareResponse()
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	if(status == 0)
 	{
-		send_buffer = request_Headers->response_header(0 , 0);
+		response_buffer = request_Headers->response_header(0 , 0);
+		// std::cout << "response: \n";
+		// std::cout << response_buffer << endl;
 		indice = 2;
 		delete request_Headers;
 		request_Headers = 0;
@@ -162,10 +164,30 @@ void WebBrowsers::send_response()
 	
 	if(indice == 2)
 	{
+		std::cout << "send1()\n";
+		send1();
+	}else if(indice == 3)
+	{
+		std::cout << "send2()\n";
 		send2();
 	}
 }
 
+void WebBrowsers::send1()
+{
+	std::cout << "time\n";
+	int size_actuel = BUFFUR_SIZE;
+	if (send_byte + size_actuel > response_buffer.size())
+		size_actuel= response_buffer.size() - send_byte;
+	::send(file_descriptor, response_buffer.c_str() + send_byte,size_actuel, 0);
+	send_byte += size_actuel;
+	if (send_byte == response_buffer.size())
+	{
+		std::cout << "time2\n";
+		response_buffer.clear();
+		indice = 3;
+	}
+}
 
 
 void WebBrowsers::send2()
@@ -179,16 +201,17 @@ void WebBrowsers::send2()
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
 	//std::cout << "buffer->" << buff << endl;
-	//std::cout << "fd = " << fd << endl;
+	std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
 		std::cout << "error read faild \n";
 	}
-	std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
-	send(file_descriptor, str.c_str(), str.length(), 0);
+	// std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
+	// send(file_descriptor, str.c_str(), str.length(), 0);
+	std::cout << "befaure\n";
 	send(file_descriptor, buff, fd, 0);
 	//write(file_descriptor, hello, strlen(hello));
-
+	std::cout << "after\n";
 	if (fd < BUFFUR_SIZE)
 	{
 		std::cout << "sendig file to client !\n";

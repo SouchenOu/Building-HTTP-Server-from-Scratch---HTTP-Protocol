@@ -208,6 +208,7 @@ std::string Request::path_of_file()
 	string Path_in_request;
 	string tmp_file;
 	int file_des;
+    int value = 0;
     if(Locations == NULL || Servers == NULL)
     {
 		std::cout << "There is no server or location\n";
@@ -229,18 +230,19 @@ std::string Request::path_of_file()
 			Path_in_request += '/' + Locations->get_index();
 		else
 			Path_in_request += '/' + Servers->get_index();
+        value = 1;
 	}
 	//return Path_in_request;
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		Path_in_request = Path_in_request.substr(Locations->get_path().length());
-        std::string root;
-        root = Locations->get_root();
-        if(root[0] != '/')
+		//Path_in_request = Path_in_request.substr(Locations->get_path().length());
+        
+        if(is_directory(path_of_file_dm + Locations->get_root()))
         {
-            Locations->get_root() = '/' + Locations->get_root();
-        }
-		path_of_file_dm += Locations->get_root();
+            path_of_file_dm += Locations->get_root();
+        }else
+            path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
+		
 		// std::cout << "path->" << path_of_file_dm << endl;
 	}
 	//std::cout << "after\n";
@@ -260,6 +262,14 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
+    if(value == 0)
+    {
+        std::cout << "yes\n";
+        if (Locations && Locations->get_index().length())
+			tmp_file  += '/' + Locations->get_index();
+		else
+			tmp_file  += '/' + Servers->get_index();
+    }
 	file_des = open(tmp_file.c_str(),O_RDONLY);
 	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
@@ -275,6 +285,7 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
+    std::cout << "path hereee-->" << path_of_file_dm << endl;
     return path_of_file_dm;
 
 }
@@ -307,8 +318,8 @@ std::string Request::response_header(int fileSize, bool var)
 	std::cout << "file_size == " << fileSize << endl;
 
 	stringstream response_header;
-	response_header << "Content-Length: " << fileSize << endl;
-	response_header << "Connection: Closed" << endl;
+    response_header << "HTTP/1.1 200 OK\r\n";
+	response_header << "Content-Length: " << fileSize << "\r\n\r\n";
 
 	return response_header.str();
 	

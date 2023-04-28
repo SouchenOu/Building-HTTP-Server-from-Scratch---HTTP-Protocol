@@ -32,7 +32,7 @@ class   WebBrowsers
             std::set<server*>&		servers;
             Request     		*request_Headers;
             std::string path_access;
-            std::string send_buffer;
+            std::string response_buffer;
             unsigned int send_byte;
             int indice;
             int file_file_descriptor;
