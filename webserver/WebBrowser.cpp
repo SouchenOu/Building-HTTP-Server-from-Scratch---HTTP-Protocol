@@ -16,7 +16,7 @@
 #include <fcntl.h>
 
 
-#define BUFFUR_SIZE 4096
+#define BUFFUR_SIZE 5000
 
 // WebBrowsers::WebBrowsers()
 // {
@@ -60,7 +60,12 @@ int WebBrowsers::Read_request()
 		/****recv() returns the number of bytes actually read into the buffer, or -1 on error (with errno set, accordingly).
 
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
-				
+		
+
+
+
+		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
+
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
 				//std::cout << buffer << endl;
 
@@ -75,12 +80,13 @@ int WebBrowsers::Read_request()
 		}
 		if(request_Headers == NULL)
 		{
-			read_buffer = read_buffer + buffer;
+			read_buffer = read_buffer + string(buffer, recv_s);
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
 	
-;		// If the datagram or message is not larger than the buffer specified,
+// If the datagram or message is not larger than the buffer specified,
+// check if all the informations of our request exist in buffer
 		if(recv_s < BUFFUR_SIZE)
 		{		
 			// send request

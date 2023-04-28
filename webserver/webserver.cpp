@@ -119,7 +119,7 @@ void Webserver::Establish_connection(void)
 	//int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
-	int fd;
+	int fd_client;
 	//Clear an fd_set
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
@@ -132,7 +132,7 @@ void Webserver::Establish_connection(void)
 /****FD_SET() adds the file descriptor "fd_socket" to the fd_set,
 so that select() will return if a connection comes in
 on that socket (which means you have to do accept(), etc. */
-	FD_SET(fd_socket, &readfds);
+		FD_SET(fd_socket, &readfds);
 		if(fd_socket > fd_max)
 		{
 			fd_max = fd_socket;
@@ -145,16 +145,16 @@ on that socket (which means you have to do accept(), etc. */
 		w_fds = writefds;
 		activity = 0;
 
+		// check if accept() failed or if client disconnected
 		for(list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
-			fd	= (*iter1)->get_file_descriptor();
-			if(fd == -1)
+			fd_client	= (*iter1)->get_file_descriptor();
+			if(fd_client == -1)
 			{
+				// close client_file_descriptor if client disconnected
 				delete(*iter1);
-				(*iter1) = 0;
 				iter1 = Browsers.erase(iter1);
-				
-				
+	
 			}	
 			
 			
@@ -205,13 +205,13 @@ Points to a bit set of descriptors to check for writing.*/
 		{
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				int new_socket = 0;
+				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
 				std::cout << "Confirmation, accepting to receive a call from a sender\n";
 			 	int addrlen = sizeof(browser->get_address_client());
 				// //The accept() call is used by a server to accept a connection request from a client
-			 	new_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
-				browser->set_file_descriptor(new_socket);
+			 	client_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+				browser->set_file_descriptor(client_socket);
 				Browsers.push_back(browser);
 				FD_SET(browser->get_file_descriptor(), &readfds);
 				FD_SET(browser->get_file_descriptor(), &writefds);
@@ -233,17 +233,13 @@ Points to a bit set of descriptors to check for writing.*/
 				std::cout << BLUE << "Read incoming message" << endl;
 				
 
-				if((*iter3)->get_indice() == 0 && (*iter3)->Read_request() == 2)
+				if((*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
 					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
 					close((*iter3)->get_file_descriptor());
 					(*iter3)->set_file_descriptor(-1);
-					delete (*iter3);
-					iter3 = Browsers.erase(iter3);
-					--iter3;
 				}
-				//send((*iter3)->get_file_descriptor(),"hello souchen", 1000, 0 );
 			}
 			else if((*iter3)->get_value() == 1)
 			{

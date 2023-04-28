@@ -38,7 +38,7 @@ Request::~Request()
 }
 void Request::Parcing_request(std::string buffer)
 {
-	vector<string> request_divise = ft_divise(buffer, "\r\n");
+	vector<string> request_divise = ft_divise(buffer, "\n");
     
 
     vector<string>::iterator iter = request_divise.begin();
@@ -118,9 +118,7 @@ void Request::set_Path(std::string path)
 
 int Request::check_request_with_config_file(const std::set<server*> &servers)
 {
-	// (void) servers;
-	// (void) path;
-	// (void) request_headers;
+
 	string Host;
 	unsigned int port;
 	string path_navigate;
@@ -247,7 +245,6 @@ std::string Request::path_of_file()
 	//if(strcmp(Path_in_request, "/") == 0)
 	if (Path_in_request.compare("/") == 0)
 	{
-		std::cout << "her noooooooooo\n";
 		
 		if (Locations && Locations->get_index().length())
 			Path_in_request += '/' + Locations->get_index();
@@ -260,6 +257,7 @@ std::string Request::path_of_file()
 	{
 		
 		Path_in_request = Path_in_request.substr(Locations->get_path().length());
+		std::cout << "path_request here -->" << Path_in_request << endl;
         if(is_directory(path_of_file_dm + Locations->get_root()))
         {
             path_of_file_dm += Locations->get_root();
