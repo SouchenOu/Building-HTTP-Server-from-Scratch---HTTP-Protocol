@@ -28,8 +28,6 @@ class response
         std::string        path;
 
 
-
-
     public:
 
         //constructers
@@ -39,8 +37,7 @@ class response
 
         //used function
 
-        void server_s();
-        int response_preparation(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
+        std::string response_header(int size_of_file, bool var, std::string path_access);
 };
 
 

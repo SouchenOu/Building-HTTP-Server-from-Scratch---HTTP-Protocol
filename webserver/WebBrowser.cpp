@@ -13,6 +13,7 @@
 #include "../headers/WebBrowser.hpp"
 #include "../headers/server.hpp"
 #include "../headers/request.hpp"
+#include "../headers/response.hpp"
 #include <fcntl.h>
 
 
@@ -154,9 +155,10 @@ void WebBrowsers::prepareResponse()
 	send_byte = 0;
 	status = request_Headers->get_indice();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
+	Response = new response();
 	if(status == 0)
 	{
-		response_buffer = request_Headers->response_header(0 , 0);
+		response_buffer = Response->response_header(0 , 0, path_access);
 		// std::cout << "response: \n";
 		// std::cout << response_buffer << endl;
 		indice = 2;

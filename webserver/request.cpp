@@ -322,39 +322,39 @@ std::string Request::path_of_file()
 
 }
 
-std::string Request::response_header(int fileSize, bool var)
-{
-	string str;
-	// ifstream our_file(path_of_file_dm.c_str());
+// std::string Request::response_header(int fileSize, bool var)
+// {
+// 	string str;
+// 	// ifstream our_file(path_of_file_dm.c_str());
 
-	// while(getline(our_file, str))
-	// {
-	// 	std::cout << "txt->" << str << endl;
-	// }
-	// std::cout << "The path is ->" << path_of_file_dm << endl;
-	if(var == 0)
-	{
-		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
-		// while(getline(our_file, str))
-		// {
-		// 		std::cout<< "str-->\n";
+// 	// while(getline(our_file, str))
+// 	// {
+// 	// 	std::cout << "txt->" << str << endl;
+// 	// }
+// 	// std::cout << "The path is ->" << path_of_file_dm << endl;
+// 	if(var == 0)
+// 	{
+// 		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
+// 		// while(getline(our_file, str))
+// 		// {
+// 		// 		std::cout<< "str-->\n";
 
-		// 		std::cout << str << endl;
-		// }
-		// position at end of fileObject
-		our_file.seekg(0, ios::end);
-		//Say we have entered 20 characters in a text file, and you want to read it.
-//		But along with reading you also want to know the position of the last position in the text file.
-		fileSize = our_file.tellg();
-	}
+// 		// 		std::cout << str << endl;
+// 		// }
+// 		// position at end of fileObject
+// 		our_file.seekg(0, ios::end);
+// 		//Say we have entered 20 characters in a text file, and you want to read it.
+// //		But along with reading you also want to know the position of the last position in the text file.
+// 		fileSize = our_file.tellg();
+// 	}
 
-	stringstream response_header;
-    response_header << "HTTP/1.1 200 OK\r\n";
-	response_header << "Content-Length: " << fileSize << "\r\n\r\n";
+// 	// stringstream response_header;
+//     // response_header << "HTTP/1.1 200 OK\r\n";
+// 	// response_header << "Content-Length: " << fileSize << "\r\n\r\n";
 
-	return response_header.str();
+// 	return response_header.str();
 	
-}
+// }
 
 
 int Request::get_indice()

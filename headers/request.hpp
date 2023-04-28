@@ -60,7 +60,7 @@ class Request
         int check_request_with_config_file(const std::set<server*> &servers);
         void Path_of_FileAccess();
         std::string path_of_file();
-        std::string response_header(int fileSize, bool test);
+        //std::string response_header(int fileSize, bool test);
         int get_indice();
         void Parcing_request(std::string buffer);
 
