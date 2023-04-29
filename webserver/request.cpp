@@ -295,6 +295,7 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
+	std::cout << "tmp-->" << tmp_file << endl;
     // if(value == 0)
     // {
     //     std::cout << "yes\n";
@@ -304,6 +305,7 @@ std::string Request::path_of_file()
 	// 		tmp_file  += '/' + Servers->get_index();
     // }
 	file_des = open(tmp_file.c_str(),O_RDONLY);
+	std::cout << "Path->" << Path << endl;
 	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
 		std::cout << "failed or what\n";

@@ -153,7 +153,6 @@ on that socket (which means you have to do accept(), etc. */
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
 			{
-				std::cout << "failed client -1\n";
 				// close client_file_descriptor if client disconnected
 
 				delete(*iter1);
