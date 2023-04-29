@@ -114,13 +114,14 @@ void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	int cmp = 0;
+	//int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
 	fd_max = 0;
 	int fd_client;
 	//Clear an fd_set
+	//This macro initializes the file descriptor set set to be the empty set.
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
@@ -142,7 +143,6 @@ on that socket (which means you have to do accept(), etc. */
 
 	while(true)
 	{
-		std::cout << "begin\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
@@ -155,8 +155,10 @@ on that socket (which means you have to do accept(), etc. */
 			{
 				std::cout << "failed client -1\n";
 				// close client_file_descriptor if client disconnected
+
 				delete(*iter1);
 				iter1 = Browsers.erase(iter1);
+				(*iter1) = 0;
 	
 			}	
 			
@@ -195,7 +197,7 @@ Points to a bit set of descriptors to check for writing.*/
 //--> Data coming in or being able to write to a file descriptor
 		
 		
-		
+		/*****A server socket is considered ready for reading if there is a pending connection which can be accepted with accept; see Accepting Connections. A client socket is ready for writing when its connection is fully established;*/
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
@@ -206,10 +208,9 @@ Points to a bit set of descriptors to check for writing.*/
 		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
-			std::cout << "servers\n";
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "connect\n";
+				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
 				std::cout << "Confirmation, accepting to receive a call from a sender\n";
@@ -225,17 +226,14 @@ Points to a bit set of descriptors to check for writing.*/
 		
 		}
 
-	
 		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
-			std::cout << "browsers\n";
 			if((*iter3)->get_file_descriptor() > fd_max)
 			{
 				fd_max = (*iter3)->get_file_descriptor();
 			}
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
-				std::cout << "read_request\n";
 				// read incoming message....
 				std::cout << BLUE << "Read incoming message" << endl;
 				
@@ -246,32 +244,34 @@ Points to a bit set of descriptors to check for writing.*/
 					FD_CLR((*iter3)->get_file_descriptor(), &writefds);
 					close((*iter3)->get_file_descriptor());
 					(*iter3)->set_file_descriptor(-1);
+					
+					delete(*iter3);
+					iter3 = Browsers.erase(iter3);
+					
 				}
 			}
 			else if((*iter3)->get_value() == 1)
 			{
-				std::cout << "value == 1\n";
 				if((*iter3)->get_indice() == 0)
 				{
-					std::cout << "indice = 0\n";
-					std::cout << "check_request\n";
+				
 					(*iter3)->check_request();
 					(*iter3)->ThePath_of_acces_file();
 					(*iter3)->prepareResponse();
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
-					std::cout << "indice >0 \n";
-					std::cout << "send_response()\n";
+			
 					(*iter3)->send_response();
 				}
 				
-			}	
+			}
+			
 		
-			cmp++;
+			// cmp++;
 
-			if(cmp == 10)
-				exit(1);
+			// if(cmp == 10000)
+			// 	exit(1);
 
 		}
 

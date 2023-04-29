@@ -28,6 +28,7 @@ response::~response()
 
 std::string response::response_header(int size_of_file, bool var, std::string path_access)
 {
+	std::cout << "path_in_response-->" << path_access << endl;
 	
 	if(var == 0)
 	{
@@ -44,6 +45,7 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 //		But along with reading you also want to know the position of the last position in the text file.
 		size_of_file = our_file.tellg();
 	}
+	std::cout << "size of our file->" << size_of_file << endl;
 
 	stringstream response_header;
     response_header << "HTTP/1.1 200 OK\r\n";

@@ -38,7 +38,7 @@ Request::~Request()
 }
 void Request::Parcing_request(std::string buffer)
 {
-	vector<string> request_divise = ft_divise(buffer, "\n");
+	vector<string> request_divise = ft_divise(buffer, "\r\n");
     
 
     vector<string>::iterator iter = request_divise.begin();
@@ -261,6 +261,7 @@ std::string Request::path_of_file()
         if(is_directory(path_of_file_dm + Locations->get_root()))
         {
             path_of_file_dm += Locations->get_root();
+			std::cout << "path_of_file here?->" << path_of_file_dm << endl;
         }else
 		{
 			path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
