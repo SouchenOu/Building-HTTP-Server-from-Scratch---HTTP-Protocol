@@ -114,7 +114,7 @@ void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	//int cmp = 0;
+	int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -125,6 +125,7 @@ void Webserver::Establish_connection(void)
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
 	{
+		std::cout << "create socket servers\n";
 		fd_socket = (*server)->Create_server_socket();	
 //Add a file_descriptor to an fd_set
 /*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
@@ -141,6 +142,7 @@ on that socket (which means you have to do accept(), etc. */
 
 	while(true)
 	{
+		std::cout << "begin\n";
 		r_fds = readfds;
 		w_fds = writefds;
 		activity = 0;
@@ -151,6 +153,7 @@ on that socket (which means you have to do accept(), etc. */
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
 			{
+				std::cout << "failed client -1\n";
 				// close client_file_descriptor if client disconnected
 				delete(*iter1);
 				iter1 = Browsers.erase(iter1);
@@ -203,8 +206,10 @@ Points to a bit set of descriptors to check for writing.*/
 		// i enter here selon how much i click the 
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
+			std::cout << "servers\n";
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "connect\n";
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
 				std::cout << "Confirmation, accepting to receive a call from a sender\n";
@@ -223,12 +228,14 @@ Points to a bit set of descriptors to check for writing.*/
 	
 		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
+			std::cout << "browsers\n";
 			if((*iter3)->get_file_descriptor() > fd_max)
 			{
 				fd_max = (*iter3)->get_file_descriptor();
 			}
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
+				std::cout << "read_request\n";
 				// read incoming message....
 				std::cout << BLUE << "Read incoming message" << endl;
 				
@@ -243,8 +250,10 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			else if((*iter3)->get_value() == 1)
 			{
+				std::cout << "value == 1\n";
 				if((*iter3)->get_indice() == 0)
 				{
+					std::cout << "indice = 0\n";
 					std::cout << "check_request\n";
 					(*iter3)->check_request();
 					(*iter3)->ThePath_of_acces_file();
@@ -252,16 +261,17 @@ Points to a bit set of descriptors to check for writing.*/
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
+					std::cout << "indice >0 \n";
 					std::cout << "send_response()\n";
 					(*iter3)->send_response();
 				}
 				
 			}	
 		
-			// cmp++;
+			cmp++;
 
-			// if(cmp == 10)
-			// 	exit(1);
+			if(cmp == 10)
+				exit(1);
 
 		}
 

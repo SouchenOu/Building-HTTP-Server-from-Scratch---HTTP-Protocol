@@ -20,14 +20,7 @@ class server;
 
 class response
 {
-    private:
-
-        unsigned int code;
-        server  *Servers;
-        Location    *Locations;
-        std::string        path;
-
-
+  
     public:
 
         //constructers
