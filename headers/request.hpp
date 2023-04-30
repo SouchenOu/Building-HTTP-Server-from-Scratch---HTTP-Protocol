@@ -63,7 +63,8 @@ class Request
         //std::string response_header(int fileSize, bool test);
         int get_indice();
         void Parcing_request(std::string buffer);
-
+        std::string get_request_header(string name);
+        bool check_client_max_body_size(unsigned int size);
        
         
 

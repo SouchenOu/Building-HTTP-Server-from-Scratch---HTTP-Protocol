@@ -262,7 +262,21 @@ std::string Request::path_of_file()
         path_of_file_dm = "";
 		return path_of_file_dm;
     }
-
+	if (Path.find("//") != string::npos)
+	{
+		Status_Code = 404;
+		return;
+	}
+	if (type_request == "DELETE" && Status_Code != 403)
+	{
+		code = 200;
+		path_of_file_dm = "";
+		return;
+	}
+	if (Status_Code == 413)
+	{
+		return;
+	}
 	
 	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
@@ -386,22 +400,83 @@ std::string Request::path_of_file()
 	
 // }
 
+string to_string_custom(const int &error_code)
+{
+	stringstream ret;
+	ret << error_code;
+	return ret.str();
+}
+
+std::string	Request::check_error_page(const int error_code)
+{
+	if (Server && Server->get_error_pages().size() && Server->get_error_pages().find(error_code) != server->get_error_pages().end() && server->get_error_pages()[error_code].size())
+	{
+		string error_page_filename = Server->get_root() + '/' + Server->get_error_pages()[error_code];
+		// DEBUG("TMP IS :" << error_page_filename);
+		ifstream file(error_page_filename.c_str(), ofstream::in);
+		if (!file || !file.is_open() || !file.good() || file.fail() || file.bad())
+		{
+			return ("default_error_pages/" + to_string_custom(error_code) + ".html");
+		}
+		file.close();
+		return (Server->get_root() + Server->get_error_pages().find(error_code)->second);
+	}
+	else
+		DEBUG("NO ERROR PAGE FOUND");
+	return ("default_error_pages/" + to_string_custom(error_code) + ".html");
+}
+
 
 int Request::get_indice()
 {
+	
 	if(Status_Code == 0)
 	{
 		Status_Code = 200; //OK
-	}
-	else if(Status_Code == 400) // BAD_REQUEST
+	}else if (Status_Code == 400 || Status_Code == 403 || Status_Code == 404 || Status_Code == 413)
 	{
-		// should have error_page
-		std::cout << "error_page\n";
+		path_of_file_dm = error_page(Status_Code);
+		file_file_descriptor = open(static_cast<const char *>(path_of_file_dm.c_str()), O_RDONLY);
 		return 0;
 	}
+	if (is_directory(path_of_file_dm))
+	{
+		if (path_of_file_dm[path_of_file_dm.size() - 1] == '/' && Location->get_autoindex())
+		{
+			Status_Code = 200;
+			return 1;
+		}
+		else
+		{
+			Status_Code = 403;
+			path_of_file_dm = error_page(403);
+		}
+	}
+	
 	
 	
 	return 0; 
 }
+
+std::string Request::get_request_header(string name)
+{
+	if (request_headers.find(name) != request_headers.end())
+		return request_headers[name];
+	return "";
+}
+
+//check if the max body size is right or not
+
+bool Request::check_client_max_body_size(unsigned int size)
+{
+	if (get_client_max_body_size() != -1 && (int) size > get_client_max_body_size())
+	{
+		std::cout << "Data is too big"
+		code = 413;
+		return false;
+	}
+	return true;
+}
+
 
 
