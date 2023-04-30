@@ -65,6 +65,11 @@ string Location::get_path()
     return path;
 }
 
+vector<std::string>	Location::get_http_allow_method() const
+{
+	return (this->http_allow_method);
+}
+
 // setters
 
 void Location::set_root(std::string root)
@@ -106,9 +111,9 @@ void Location::set_path(std::string Path)
     this->path = Path;
 }
 
-void Location::allow_HTTP_methods(std::string http_method_allow)
+void Location::push_allow_HTTP_methods(std::string http_method_allow)
 {
-    http_method.push_back(http_method_allow);
+    http_allow_method.push_back(http_method_allow);
 }
 
 

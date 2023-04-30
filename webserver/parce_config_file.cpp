@@ -253,6 +253,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 	
 				exit(0);
 			}
+			// using atoll here i should search for it
 			serv->set_client_max_body_size(atoi(words2[1].c_str()));
 		}
 		else if (words2[0] == "error_page")
@@ -403,7 +404,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 					std::vector<std::string>::iterator iter;
 					for(iter = w_o_r_d.begin() + 1; iter != w_o_r_d.end(); iter++)
 					{
-						location.allow_HTTP_methods(*iter);
+						location.push_allow_HTTP_methods(*iter);
 					} 
 				}
 				 

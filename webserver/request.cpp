@@ -180,6 +180,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	//For location
 	std::list<Location> locations = Servers->get_locations();
+	this->Locations = NULL;
 	if(locations.size() == 0)
 	{
 		Locations = NULL;
@@ -209,16 +210,42 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		    if((i1)->get_path() == path_navigate)
 		    {
 			    this->Locations = new Location(*i1);
-			    return 1;
+			   // return 1;
 		    }
 	    }
 
     }
+	if(this->Locations == NULL)
+		return 0;
+	// check method allow
 
- 
+	list<string> method_allow = Location->get_http_allow_method();
+	for (list<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
+	{
+		if (*iter_method == type_request)
+			indice = 1;
+	}
+
+	if(indice == 0)
+	{
+		Status_Code = 405;
+		return 0;
+	}
+
+	if (Server->get_client_max_body_size() != -1 && atoll(request_headers["Content-Length"].c_str()) > server->get_client_max_body_size())
+	{
+		Status_Code = 413;
+	}
+
+	if (Location->get_http_redirection() > 0)
+		Status_Code = location->get_http_redirection();
+		
+	else if (type_request == "DELETE")
+	{
+		Status_Code = 200;
+	}
 	
 
-	this->Locations = NULL;
 	return 1;
 
 }
