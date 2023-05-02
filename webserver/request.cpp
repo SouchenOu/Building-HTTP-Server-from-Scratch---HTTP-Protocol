@@ -109,6 +109,10 @@ std::string Request::get_type_request()
 {
     return type_request;
 }
+int Request::get_Status_code()
+{
+	return Status_Code;
+}
 
 void Request::set_Path(std::string path)
 {
@@ -540,6 +544,21 @@ std::string Request::get_request_header(std::string name)
 // 	}
 // 	return true;
 // }
+
+map<unsigned int, string> Request::Status_codes_means(void)
+{
+	map<unsigned int, string> code_stat;
+	   code_stat.insert(std::pair<unsigned int, std::string>(200, "OK"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(203, "303 See Other"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(302, "302 Found"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(400, "400 Bad Request"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(403, "403 Forbidden"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(404, "404 Not Found"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(405, "405 Method Not allow"));
+    	
+		return code_stat ;
+}
+
 
 
 

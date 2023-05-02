@@ -54,6 +54,7 @@ class Request
         std::string get_Path();
         std::string get_type_request();
         std::string get_path_of_file_dm();
+        int get_Status_code();
 
         // setters
         void set_Path(std::string path);
@@ -69,7 +70,7 @@ class Request
         bool check_client_max_body_size(unsigned int size);
         std::string check_error_page(int Status_code);
         int check_which_location_compatible();
-       
+       map<unsigned int, string> Status_codes_means(void);
         
 
 

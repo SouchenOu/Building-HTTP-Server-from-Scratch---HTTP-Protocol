@@ -149,15 +149,18 @@ void WebBrowsers::ThePath_of_acces_file()
 void WebBrowsers::prepareResponse()
 {
 	int status;
+	int code_status;
 	send_byte = 0;
 	//unsigned int length = atoi(request_Headers->get_request_header("Content-Length").c_str());
 	//request_Headers->check_client_max_body_size(length);
 	status = request_Headers->get_indice();
+	code_status = request_Headers->get_Status_code();
+	map<unsigned int, string> map_Codestatus = request_Headers->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
 	if(status == 0)
 	{
-		response_buffer = Response.response_header(0 , 0, path_access);
+		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
 		// int size_actuel = BUFFUR_SIZE;
 		// if (send_byte + size_actuel > response_buffer.size())
 		// 	size_actuel= response_buffer.size() - send_byte;

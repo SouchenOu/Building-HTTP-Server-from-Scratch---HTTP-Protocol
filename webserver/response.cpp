@@ -26,7 +26,7 @@ response::~response()
 }
 
 
-std::string response::response_header(int size_of_file, bool var, std::string path_access)
+std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus)
 {
 	std::cout << "path_in_response-->" << path_access << endl;
 	
@@ -48,9 +48,13 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	std::cout << "size of our file->" << size_of_file << endl;
 
 	stringstream response_header;
-    response_header << "HTTP/1.1 200 OK\r\n";
+    response_header << "HTTP/1.1" << map_Codestatus[status_code] << "\r\n\r\n";
+	//response_header << "Date: " << << endl;
+	response_header << "Server: webserv/0.01" << endl;
+	//response_header << "Content_type: " << << endl;
 	response_header << "Content-Length: " << size_of_file << "\r\n\r\n";
-	/****/
+	response_header << "Connection: Closed" << endl;
+	response_header << endl;
 
 	return response_header.str();
 
