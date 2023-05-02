@@ -234,20 +234,15 @@ void WebBrowsers::send_response()
 
 void WebBrowsers::send1()
 {
-	int size_actuel = BUFFUR_SIZE;
-	if (send_byte + size_actuel > response_buffer.size())
-			size_actuel= response_buffer.size() - send_byte;
-	send(file_descriptor, response_buffer.c_str() + send_byte,size_actuel, 0);
-	send_byte = send_byte + size_actuel;
-	if (send_byte == response_buffer.size())
-	{
-			std::cout << "size and response_buffer-->" << send_byte << endl;
-			response_buffer.clear();
-			indice = 3;
-			delete request_Headers;
-			request_Headers = 0;
+	std::cout << "send1 open\n";
 
-	}
+	send(file_descriptor, response_buffer.c_str() + send_byte,response_buffer.size(), 0);
+	std::cout << "size and response_buffer-->" << send_byte << endl;
+	response_buffer.clear();
+	indice = 3;
+	delete request_Headers;
+	request_Headers = 0;
+
 }
 
 void WebBrowsers::send2()
@@ -266,7 +261,7 @@ void WebBrowsers::send2()
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
 	
-	std::cout << "fd = " << fd << endl;
+	// std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
 		close(file_file_descriptor);
@@ -282,7 +277,7 @@ void WebBrowsers::send2()
 	// send(file_descriptor, str.c_str(), str.length(), 0);
 	std::cout << "befaure\n";
 	
-	std::cout << "buffer->" << buff << endl;
+	//std::cout << "buffer->" << buff << endl;
 	send(file_descriptor, buff, fd, 0);
 	
 	

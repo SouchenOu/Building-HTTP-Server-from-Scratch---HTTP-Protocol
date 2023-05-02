@@ -114,7 +114,7 @@ void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	//int cmp = 0;
+	// int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -153,6 +153,7 @@ on that socket (which means you have to do accept(), etc. */
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
 			{
+				std::cout << "problem in connect\n";
 				// close client_file_descriptor if client disconnected
 
 				delete(*iter1);
@@ -253,14 +254,14 @@ Points to a bit set of descriptors to check for writing.*/
 			{
 				if((*iter3)->get_indice() == 0)
 				{
-				
+					std::cout << "prepare response\n";
 					(*iter3)->check_request();
 					(*iter3)->ThePath_of_acces_file();
 					(*iter3)->prepareResponse();
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
-			
+					std::cout << "send_response";
 					(*iter3)->send_response();
 				}
 				

@@ -68,6 +68,7 @@ class Request
         std::string get_request_header(std::string name);
         bool check_client_max_body_size(unsigned int size);
         std::string check_error_page(int Status_code);
+        int check_which_location_compatible();
        
         
 

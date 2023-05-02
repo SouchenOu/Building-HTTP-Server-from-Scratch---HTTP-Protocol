@@ -114,12 +114,56 @@ void Request::set_Path(std::string path)
 {
     this->Path = path;
 }
+int Request::check_which_location_compatible()
+{
+	string path_navigate;
+	path_navigate = Path;
+	std::list<Location> locations = Servers->get_locations();
+	this->Locations = NULL;
+	if(locations.size() == 0)
+	{
+		Locations = NULL;
+		return 0;
+	}
+	//std::set<Location>::iterator i1;
+    while(path_navigate != "")
+    {
+        for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	    {
+		    if((i1)->get_path() == path_navigate)
+		    {
+			    this->Locations = new Location(*i1);
+			    return 1;
+		    }
+	    }
+        size_t count = path_navigate.find_last_of("/");
+        if(count == string::npos)
+        {
+            break ;
+        }
+        path_navigate = path_navigate.substr(0, count);
+		std::cout << "path_navigate-->" << path_navigate << endl;
+		
 
+    }
+		path_navigate  = "/";
+		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	    {
+		    if((i1)->get_path() == path_navigate)
+		    {
+			    this->Locations = new Location(*i1);
+			   	return 1;
+		    }
+	    }
+	// if(this->Locations == NULL)
+		return 0;
+}
 
 int Request::check_request_with_config_file(const std::set<server*> &servers)
 {
 
 	string Host;
+	int var = 0;
 	unsigned int port;
 	string path_navigate;
 	int indice = 0;
@@ -151,21 +195,22 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		return 0;
 	}
 	
-	// for(iter3 = servers.begin(); iter3 != servers.end(); iter3++)
-	// {
-	// 	if((*iter3)->get_port_listen() == port )
-	// 	{
-	// 		this->Servers = (*iter3);
-	// 		break ;
-	// 	}
-	// }
-
+	for(iter3 = servers.begin(); iter3 != servers.end(); iter3++)
+	{
+		if((*iter3)->get_port_listen() == port )
+		{
+			this->Servers = (*iter3);
+			break ;
+		}
+	}
+	// std::cout << "host->" << Host << endl;
+	// std::cout << "Port->" << port << endl;
 	for(iter1 = servers.begin(); iter1 != servers.end(); iter1++)
 	{
 		set<string> server_names = (*iter1)->get_server_name();
 		for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
 		{
-			if(((*iter2) == Host  && (*iter1)->get_port_listen() == port) ||( Host == "localhost" && ((*iter1)->get_port_listen() == port)))
+			if(((*iter2) == Host  && (*iter1)->get_port_listen() == port))
 			{
 				this->Servers = (*iter1);
 			}
@@ -178,46 +223,65 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		std::cout << "No Server is compatible\n";
 		return 0;
 	}
+	//Content-Length is specified and it does not match the length of the message-line, the message is either truncated, or padded with nulls to the specified length.
 
-	//For location
-	std::list<Location> locations = Servers->get_locations();
-	this->Locations = NULL;
-	if(locations.size() == 0)
+	//The Content-Length header indicates the size of the message body, in bytes, sent to the recipient.
+
+	//Basically it is the number of bytes of data in the body of the request or response.
+	// atoll() string to long long int
+	std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
+	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
-		Locations = NULL;
+		std::cout << "Payload Too Large\n";
+		std::cout << "413 Request Entity Too Large\n";
+		Status_Code = 413;
+	}
+
+
+	var = check_which_location_compatible();
+	if (var == 0)
+	{
 		return 0;
 	}
-	//std::set<Location>::iterator i1;
-    while(path_navigate != "")
-    {
-        for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	    {
-		    if((i1)->get_path() == path_navigate)
-		    {
-			    this->Locations = new Location(*i1);
-			    //return 1;
-		    }
-	    }
-        size_t count = path_navigate.find_last_of("/");
-        if(count == string::npos)
-        {
-            break ;
-        }
-        path_navigate = path_navigate.substr(0, count);
-		std::cout << "path_navigate-->" << path_navigate << endl;
-		path_navigate  = "/";
-		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	    {
-		    if((i1)->get_path() == path_navigate)
-		    {
-			    this->Locations = new Location(*i1);
-			   // return 1;
-		    }
-	    }
+	//For location
+	// std::list<Location> locations = Servers->get_locations();
+	// this->Locations = NULL;
+	// if(locations.size() == 0)
+	// {
+	// 	Locations = NULL;
+	// 	return 0;
+	// }
+	// //std::set<Location>::iterator i1;
+    // while(path_navigate != "")
+    // {
+    //     for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	//     {
+	// 	    if((i1)->get_path() == path_navigate)
+	// 	    {
+	// 		    this->Locations = new Location(*i1);
+	// 		    return 1;
+	// 	    }
+	//     }
+    //     size_t count = path_navigate.find_last_of("/");
+    //     if(count == string::npos)
+    //     {
+    //         break ;
+    //     }
+    //     path_navigate = path_navigate.substr(0, count);
+	// 	std::cout << "path_navigate-->" << path_navigate << endl;
+	// 	path_navigate  = "/";
+	// 	for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	//     {
+	// 	    if((i1)->get_path() == path_navigate)
+	// 	    {
+	// 		    this->Locations = new Location(*i1);
+	// 		   // return 1;
+	// 	    }
+	//     }
 
-    }
-	if(this->Locations == NULL)
-		return 0;
+    // }
+	// if(this->Locations == NULL)
+	// 	return 0;
 	// check method allow
 
 	vector<std::string> method_allow = Locations->get_http_allow_method();
@@ -233,19 +297,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		Status_Code = 405;
 		return 0;
 	}
-	//Content-Length is specified and it does not match the length of the message-line, the message is either truncated, or padded with nulls to the specified length.
-
-	//The Content-Length header indicates the size of the message body, in bytes, sent to the recipient.
-
-	//Basically it is the number of bytes of data in the body of the request or response.
-	// atoll() string to long long int
-	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
-	{
-		std::cout << "Payload Too Large\n";
-		std::cout << "413 Request Entity Too Large\n";
-		Status_Code = 413;
-	}
-
+	
 	if (Locations->get_http_redirection() > 0)
 		Status_Code = Locations->get_http_redirection();
 		
@@ -264,7 +316,7 @@ std::string Request::path_of_file()
 	string Path_in_request;
 	string tmp_file;
 	int file_des;
-    int value = 0;
+    // int value = 0;
     if(Locations == NULL || Servers == NULL)
     {
 		std::cout << "There is no server or location\n";
@@ -302,9 +354,10 @@ std::string Request::path_of_file()
 			Path_in_request += '/' + Locations->get_index();
 		else
 			Path_in_request += '/' + Servers->get_index();
-        value = 1;
+        // value = 1;
 	}
 	//return Path_in_request;
+	//The function returns the index of the first occurrence of the sub-string.
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
 		
@@ -357,7 +410,6 @@ std::string Request::path_of_file()
 	// 		tmp_file  += '/' + Servers->get_index();
     // }
 	file_des = open(tmp_file.c_str(),O_RDONLY);
-	std::cout << "Path->" << Path << endl;
 	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
 		std::cout << "failed or what\n";

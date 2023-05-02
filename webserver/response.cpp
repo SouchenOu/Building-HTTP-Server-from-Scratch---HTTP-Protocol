@@ -50,6 +50,7 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	stringstream response_header;
     response_header << "HTTP/1.1 200 OK\r\n";
 	response_header << "Content-Length: " << size_of_file << "\r\n\r\n";
+	/****/
 
 	return response_header.str();
 
