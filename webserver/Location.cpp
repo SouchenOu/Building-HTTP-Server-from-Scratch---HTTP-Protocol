@@ -65,7 +65,7 @@ string Location::get_path()
     return path;
 }
 
-vector<std::string>	Location::get_http_allow_method() const
+vector<std::string>	Location::get_http_allow_method()
 {
 	return (this->http_allow_method);
 }

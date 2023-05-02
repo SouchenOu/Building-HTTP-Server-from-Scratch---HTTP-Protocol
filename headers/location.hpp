@@ -59,7 +59,7 @@ class Location
     int get_autoindex();
     std::string get_index();
     std::string get_path();
-    vector<std::string>	get_http_allow_method(void);
+    std::vector<std::string>	get_http_allow_method(void);
     void push_allow_HTTP_methods(std::string method_allow);
 
 

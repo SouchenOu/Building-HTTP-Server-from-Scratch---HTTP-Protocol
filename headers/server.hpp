@@ -46,6 +46,7 @@ class server
 		std::string										ip_address;
 		std::set<std::string>							server_name; //domain_name
 		std::map<unsigned int, std::string>				error_pages;
+		//By default, NGINX has a limit of 1MB on file uploads. If the size of a request exceeds the configured value, then the 413 Request Entity Too Large error is returned. To upload files larger than 1 MB, configure the client_max_body_size directive in the NGINX configuration files.
 		long long										client_max_body_size;
 		std::string										root; 
 		std::string										index; 

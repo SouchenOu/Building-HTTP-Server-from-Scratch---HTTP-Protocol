@@ -27,6 +27,8 @@ class Request
         std::string type_request;
         server  *Servers;
         Location    *Locations;
+
+        //HTTP response status codes indicate whether a specific HTTP request has been successfully completed.
         int Status_Code;
         std::string path_of_file_dm;
         std::string version_http;
@@ -63,8 +65,9 @@ class Request
         //std::string response_header(int fileSize, bool test);
         int get_indice();
         void Parcing_request(std::string buffer);
-        std::string get_request_header(string name);
+        std::string get_request_header(std::string name);
         bool check_client_max_body_size(unsigned int size);
+        std::string check_error_page(int Status_code);
        
         
 
