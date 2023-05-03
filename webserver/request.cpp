@@ -56,8 +56,8 @@ void Request::Parcing_request(std::string buffer)
     while(iter != request_divise.end())
     {
         vector<string> First_line = ft_divise(*iter, ": ");
-        // std::cout << "First_line[0]-->" << First_line[0] << endl;
-        // std::cout << "First_line[1]-->" << First_line[1] << endl;
+        std::cout << "First_line[0]-->" << First_line[0] << endl;
+        std::cout << "First_line[1]-->" << First_line[1] << endl;
         // std::cout << "First_line[2]-->" << First_line[2] << endl;
         vector<string>::iterator i = First_line.begin();
 
@@ -70,14 +70,14 @@ void Request::Parcing_request(std::string buffer)
         {
             vector<string> split_Host = ft_divise(First_line[1], ":");
          
-            if(First_line.size() != 3)
-            {
-                break ;
-            }else{
+            // if(First_line.size() != 3)
+            // {
+            //     break ;
+            // }else{
                 // server and browser exchange meta information about the document via the HTTP header.
                 request_headers.insert(pair<string,string>("Host", First_line[1]));
                 request_headers.insert(pair<string,string>("Port",First_line[2]));
-            }
+            //}
         }else
             request_headers.insert(pair<string, string>(First_line[0], First_line[1]));
 
@@ -168,7 +168,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	string Host;
 	int var = 0;
-	unsigned int port;
+	unsigned int port = 0;
 	string path_navigate;
 	int indice = 0;
 	path_navigate = Path;
@@ -182,46 +182,54 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
+			std::cout << "Host-->" << Host << endl;
+		std::cout << "here'''\n";
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
 		return 0;
 	}
-	//std::cout << "Host-->" << Host << endl;
-
+	std::cout << "port->" << port << endl;
+	// if i have in my request header server_name = localhost and there no port 
 	if(request_headers.find("Port") != request_headers.end())
 	{
 		port = atoi(request_headers.find("Port")->second.c_str());
-	}else
+	}else if(Host != "localhost" && port != 0)
 	{
-		port = 0;
+		//port = 0;
 		Status_Code = 400;
+		std::cout << "Bad request : The server cannot or will not process the request\n";
 		return 0;
 	}
+		// if i have in my request header server_name = localhost and there no port 
+
+	if(Host ==  "localhost" && port == 0)
+	{
+		port = 80;
+	}
+
 	
 	for(iter3 = servers.begin(); iter3 != servers.end(); iter3++)
 	{
-		if((*iter3)->get_port_listen() == port )
+		if((*iter3)->get_port_listen() == port)
 		{
 			this->Servers = (*iter3);
-			break ;
+			//break ;
 		}
+		set<string> server_names = (*iter3)->get_server_name();
+		for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
+		{
+			if((((*iter2) == Host || *iter2 == "0.0.0.0")  && ((*iter3)->get_port_listen() == port)))
+			{
+				this->Servers = (*iter3);
+			}
+		}
+		// if i have server_name in the config file
+
 	}
 	// std::cout << "host->" << Host << endl;
 	// std::cout << "Port->" << port << endl;
-	for(iter1 = servers.begin(); iter1 != servers.end(); iter1++)
-	{
-		set<string> server_names = (*iter1)->get_server_name();
-		for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
-		{
-			if(((*iter2) == Host  && (*iter1)->get_port_listen() == port))
-			{
-				this->Servers = (*iter1);
-			}
-		}
-
-	}
-
+	
 	if(this->Servers == NULL)
 	{
 		std::cout << "No Server is compatible\n";

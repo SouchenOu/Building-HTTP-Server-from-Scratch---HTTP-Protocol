@@ -365,7 +365,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 
 					if(number == 301 || number == 302  || number == 303 || number == 307 || number == 308 )
 					{
-						std::cout << BLUE  <<  "--> invalid number" << endl;
+						std::cout << BLUE  <<  "--> invalid http redirection number" << endl;
 						exit(0);
 					}
 					location.set_http_redirection(number);	
