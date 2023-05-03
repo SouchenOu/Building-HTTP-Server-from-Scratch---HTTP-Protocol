@@ -28,7 +28,6 @@ response::~response()
 
 std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus)
 {
-	std::cout << "path_in_response-->" << path_access << endl;
 	
 	if(var == 0)
 	{
@@ -45,15 +44,15 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 //		But along with reading you also want to know the position of the last position in the text file.
 		size_of_file = our_file.tellg();
 	}
-	std::cout << "size of our file->" << size_of_file << endl;
-
+	//(void) status_code;
+	//(void) map_Codestatus;
 	stringstream response_header;
-    response_header << "HTTP/1.1" << map_Codestatus[status_code] << "\r\n\r\n";
-	//response_header << "Date: " << << endl;
+    response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
+	// //response_header << "Date: " << << endl;
 	response_header << "Server: webserv/0.01" << endl;
-	//response_header << "Content_type: " << << endl;
-	response_header << "Content-Length: " << size_of_file << "\r\n\r\n";
-	response_header << "Connection: Closed" << endl;
+	// //response_header << "Content_type: " << << endl;
+	response_header << "Content-Length: " << size_of_file << endl;
+	//response_header << "Connection: Closed" << endl;
 	response_header << endl;
 
 	return response_header.str();

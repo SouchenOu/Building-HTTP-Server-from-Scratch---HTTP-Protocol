@@ -548,7 +548,7 @@ std::string Request::get_request_header(std::string name)
 map<unsigned int, string> Request::Status_codes_means(void)
 {
 	map<unsigned int, string> code_stat;
-	   code_stat.insert(std::pair<unsigned int, std::string>(200, "OK"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(200, "200 OK"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(203, "303 See Other"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(302, "302 Found"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(400, "400 Bad Request"));

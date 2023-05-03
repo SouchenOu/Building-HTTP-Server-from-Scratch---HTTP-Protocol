@@ -30,7 +30,7 @@ class response
 
         //used function
 
-        std::string response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus);
+        std::string response_header(int size_of_file, bool var, std::string path_access, int status_code, std::map<unsigned int, std::string> map_Codestatus);
 };
 
 

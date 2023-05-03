@@ -70,7 +70,7 @@ class Request
         bool check_client_max_body_size(unsigned int size);
         std::string check_error_page(int Status_code);
         int check_which_location_compatible();
-       map<unsigned int, string> Status_codes_means(void);
+       std::map<unsigned int, std::string> Status_codes_means(void);
         
 
 
