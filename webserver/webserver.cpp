@@ -141,6 +141,12 @@ on that socket (which means you have to do accept(), etc. */
 		}
 	}
 
+
+/*************************************************************/
+/* Loop waiting for incoming connects or for incoming data   */
+/* on any of the connected sockets.                          */
+/*************************************************************/
+
 	while(true)
 	{
 		r_fds = readfds;
@@ -206,8 +212,23 @@ Points to a bit set of descriptors to check for writing.*/
 			std::cout << "select error\n";
 		}
 		// i enter here selon how much i click the 
+
+		/**********************************************************/
+      	/* One or more descriptors are readable.  Need to         */
+      	/* determine which ones they are.                         */
+      	/**********************************************************/
 		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
+			/*******************************************************/
+         	/* Check to see if this descriptor is ready            */
+         	/*******************************************************/
+			/*******************************************************/
+            /* A descriptor was found that was readable 			*/
+			/*  This is being done   								*/
+            /* we can stop looking at the working set   			*/
+            /* once we have found all of the descriptors that   	*/
+            /* were ready.                                      	*/
+            /********************************************************/
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
 				// i enter here if client send request
@@ -216,7 +237,14 @@ Points to a bit set of descriptors to check for writing.*/
 				std::cout << "Confirmation, accepting to receive a call from a sender\n";
 			 	int addrlen = sizeof(browser->get_address_client());
 				// //The accept() call is used by a server to accept a connection request from a client
+
+				/*************************************************/
+                /* Accept all incoming connections that are      */
+                /* queued up on the listening socket before we   */
+                /* loop back and call select again.              */
+                /*************************************************/
 			 	client_socket = accept((*iter2)->get_fd_socket(),browser->get_address_client(),(socklen_t*)&addrlen);
+
 				browser->set_file_descriptor(client_socket);
 				Browsers.push_back(browser);
 				FD_SET(browser->get_file_descriptor(), &readfds);

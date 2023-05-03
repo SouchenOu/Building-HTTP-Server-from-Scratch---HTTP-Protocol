@@ -49,6 +49,13 @@ creating a TCP socket looks like this:*/
 
 //---> When you first create the socket descriptor with socket(), the kernel sets it to blocking. If you don’t want a socket to be blocking, you have to make a call to fcntl():
 	
+
+
+   /*************************************************************/
+   /* Create an AF_INET stream socket to receive incoming      */
+   /* connections on                                            */
+   /*************************************************************/
+
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
 	if (fd_socket == -1)
 	{
@@ -81,15 +88,25 @@ creating a TCP socket looks like this:*/
 
 
 //**Sometimes, you might notice, you try to rerun a server and bind() fails, claiming “Address already in use.” What does that mean? Well, a little bit of a socket that was connected is still hanging around in the kernel, and it’s hogging the port. You can either wait for it to clear (a minute or so), or add code to your program allowing it to reuse the port,***/////
-	int var = 1;
-	setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &var, sizeof(var));
 
+   /*************************************************************/
+   /* Allow socket descriptor to be reuseable                   */
+   /*************************************************************/
+	int var = 1;
+	int result;
+	result = setsockopt(fd_socket, SOL_SOCKET, SO_REUSEADDR, &var, sizeof(var));
+	if(result < 0)
+	{
+		perror("setsockopt() failed\n");
+		close(fd_socket);
+		exit(0);
+	}
 
 //By binding the socket to a port, you are telling the operating system that this socket should be used to listen for incoming requests on that port.
 	if (binding_socket(fd_socket,address) == -1)
 	{
 		perror("Error : Problem binding");
-		exit(1);
+		exit(0);
 	}
 
 // listen for incoming requests......
