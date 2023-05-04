@@ -258,9 +258,9 @@ void	server::set_cgis(const std::map<std::string, std::string> cgis)
 
 
 
-void	server::insert_in_cgi(const std::string extention_name, const std::string exec_path)
+void	server::insert_in_cgi(const std::string extention_name, const std::string execute_path)
 {
-	this->cgis.insert(std::pair<std::string, std::string>(extention_name, exec_path));
+	this->cgis.insert(std::pair<std::string, std::string>(extention_name, execute_path));
 }
 
 void	server::insert_in_error_page(const std::pair<unsigned int, std::string> error_page)
@@ -283,35 +283,4 @@ void	server::insert_in_location(Location location)
 }
 
 
-int server::receive_data()
-{
 
-	int recv_s;
-	char buffer[1000];
-	value = 0;
-
-	recv_s = recv(new_socket, buffer, 1000, 0 ); 
-	std::cout << "reading->" << buffer << endl;
-
-	// if(recv_s <= 0)
-	// {
-	// 	std::cout << "No message are available to be received\n";
-	// 	value = 1;
-	// 	return 2;
-	// }else{
-	// 	read_buffer = read_buffer + string(buffer, recv_s);
-	// }
-
-	// if(recv_s < 1000)
-	// {
-	// 	// send request
-	// 	// if(request == 0)
-	// 	// {
-	// 	// 	request = new Request(recv_s);
-	// 	// }
-	// 	// read_buffer.clear();
-	// 	value = 1;
-	// }
-	return value;
-
-}

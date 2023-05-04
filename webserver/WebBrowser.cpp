@@ -153,15 +153,32 @@ void WebBrowsers::prepareResponse()
 {
 	int status;
 	int code_status;
+	int value = 0;
+	int count;
 	send_byte = 0;
 	//unsigned int length = atoi(request_Headers->get_request_header("Content-Length").c_str());
 	//request_Headers->check_client_max_body_size(length);
+	
+	// check if this path exist
+	ifstream file_check(path_access.c_str(), ofstream::in);
+	if(!file_check || !file_check.is_open() || !file_check.good())
+	{
+		std::cout << "file not found\n";
+		request_Headers->set_Status_code(404);
+		close(file_check);
+	}else
+	{
+		count = request_Headers->check_cgi();
+		if(count > 0)
+			value = 2;
+		close(file_check);
+	}
 	status = request_Headers->get_indice();
 	code_status = request_Headers->get_Status_code();
 	map<unsigned int, string> map_Codestatus = request_Headers->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
-	if(status == 0)
+	if(status == 0 && value == 0)
 	{
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
 		// int size_actuel = BUFFUR_SIZE;
@@ -178,6 +195,9 @@ void WebBrowsers::prepareResponse()
 			request_Headers = 0;
 
 		// }
+	}else if(status == 0 && value != 0)
+	{
+		request_Headers->cgi_start();
 	}
 }
 

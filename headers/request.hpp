@@ -59,7 +59,7 @@ class Request
         // setters
         void set_Path(std::string path);
         void set_path_of_file_dm(std::string path_of_file);
-
+        void set_Status_code(int code);
         int check_request_with_config_file(const std::set<server*> &servers);
         void Path_of_FileAccess();
         std::string path_of_file();
@@ -71,6 +71,8 @@ class Request
         std::string check_error_page(int Status_code);
         int check_which_location_compatible();
        std::map<unsigned int, std::string> Status_codes_means(void);
+       int check_cgi();
+       void cgi_start();
         
 
 

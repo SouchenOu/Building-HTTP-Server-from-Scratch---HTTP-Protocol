@@ -118,6 +118,11 @@ void Request::set_Path(std::string path)
 {
     this->Path = path;
 }
+
+void Request::set_Status_code(int code)
+{
+	this->Status_Code = code;
+}
 int Request::check_which_location_compatible()
 {
 	string path_navigate;
@@ -255,47 +260,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		return 0;
 	}
-	//For location
-	// std::list<Location> locations = Servers->get_locations();
-	// this->Locations = NULL;
-	// if(locations.size() == 0)
-	// {
-	// 	Locations = NULL;
-	// 	return 0;
-	// }
-	// //std::set<Location>::iterator i1;
-    // while(path_navigate != "")
-    // {
-    //     for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	//     {
-	// 	    if((i1)->get_path() == path_navigate)
-	// 	    {
-	// 		    this->Locations = new Location(*i1);
-	// 		    return 1;
-	// 	    }
-	//     }
-    //     size_t count = path_navigate.find_last_of("/");
-    //     if(count == string::npos)
-    //     {
-    //         break ;
-    //     }
-    //     path_navigate = path_navigate.substr(0, count);
-	// 	std::cout << "path_navigate-->" << path_navigate << endl;
-	// 	path_navigate  = "/";
-	// 	for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
-	//     {
-	// 	    if((i1)->get_path() == path_navigate)
-	// 	    {
-	// 		    this->Locations = new Location(*i1);
-	// 		   // return 1;
-	// 	    }
-	//     }
-
-    // }
-	// if(this->Locations == NULL)
-	// 	return 0;
-	// check method allow
-
+	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
 	for (vector<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
 	{
@@ -441,39 +406,6 @@ std::string Request::path_of_file()
 
 }
 
-// std::string Request::response_header(int fileSize, bool var)
-// {
-// 	string str;
-// 	// ifstream our_file(path_of_file_dm.c_str());
-
-// 	// while(getline(our_file, str))
-// 	// {
-// 	// 	std::cout << "txt->" << str << endl;
-// 	// }
-// 	// std::cout << "The path is ->" << path_of_file_dm << endl;
-// 	if(var == 0)
-// 	{
-// 		ifstream our_file(path_of_file_dm.c_str(),std::ios::in);
-// 		// while(getline(our_file, str))
-// 		// {
-// 		// 		std::cout<< "str-->\n";
-
-// 		// 		std::cout << str << endl;
-// 		// }
-// 		// position at end of fileObject
-// 		our_file.seekg(0, ios::end);
-// 		//Say we have entered 20 characters in a text file, and you want to read it.
-// //		But along with reading you also want to know the position of the last position in the text file.
-// 		fileSize = our_file.tellg();
-// 	}
-
-// 	// stringstream response_header;
-//     // response_header << "HTTP/1.1 200 OK\r\n";
-// 	// response_header << "Content-Length: " << fileSize << "\r\n\r\n";
-
-// 	return response_header.str();
-	
-// }
 
 
 
@@ -540,18 +472,6 @@ std::string Request::get_request_header(std::string name)
 	return "";
 }
 
-//check if the max body size is right or not
-
-// bool Request::check_client_max_body_size(unsigned int size)
-// {
-// 	if (Servers->get_client_max_body_size() != -1 && (int) size > Servers->get_client_max_body_size())
-// 	{
-// 		std::cout << "413 Request Entity Too Large";
-// 		Status_Code = 413;
-// 		return false;
-// 	}
-// 	return true;
-// }
 
 map<unsigned int, string> Request::Status_codes_means(void)
 {
@@ -565,6 +485,31 @@ map<unsigned int, string> Request::Status_codes_means(void)
 	   code_stat.insert(std::pair<unsigned int, std::string>(405, "405 Method Not allow"));
     	
 		return code_stat ;
+}
+
+int Request::check_cgi()
+{
+	int count_pos;
+	//int value = 0;
+	map<std::string, std::string> cgi = Servers->get_cgis();
+	std::map<std::string, std::string>::iterator iter_cgi;
+
+	for(iter_cgi = cgi.begin(); iter_cgi != cgi.end(); iter_cgi++)
+	{
+		//value = 1;
+		count_pos = path_of_file_dm.find(iter_cgi->first);
+		if(count_pos != string::npos)
+		{
+			return count_pos;
+		}
+
+	}
+	return count_pos;
+}
+
+void Resquest::cgi_start()
+{
+
 }
 
 
