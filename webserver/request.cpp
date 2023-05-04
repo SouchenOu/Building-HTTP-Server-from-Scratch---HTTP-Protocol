@@ -518,6 +518,22 @@ void Request::cgi_start()
 	std::string extention_name = path_of_file_dm.substr(count_pos);
 
 	std::cout << "extention_name-->" << extention_name << endl;
+	pid_t pid = fork();
+	if(pid < 0)
+	{
+		std::cout << "fork failed\n";
+		exit(0);
+	}else if(pid == 0)
+	{
+		std::vector<std::string> enverment;
+		enverment.push_back("REQUEST_METHOD="+type_request);
+		enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
+		enverment.push_back("REDIRECT_STATUS=200");
+		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
+		enverment.push_back("SERVER_PROTOCOL="+ version_http);
+
+
+	}
 }
 
 
