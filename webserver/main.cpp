@@ -12,7 +12,7 @@
 
 #include "../headers/webserver.hpp"
 #include "../headers/server.hpp"
-
+#include <signal.h>
 
 //Developpe a webserv like NGINX
 
@@ -24,6 +24,7 @@
 
 int main(int argc, char *argv[])
 {
+    //signal(SIGPIPE, SIG_IGN);
     if(argc != 2)
     {
         std::cout << "Error: We need a config file!\n";

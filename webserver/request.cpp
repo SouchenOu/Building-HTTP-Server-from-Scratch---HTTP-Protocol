@@ -56,8 +56,8 @@ void Request::Parcing_request(std::string buffer)
     while(iter != request_divise.end())
     {
         vector<string> First_line = ft_divise(*iter, ": ");
-        std::cout << "First_line[0]-->" << First_line[0] << endl;
-        std::cout << "First_line[1]-->" << First_line[1] << endl;
+        // std::cout << "First_line[0]-->" << First_line[0] << endl;
+        // std::cout << "First_line[1]-->" << First_line[1] << endl;
         // std::cout << "First_line[2]-->" << First_line[2] << endl;
         vector<string>::iterator i = First_line.begin();
 
@@ -146,7 +146,7 @@ int Request::check_which_location_compatible()
             break ;
         }
         path_navigate = path_navigate.substr(0, count);
-		std::cout << "path_navigate-->" << path_navigate << endl;
+		// std::cout << "path_navigate-->" << path_navigate << endl;
 		
 
     }
@@ -182,14 +182,14 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
-			std::cout << "Host-->" << Host << endl;
-		std::cout << "here'''\n";
+		// 	std::cout << "Host-->" << Host << endl;
+		// std::cout << "here'''\n";
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
 		return 0;
 	}
-	std::cout << "port->" << port << endl;
+	// std::cout << "port->" << port << endl;
 	// if i have in my request header server_name = localhost and there no port 
 	if(request_headers.find("Port") != request_headers.end())
 	{
@@ -241,7 +241,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	//Basically it is the number of bytes of data in the body of the request or response.
 	// atoll() string to long long int
-	std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
+	// std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
 	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
 		std::cout << "Payload Too Large\n";
@@ -374,11 +374,11 @@ std::string Request::path_of_file()
 	{
 		
 		Path_in_request = Path_in_request.substr(Locations->get_path().length());
-		std::cout << "path_request here -->" << Path_in_request << endl;
+		// std::cout << "path_request here -->" << Path_in_request << endl;
         if(is_directory(path_of_file_dm + Locations->get_root()))
         {
             path_of_file_dm += Locations->get_root();
-			std::cout << "path_of_file here?->" << path_of_file_dm << endl;
+			// std::cout << "path_of_file here?->" << path_of_file_dm << endl;
         }else
 		{
 			path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
@@ -412,7 +412,7 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	std::cout << "tmp-->" << tmp_file << endl;
+	// std::cout << "tmp-->" << tmp_file << endl;
     // if(value == 0)
     // {
     //     std::cout << "yes\n";

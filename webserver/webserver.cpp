@@ -114,7 +114,7 @@ void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	// int cmp = 0;
+	//int cmp = 0;
 
 	//int new_socket;
 	// string message = "hello souchen";
@@ -159,7 +159,7 @@ on that socket (which means you have to do accept(), etc. */
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
 			{
-				std::cout << "problem in connect\n";
+				std::cout << "accept() failed \n";
 				// close client_file_descriptor if client disconnected
 
 				delete(*iter1);
@@ -204,6 +204,12 @@ Points to a bit set of descriptors to check for writing.*/
 		
 		
 		/*****A server socket is considered ready for reading if there is a pending connection which can be accepted with accept; see Accepting Connections. A client socket is ready for writing when its connection is fully established;*/
+		// select is constructive (select change r_fds )
+
+		/* when select returns we know that one of our file descriptors has works for us, but select us a bit srange as i mentioned before (it is destructive)
+			meaning that it changes our FD_SET, so we passed in the set of file descriptors  to tell select which file descriptors to keep an eye on and when 
+			it returns now that same FD_SET containes just the file descriptors that are ready for reading, that is why we made a copy .
+			we didnt want to lose the list of descriptors that i'm watching */
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
@@ -229,8 +235,11 @@ Points to a bit set of descriptors to check for writing.*/
             /* once we have found all of the descriptors that   	*/
             /* were ready.                                      	*/
             /********************************************************/
+
+			// so we use fD_ISSET to check to see if that one is set, and if it is then we accept() the connection to read the request
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "enter server -->" << (*iter2)->get_port_listen()<< endl;
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
@@ -260,6 +269,8 @@ Points to a bit set of descriptors to check for writing.*/
 			{
 				fd_max = (*iter3)->get_file_descriptor();
 			}
+			// i will enter here untel select() doenst change r_fds to fd_socket server that clent sent to it a request 
+			// other case is when the socket that is ready to read from is one of those client--> here we need to read its data and handle the connection 
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
@@ -289,7 +300,7 @@ Points to a bit set of descriptors to check for writing.*/
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
-					std::cout << "send_response";
+					// std::cout << "send_response\n";
 					(*iter3)->send_response();
 				}
 				

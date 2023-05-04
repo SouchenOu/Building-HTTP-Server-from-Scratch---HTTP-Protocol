@@ -44,8 +44,8 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 //		But along with reading you also want to know the position of the last position in the text file.
 		size_of_file = our_file.tellg();
 	}
-	//(void) status_code;
-	//(void) map_Codestatus;
+	(void) status_code;
+	(void) map_Codestatus;
 	stringstream response_header;
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
 	// //response_header << "Date: " << << endl;

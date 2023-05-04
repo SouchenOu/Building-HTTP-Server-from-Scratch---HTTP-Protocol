@@ -50,7 +50,7 @@ WebBrowsers::~WebBrowsers()
 int WebBrowsers::Read_request()
 {
 
-	std::cout << "read_request\n";
+	//std::cout << "read_request\n";
 		int recv_s;
 		char buffer[BUFFUR_SIZE];
 		std::string read_buffer;
@@ -78,7 +78,10 @@ int WebBrowsers::Read_request()
 		}
 		if(request_Headers == NULL)
 		{
-			read_buffer = read_buffer + string(buffer, recv_s);
+			read_buffer = read_buffer + buffer;
+		}else if(request_Headers != NULL)
+		{
+			std::cout << "request it is not empty\n";
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
@@ -240,7 +243,7 @@ void WebBrowsers::send1()
 	std::cout << "send1 open\n";
 
 	send(file_descriptor, response_buffer.c_str() + send_byte,response_buffer.size(), 0);
-	std::cout << "size and response_buffer-->" << send_byte << endl;
+	// std::cout << "size and response_buffer-->" << send_byte << endl;
 	response_buffer.clear();
 	indice = 3;
 	delete request_Headers;
@@ -278,14 +281,14 @@ void WebBrowsers::send2()
 	}
 	// std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
 	// send(file_descriptor, str.c_str(), str.length(), 0);
-	std::cout << "befaure\n";
+	//std::cout << "befaure\n";
 	
 	//std::cout << "buffer->" << buff << endl;
 	send(file_descriptor, buff, fd, 0);
 	
 	
 	//write(file_descriptor, hello, strlen(hello));
-	std::cout << "after\n";
+	//std::cout << "after\n";
 	if (fd < BUFFUR_SIZE)
 	{
 		// if all the size of the image or the text is sended
