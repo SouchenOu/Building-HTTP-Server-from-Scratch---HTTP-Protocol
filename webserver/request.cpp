@@ -531,6 +531,19 @@ void Request::cgi_start()
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
+		if(type_request == "GET")
+		{
+			enverment.push_back("QUERY_STRING="+ path_of_file_dm);
+			enverment.push_back("CONTENT_LENGTH=0");
+		}else if(type_request == "SET")
+		{
+			enverment.push_back("REQUEST_METHOD="+type_request);
+			if(Status_Code == 314)
+				enverment.push_back("CONTENT_LENGTH=0");
+			else
+				enverment.push_back("CONTENT_LENGTH=0");
+		}
+
 
 
 	}

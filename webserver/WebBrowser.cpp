@@ -166,14 +166,14 @@ void WebBrowsers::prepareResponse()
 	{
 		std::cout << "file not found\n";
 		request_Headers->set_Status_code(404);
-		// close(file_check);
+		file_check.close();
 	}else
 	{
 		std::cout << "file exist\n";
 		count = request_Headers->check_cgi();
 		if(count > 0)
 			value = 2;
-		// close(file_check);
+		file_check.close();
 	}
 	status = request_Headers->get_indice();
 	code_status = request_Headers->get_Status_code();
