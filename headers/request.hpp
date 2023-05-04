@@ -32,6 +32,7 @@ class Request
         int Status_Code;
         std::string path_of_file_dm;
         std::string version_http;
+        size_t count_pos;
         // int file_file_descriptor;
         
    

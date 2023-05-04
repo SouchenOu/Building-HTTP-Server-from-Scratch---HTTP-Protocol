@@ -262,6 +262,11 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
+	std::cout << "to check allow-> " << endl;
+	for(std::vector<std::string>::iterator test = method_allow.begin(); test != method_allow.end(); test++)
+	{
+		std::cout << *test << endl;
+	}
 	for (vector<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
 	{
 		if (*iter_method == type_request)
@@ -489,7 +494,8 @@ map<unsigned int, string> Request::Status_codes_means(void)
 
 int Request::check_cgi()
 {
-	int count_pos;
+	// int count_pos;
+	count_pos = 0;
 	//int value = 0;
 	map<std::string, std::string> cgi = Servers->get_cgis();
 	std::map<std::string, std::string>::iterator iter_cgi;
@@ -507,9 +513,11 @@ int Request::check_cgi()
 	return count_pos;
 }
 
-void Resquest::cgi_start()
+void Request::cgi_start()
 {
+	std::string extention_name = path_of_file_dm.substr(count_pos);
 
+	std::cout << "extention_name-->" << extention_name << endl;
 }
 
 

@@ -160,18 +160,20 @@ void WebBrowsers::prepareResponse()
 	//request_Headers->check_client_max_body_size(length);
 	
 	// check if this path exist
+	std::cout << "path_access->" << path_access << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(!file_check || !file_check.is_open() || !file_check.good())
 	{
 		std::cout << "file not found\n";
 		request_Headers->set_Status_code(404);
-		close(file_check);
+		// close(file_check);
 	}else
 	{
+		std::cout << "file exist\n";
 		count = request_Headers->check_cgi();
 		if(count > 0)
 			value = 2;
-		close(file_check);
+		// close(file_check);
 	}
 	status = request_Headers->get_indice();
 	code_status = request_Headers->get_Status_code();
@@ -210,52 +212,7 @@ void WebBrowsers::send_response()
 	{
 		send2();
 	}
-	// int fd;
-	// //char hello[100] = "hello souchen";
-	// char 	buff[BUFFUR_SIZE];
-	// if(file_file_descriptor == 0)
-	// {
-	// 	delete request_Headers;
-	// 	value = 0;
-	// 	indice = 0;
-	// 	request_Headers = NULL;
-	// 	return ;
-	// 	std::cout << "error1\n";
-	// }
-	// fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
 	
-	// std::cout << "fd = " << fd << endl;
-	// if(fd <= 0)
-	// {
-	// 	close(file_file_descriptor);
-	// 	delete request_Headers;
-	// 	indice = 0;
-	// 	value = 0;
-	// 	file_file_descriptor = 0;
-	// 	request_Headers = NULL;
-
-	// 	std::cout << "error read faild \n";
-	// }
-	// // std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
-	// // send(file_descriptor, str.c_str(), str.length(), 0);
-	// std::cout << "befaure\n";
-	
-	// 	//std::cout << "buffer->" << buff << endl;
-	// send(file_descriptor, buff, fd, 0);
-	
-	
-	// //write(file_descriptor, hello, strlen(hello));
-	// std::cout << "after\n";
-	// if (fd < BUFFUR_SIZE)
-	// {
-	// 	std::cout << "sendig file to client !\n";
-	// 	close(file_file_descriptor);
-	// 	delete(request_Headers);
-	// 	indice = 0;
-	// 	value = 0;
-	// 	file_file_descriptor = 0;
-	// 	request_Headers = NULL;
-	// }
 }
 
 void WebBrowsers::send1()
