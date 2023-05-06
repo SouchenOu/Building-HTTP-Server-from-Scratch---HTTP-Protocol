@@ -515,15 +515,18 @@ int Request::check_cgi()
 }
 
 
-int Request::get_the_path(std::string extention_name)
+char ** Request::get_the_path(std::string extention_name)
 {
 	// firstly get the current directory
 	/**** These functions return a null-terminated string containing an
        absolute pathname that is the current working directory of the
        calling process.*/
 	std::string cgi_path;
+	char **argument;
 	char *path = getcwd(NULL, 0);
-	string string_path = string(path);
+	string path_actuel = string(path);
+	free(path);
+	// std::vector<std::string>path_final;
 	// find() returns an iterator or a constant iterator that refers to the position where the key is present in the map.
 	if(Servers->get_cgis().find(extention_name) != Servers->get_cgis().end())
 	{
@@ -537,28 +540,61 @@ int Request::get_the_path(std::string extention_name)
 		std::cout << "Cgi file open error\n";
 		return 0;
 	}
-	// std::vector<std::string> cgi_path;
+	std::vector<std::string> path_final;
+	path_final.push_back(cgi_path);
+	path_final.push_back(path_actuel + "/" + path_of_file_dm.substr(0, path_of_file_dm.find_first_of('?', 0)));
+	std::cout << "path_final[1]-->" << path_final[1] << endl; 
+	//std::cout << "path_final size-->" << path_final.size() << endl;
+	// put our vector in char ** variable
+
+	argument = static_cast<char **>(malloc(sizeof(char *) * (path_final.size() + 1)));
+
+	for(size_t i = 0; i < path_final.size(); i++)
+	{
+		argument[i] = ft_strdup(path_final[i]);
+	}
+	argument[path_final.size()] = 0;
 
 
 
-	return 1;
+
+	return argument;
 }
 
-void Request::cgi_start()
+char *Request::ft_strdup(string path)
+{
+	char *var = static_cast<char*>(malloc(sizeof(char) * (path.size() + 1)));
+
+	unsigned int i = 0;
+	while (i < path.size())
+	{
+		var[i] = path[i];
+		i++;
+	}
+	var[i] = 0;
+	return var;
+}
+
+void Request::cgi_start(std::string &body)
 {
 	// int *status = NULL;
 	// int options;
+	char **argv;
+	char **env;
+	// std::string body;
 	std::string extention_name = path_of_file_dm.substr(count_pos);
-
+	char *path = getcwd(NULL, 0);
+	string path_actuel = string(path);
+	free(path);
 	std::cout << "extention_name-->" << extention_name << endl;
 
-	// int fd_pipe[2];
+	int fd_pipe[2];
 
-	// if(pipe(fd_pipe) == -1)
-	// {
-	// 	std::cout << "Error pipe\n";
-	// 	exit(0);
-	// }
+	if(pipe(fd_pipe) == -1)
+	{
+		std::cout << "Error pipe\n";
+		exit(0);
+	}
 	pid_t pid = fork();
 	if(pid < 0)
 	{
@@ -569,35 +605,74 @@ void Request::cgi_start()
 		std::cout<< "shild process\n";
 		std::vector<std::string> enverment;
 		enverment.push_back("REQUEST_METHOD="+type_request);
-		enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
+		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm);
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
 		if(type_request == "GET")
 		{
-			enverment.push_back("QUERY_STRING="+ path_of_file_dm);
+			std::cout << "Get ofcourse\n";
+			// here for example php_website/index.php
+			enverment.push_back("QUERY_STRING="+ path_of_file_dm.substr(path_of_file_dm.find_first_of('?') + 1));
 			enverment.push_back("CONTENT_LENGTH=0");
 		}else if(type_request == "POST")
 		{
-			enverment.push_back("REQUEST_METHOD="+type_request);
+			enverment.push_back("REQUEST_METHOD=" + type_request);
 			if(Status_Code == 314)
 				enverment.push_back("CONTENT_LENGTH=0");
 			else
 				enverment.push_back("CONTENT_LENGTH=0");
 		}
-		get_the_path(extention_name);
-		// if(dup2(fd_pipe[1], 1) == -1)
-		// {
-		// 	std::cout<< "Error dup\n";
-		// 	exit(0);
-		// }
-		// if(execve());
 
+		env = static_cast<char **>(malloc(sizeof(char *) * (enverment.size() + 1)));
+		for(size_t k =0; k < enverment.size() ; k++)
+		{
+			env[k] = ft_strdup(enverment[k]);
+		}
+		env[enverment.size()] = 0;
+		argv = get_the_path(extention_name);
+
+		// std::cout << "check enveroment-->\n";
+		// std::cout << "env[0] = " << env[0] << endl;
+		// std::cout << "env[1] = " << env[1] << endl;
+
+		// std::cout << "argv[0] = " << argv[0] << endl; 
+		close(fd_pipe[0]);
+		//int file_desc = open("souchen.txt",O_WRONLY | O_APPEND);
+		if(dup2(fd_pipe[1], 1) == -1)
+		{
+			std::cout<< "Error dup\n";
+			exit(0);
+		}
+		// std::cout << "yesss\n";
+
+		// std::cout << "argv[0]-->" << argv[0] << endl;
+		// std::cout << "argv[1]-->" << argv[1] << endl;
+		if(execve(argv[0], argv, env) < 0)
+		{
+			std::cout << "execve error\n";
+			Status_Code = 404;
+		}
 		// exit(0);
 	}else
 	{
+		close(fd_pipe[1]);
 		wait(0);
+		std::cout << "here parent\n";
+		
+		char reading;
+		
+		// while(read(fd_pipe[0], &reading, 1) > 0)
+		// 	body += reading;
+		std::cout << "begin reading\n";
+		while (read(fd_pipe[0], &reading, 1) > 0)
+			body = body + reading;
+		//std::cout << "reading-->" << reading << endl;
+		//std::cout << "body ==" << body << endl;
+		close(fd_pipe[0]);
+		
 	}
+	
 		
 		
 }

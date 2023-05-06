@@ -28,24 +28,16 @@ response::~response()
 
 std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus)
 {
-	
+	std::cout << "path_access--->" << path_access << endl;
 	if(var == 0)
 	{
 		ifstream our_file(path_access.c_str(),std::ios::in);
-		// while(getline(our_file, str))
-		// {
-		// 		std::cout<< "str-->\n";
-
-		// 		std::cout << str << endl;
-		// }
-		// position at end of fileObject
 		our_file.seekg(0, ios::end);
 		//Say we have entered 20 characters in a text file, and you want to read it.
 //		But along with reading you also want to know the position of the last position in the text file.
 		size_of_file = our_file.tellg();
 	}
-	(void) status_code;
-	(void) map_Codestatus;
+
 	stringstream response_header;
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
 	// //response_header << "Date: " << << endl;

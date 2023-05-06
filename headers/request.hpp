@@ -73,8 +73,9 @@ class Request
         int check_which_location_compatible();
        std::map<unsigned int, std::string> Status_codes_means(void);
        int check_cgi();
-       void cgi_start();
-       int get_the_path(std::string extention_name);
+       void cgi_start(std::string &body);
+       char ** get_the_path(std::string extention_name);
+       char * ft_strdup(std::string path);
         
 
 

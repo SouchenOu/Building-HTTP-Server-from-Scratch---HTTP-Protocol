@@ -199,9 +199,13 @@ void WebBrowsers::prepareResponse()
 		// }
 	}else if(status == 0 && value != 0)
 	{
+		std::string body;
 		std::cout <<"enter cgi\n";
-		request_Headers->cgi_start();
+		request_Headers->cgi_start(body);
+		std::cout << "body out : " << body << endl;
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
+		response_buffer = response_buffer + body;
+		// std::cout << "response-->" << response_buffer << endl;
 		file_file_descriptor = 0;
 		indice = 2;
 		delete request_Headers;
