@@ -201,6 +201,11 @@ void WebBrowsers::prepareResponse()
 	{
 		std::cout <<"enter cgi\n";
 		request_Headers->cgi_start();
+		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
+		file_file_descriptor = 0;
+		indice = 2;
+		delete request_Headers;
+		request_Headers = 0;
 	}
 }
 
@@ -240,8 +245,8 @@ void WebBrowsers::send2()
 		value = 0;
 		indice = 0;
 		request_Headers = NULL;
-		return ;
 		std::cout << "error1\n";
+		return ;
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
 	

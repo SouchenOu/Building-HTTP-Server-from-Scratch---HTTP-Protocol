@@ -523,7 +523,6 @@ int Request::get_the_path(std::string extention_name)
        calling process.*/
 	std::string cgi_path;
 	char *path = getcwd(NULL, 0);
-	std::cout << "cwd here-->" << path << endl;
 	string string_path = string(path);
 	// find() returns an iterator or a constant iterator that refers to the position where the key is present in the map.
 	if(Servers->get_cgis().find(extention_name) != Servers->get_cgis().end())
@@ -539,6 +538,7 @@ int Request::get_the_path(std::string extention_name)
 		return 0;
 	}
 	// std::vector<std::string> cgi_path;
+
 
 
 	return 1;
@@ -566,30 +566,30 @@ void Request::cgi_start()
 		exit(0);
 	}else if(pid == 0)
 	{
-		// std::cout<< "shild process\n";
-		// std::vector<std::string> enverment;
-		// enverment.push_back("REQUEST_METHOD="+type_request);
-		// enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
-		// enverment.push_back("REDIRECT_STATUS=200");
-		// enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
-		// enverment.push_back("SERVER_PROTOCOL="+ version_http);
-		// if(type_request == "GET")
-		// {
-		// 	enverment.push_back("QUERY_STRING="+ path_of_file_dm);
-		// 	enverment.push_back("CONTENT_LENGTH=0");
-		// }else if(type_request == "POST")
-		// {
-		// 	enverment.push_back("REQUEST_METHOD="+type_request);
-		// 	if(Status_Code == 314)
-		// 		enverment.push_back("CONTENT_LENGTH=0");
-		// 	else
-		// 		enverment.push_back("CONTENT_LENGTH=0");
-		// }
-		//get_the_path(extention_name);
+		std::cout<< "shild process\n";
+		std::vector<std::string> enverment;
+		enverment.push_back("REQUEST_METHOD="+type_request);
+		enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
+		enverment.push_back("REDIRECT_STATUS=200");
+		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
+		enverment.push_back("SERVER_PROTOCOL="+ version_http);
+		if(type_request == "GET")
+		{
+			enverment.push_back("QUERY_STRING="+ path_of_file_dm);
+			enverment.push_back("CONTENT_LENGTH=0");
+		}else if(type_request == "POST")
+		{
+			enverment.push_back("REQUEST_METHOD="+type_request);
+			if(Status_Code == 314)
+				enverment.push_back("CONTENT_LENGTH=0");
+			else
+				enverment.push_back("CONTENT_LENGTH=0");
+		}
+		get_the_path(extention_name);
 		// if(dup2(fd_pipe[1], 1) == -1)
 		// {
 		// 	std::cout<< "Error dup\n";
-		// 	exit(0)
+		// 	exit(0);
 		// }
 		// if(execve());
 
