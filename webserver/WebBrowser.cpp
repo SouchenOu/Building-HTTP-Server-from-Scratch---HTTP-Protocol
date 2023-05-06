@@ -170,7 +170,7 @@ void WebBrowsers::prepareResponse()
 	}else
 	{
 		std::cout << "file exist\n";
-		count = request_Headers->check_cgi();
+		 count= request_Headers->check_cgi();
 		if(count > 0)
 			value = 2;
 		file_check.close();
@@ -199,6 +199,7 @@ void WebBrowsers::prepareResponse()
 		// }
 	}else if(status == 0 && value != 0)
 	{
+		std::cout <<"enter cgi\n";
 		request_Headers->cgi_start();
 	}
 }

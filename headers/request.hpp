@@ -74,6 +74,7 @@ class Request
        std::map<unsigned int, std::string> Status_codes_means(void);
        int check_cgi();
        void cgi_start();
+       int get_the_path(std::string extention_name);
         
 
 

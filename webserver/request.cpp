@@ -14,6 +14,7 @@
 #include "../headers/tools.hpp"
 # define white_espace "; \t"
 #include <fcntl.h>
+#include <sys/wait.h>
 
 
 // constructers
@@ -513,11 +514,51 @@ int Request::check_cgi()
 	return count_pos;
 }
 
+
+int Request::get_the_path(std::string extention_name)
+{
+	// firstly get the current directory
+	/**** These functions return a null-terminated string containing an
+       absolute pathname that is the current working directory of the
+       calling process.*/
+	std::string cgi_path;
+	char *path = getcwd(NULL, 0);
+	std::cout << "cwd here-->" << path << endl;
+	string string_path = string(path);
+	// find() returns an iterator or a constant iterator that refers to the position where the key is present in the map.
+	if(Servers->get_cgis().find(extention_name) != Servers->get_cgis().end())
+	{
+		cgi_path = Servers->get_cgis().find(extention_name)->second;
+	}
+	// check if this path exist or not
+
+	int fd_cgi = open(cgi_path.c_str(),O_RDONLY );
+	if(fd_cgi <= 0)
+	{
+		std::cout << "Cgi file open error\n";
+		return 0;
+	}
+	// std::vector<std::string> cgi_path;
+
+
+	return 1;
+}
+
 void Request::cgi_start()
 {
+	// int *status = NULL;
+	// int options;
 	std::string extention_name = path_of_file_dm.substr(count_pos);
 
 	std::cout << "extention_name-->" << extention_name << endl;
+
+	// int fd_pipe[2];
+
+	// if(pipe(fd_pipe) == -1)
+	// {
+	// 	std::cout << "Error pipe\n";
+	// 	exit(0);
+	// }
 	pid_t pid = fork();
 	if(pid < 0)
 	{
@@ -525,30 +566,40 @@ void Request::cgi_start()
 		exit(0);
 	}else if(pid == 0)
 	{
-		std::vector<std::string> enverment;
-		enverment.push_back("REQUEST_METHOD="+type_request);
-		enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
-		enverment.push_back("REDIRECT_STATUS=200");
-		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
-		enverment.push_back("SERVER_PROTOCOL="+ version_http);
-		if(type_request == "GET")
-		{
-			enverment.push_back("QUERY_STRING="+ path_of_file_dm);
-			enverment.push_back("CONTENT_LENGTH=0");
-		}else if(type_request == "SET")
-		{
-			enverment.push_back("REQUEST_METHOD="+type_request);
-			if(Status_Code == 314)
-				enverment.push_back("CONTENT_LENGTH=0");
-			else
-				enverment.push_back("CONTENT_LENGTH=0");
-		}
+		// std::cout<< "shild process\n";
+		// std::vector<std::string> enverment;
+		// enverment.push_back("REQUEST_METHOD="+type_request);
+		// enverment.push_back("SCRIPT_NAME="+ path_of_file_dm);
+		// enverment.push_back("REDIRECT_STATUS=200");
+		// enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
+		// enverment.push_back("SERVER_PROTOCOL="+ version_http);
+		// if(type_request == "GET")
+		// {
+		// 	enverment.push_back("QUERY_STRING="+ path_of_file_dm);
+		// 	enverment.push_back("CONTENT_LENGTH=0");
+		// }else if(type_request == "POST")
+		// {
+		// 	enverment.push_back("REQUEST_METHOD="+type_request);
+		// 	if(Status_Code == 314)
+		// 		enverment.push_back("CONTENT_LENGTH=0");
+		// 	else
+		// 		enverment.push_back("CONTENT_LENGTH=0");
+		// }
+		//get_the_path(extention_name);
+		// if(dup2(fd_pipe[1], 1) == -1)
+		// {
+		// 	std::cout<< "Error dup\n";
+		// 	exit(0)
+		// }
+		// if(execve());
 
-		
-
-
-
+		// exit(0);
+	}else
+	{
+		wait(0);
 	}
+		
+		
 }
 
 
