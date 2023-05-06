@@ -575,13 +575,14 @@ char *Request::ft_strdup(string path)
 	return var;
 }
 
-void Request::cgi_start(std::string &body)
+void Request::cgi_start(std::string &test)
 {
 	// int *status = NULL;
 	// int options;
 	char **argv;
 	char **env;
-	// std::string body;
+	
+	std::string body;
 	std::string extention_name = path_of_file_dm.substr(count_pos);
 	char *path = getcwd(NULL, 0);
 	string path_actuel = string(path);
@@ -606,7 +607,7 @@ void Request::cgi_start(std::string &body)
 		std::vector<std::string> enverment;
 		enverment.push_back("REQUEST_METHOD="+type_request);
 		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm);
-		enverment.push_back("REDIRECT_STATUS=200");
+		enverment.push_back("REDIRECT_STATUS=");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
 		if(type_request == "GET")
@@ -614,10 +615,9 @@ void Request::cgi_start(std::string &body)
 			std::cout << "Get ofcourse\n";
 			// here for example php_website/index.php
 			enverment.push_back("QUERY_STRING="+ path_of_file_dm.substr(path_of_file_dm.find_first_of('?') + 1));
-			enverment.push_back("CONTENT_LENGTH=0");
+			// enverment.push_back("CONTENT_LENGTH=0");
 		}else if(type_request == "POST")
 		{
-			enverment.push_back("REQUEST_METHOD=" + type_request);
 			if(Status_Code == 314)
 				enverment.push_back("CONTENT_LENGTH=0");
 			else
@@ -658,17 +658,21 @@ void Request::cgi_start(std::string &body)
 	{
 		close(fd_pipe[1]);
 		wait(0);
-		std::cout << "here parent\n";
+		// std::cout << "here parent\n";
 		
 		char reading;
 		
 		// while(read(fd_pipe[0], &reading, 1) > 0)
 		// 	body += reading;
-		std::cout << "begin reading\n";
 		while (read(fd_pipe[0], &reading, 1) > 0)
 			body = body + reading;
 		//std::cout << "reading-->" << reading << endl;
 		//std::cout << "body ==" << body << endl;
+	vector<string> header = ft_divise(body, "\r");
+	
+	test = header[3];
+
+	// std::cout << "test-->" << test << endl;
 		close(fd_pipe[0]);
 		
 	}
