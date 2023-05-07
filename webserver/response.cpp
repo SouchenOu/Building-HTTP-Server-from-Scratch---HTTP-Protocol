@@ -26,6 +26,17 @@ response::~response()
 }
 
 
+	/*************************************************/
+    /*  HTTP consists of requests and responses.     */
+    /*  When a client (such as a web browser) 
+	/*	wants to retrieve a webpage from a server,	*/
+	/* 	it sends an HTTP request to the server. 	*/
+	/*	The server then processes the request and	*/
+	/*	 sends back an HTTP response. 				*/
+    /*            									 */
+    /*************************************************/
+
+
 std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus)
 {
 	// std::cout << "path_access--->" << path_access << endl;

@@ -47,6 +47,14 @@ WebBrowsers::~WebBrowsers()
 
 }
 
+/*** if the server receives a request for a webpage from a client,				  **/
+/*** the server will parse the request and pass it to a Response object which 	  **/
+/*** will fetch the contents of the webpage and construct the HTTP response 	  **/
+/*** with the HTML content in the message body and the appropriate headers,		  **/
+/***  such as the Content-Type and Content-Length headers.      				 ***/
+
+
+
 int WebBrowsers::Read_request()
 {
 
@@ -65,7 +73,7 @@ int WebBrowsers::Read_request()
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
 
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
-				//std::cout << buffer << endl;
+		//std::cout << buffer << endl;
 
 		if(recv_s < 0)
 		{

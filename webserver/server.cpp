@@ -16,6 +16,16 @@
 # define white_espace "; \t"
 
 
+   /********************************************************************/
+   /*   The networking part of a web server that handles TCP 			*/
+   	/*	connections and performs tasks such as listening for incoming 	*/
+   	/*	requests and sending back responses.    						*/
+   /*                                          							*/
+   /**********************************************************************/
+
+
+
+
 server::server()
 {
 	client_max_body_size = 1000000;
