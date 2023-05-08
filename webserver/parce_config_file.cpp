@@ -382,8 +382,19 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
 					{
 						location.set_autoindex(atoi(w_o_r_d[1].c_str()));
+					}	
+				}
+				else if(w_o_r_d[0] == "upload_enable")
+				{
+					if(w_o_r_d.size() != 2)
+					{
+						std::cout << "should have another argument after upload_enable" << endl;
+						exit(0);
 					}
-						
+					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
+					{
+						location.set_upload_enable(atoi(w_o_r_d[1].c_str()));
+					}	
 				}
 				else if (w_o_r_d[0] == "index")
 				{

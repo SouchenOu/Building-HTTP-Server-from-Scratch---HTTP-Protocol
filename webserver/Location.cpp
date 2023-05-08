@@ -54,6 +54,10 @@ int Location::get_autoindex()
 {
     return autoindex;
 }
+int Location::get_upload_enable()
+{
+    return upload_enable;
+}
 
 string Location::get_index()
 {
@@ -98,6 +102,11 @@ void Location::set_http_redirection(int http_redirection)
 void Location::set_autoindex(int autoindex)
 {
     this->autoindex = autoindex;
+}
+
+void Location::set_upload_enable(int upload_enable)
+{
+    this->upload_enable = upload_enable;
 }
 
 

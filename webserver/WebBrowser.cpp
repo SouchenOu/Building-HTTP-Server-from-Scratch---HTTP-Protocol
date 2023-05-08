@@ -63,7 +63,7 @@ int WebBrowsers::Read_request()
 		char buffer[BUFFUR_SIZE] = "";
 		//std::string read_buffer;
 		value = 0;
-		std::cout << "buffer -->" << buffer << endl;
+		
 		//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
 				
 		/****recv() returns the number of bytes actually read into the buffer, or -1 on error (with errno set, accordingly).
@@ -73,6 +73,7 @@ int WebBrowsers::Read_request()
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
 
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
+		//std::cout << "buffer -->" << buffer << endl;
 		//std::cout << buffer << endl;
 		std::cout << "octet-->" << recv_s << endl; 
 		if(recv_s < 0)
@@ -92,9 +93,12 @@ int WebBrowsers::Read_request()
 		}
 		else if(request != NULL)
 		{
+			//std::cout << "buffer == " << buffer << endl;
 			std::cout << "request it is not empty\n";
-			request->get_request_header("body") = request->get_request_header("body") + string(buffer, recv_s);
-			std::cout << "body final is: " << request->get_request_header("body") << endl;
+			std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
+			request->get_request_header("Body") = string(buffer, recv_s);
+			std::cout << "buffer-->" << buffer << endl;
+			std::cout << "body after is: " << request->get_request_header("Body") << endl;
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
@@ -175,6 +179,7 @@ void WebBrowsers::prepareResponse()
 	
 	// check if this path exist
 	// std::cout << "path_access->" << path_access << endl;
+	std::cout << "body final request-->" << request->get_request_header("body") << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(!file_check || !file_check.is_open() || !file_check.good())
 	{

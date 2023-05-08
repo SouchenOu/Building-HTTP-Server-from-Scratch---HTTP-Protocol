@@ -36,11 +36,13 @@ Request::Request(std::string buffer):Locations(0),Status_Code(0)
 Request::~Request()
 {
 	std::cout << "request destructer\n";
+	if (this->Locations != 0)
+		delete(this->Locations);
 }
 void Request::Parcing_request(std::string buffer)
 {
 	vector<string> request_divise = ft_divise(buffer, "\r\n");
-    std::cout << "request back-->" << request_divise.back() << endl;
+    //std::cout << "request back-->" << request_divise.back() << endl;
 
     vector<string>::iterator iter = request_divise.begin();
     // std::cout << "First-->" << *iter << endl;
@@ -64,7 +66,7 @@ void Request::Parcing_request(std::string buffer)
 
         if(First_line.size() < 2)
         {
-            std::cout << "empty line\n";
+            // std::cout << "empty line\n";
             break ;
         }
         if(*i == "Host")
@@ -98,11 +100,40 @@ void Request::Parcing_request(std::string buffer)
 
     }
 
-	if(request_headers.find("Content-Length") != request_headers.end())
-	{
-		request_headers.insert(pair<string, string>("body", request_divise.back()));
-	}
-	std::cout << "body here-->" << request_headers["body"] <<endl;
+// Here for POST request
+
+/******* application/x-www-form-urlencoded − This is the standard method most forms use in simple scenarios.*/
+
+/******** mutlipart/form-data − This is used when you want to upload binary data in the form of files like image, word file etc.*/
+
+
+
+
+
+/*****enctype='multipart/form-data' means that no characters will be encoded. that is why this type is used while uploading files to server.
+So multipart/form-data is used when a form requires binary data, like the contents of a file, to be uploaded*/
+
+/*****Set the method attribute to POST because file content can't be put inside a URL parameter using a form.
+
+Set the value of enctype to multipart/form-data because the data will be split into multiple parts, one for each file plus one for the text of the form body that may be sent with them.*/
+
+
+
+	// if(request_headers.find("Content-Length") != request_headers.end() )
+	// {
+	// 	request_headers.insert(pair<string, string>("Body", request_divise.back()));
+	// }
+
+	//    std::cout << "request_headers******\n";
+    //         for(std::map<string,string>::iterator it = request_headers.begin(); it != request_headers.end(); it++)
+    //         {
+    //             std::cout <<"*************\n";
+    //             std::cout << "First->" <<it->first << endl;
+    //             std::cout << "Second->"<<it->second  << endl;
+    //             std::cout <<"*************\n";
+
+    //         }
+	// std::cout << "content-type-->" << request_headers["Content-Type"] << endl;
 }	
 
 //getters

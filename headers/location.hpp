@@ -29,6 +29,7 @@ class Location
         std::string  alias;
         int http_redirection;
         int  autoindex;
+        int upload_enable;
         std::string index;
         std::string path;
         std::vector<std::string> http_allow_method;
@@ -46,6 +47,7 @@ class Location
     void set_alias(std::string alias);
     void set_http_redirection(int http_redirection);
     void set_autoindex(int autoindex);
+    void set_upload_enable(int upload_enable);
     void set_index(std::string index);
     void set_path(std::string Path);
 
@@ -57,6 +59,7 @@ class Location
     std::string get_alias();
     int  get_http_redirection();
     int get_autoindex();
+    int get_upload_enable();
     std::string get_index();
     std::string get_path();
     std::vector<std::string>	get_http_allow_method(void);
