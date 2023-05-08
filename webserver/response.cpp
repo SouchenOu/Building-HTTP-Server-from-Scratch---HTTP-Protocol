@@ -22,13 +22,13 @@ response::response()
 
 response::~response()
 {
-
+	std::cout<< "Response destructer\n";
 }
 
 
 	/*************************************************/
     /*  HTTP consists of requests and responses.     */
-    /*  When a client (such as a web browser) 
+    /*  When a client (such as a web browser) 		*/
 	/*	wants to retrieve a webpage from a server,	*/
 	/* 	it sends an HTTP request to the server. 	*/
 	/*	The server then processes the request and	*/
