@@ -67,7 +67,6 @@ class Request
         //std::string response_header(int fileSize, bool test);
         int get_indice();
         void Parcing_request(std::string buffer);
-        std::string get_request_header(std::string name);
         bool check_client_max_body_size(unsigned int size);
         std::string check_error_page(int Status_code);
         int check_which_location_compatible();
@@ -76,6 +75,7 @@ class Request
        void cgi_start(std::string &body);
        char ** get_the_path(std::string extention_name);
        char * ft_strdup(std::string path);
+       std::string get_request_header(std::string element);
         
 
 

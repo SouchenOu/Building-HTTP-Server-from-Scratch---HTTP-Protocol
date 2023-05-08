@@ -40,7 +40,7 @@ Request::~Request()
 void Request::Parcing_request(std::string buffer)
 {
 	vector<string> request_divise = ft_divise(buffer, "\r\n");
-    
+    std::cout << "request back-->" << request_divise.back() << endl;
 
     vector<string>::iterator iter = request_divise.begin();
     // std::cout << "First-->" << *iter << endl;
@@ -97,7 +97,13 @@ void Request::Parcing_request(std::string buffer)
         iter++;
 
     }
-}
+
+	if(request_headers.find("Content-Length") != request_headers.end())
+	{
+		request_headers.insert(pair<string, string>("body", request_divise.back()));
+	}
+	std::cout << "body here-->" << request_headers["body"] <<endl;
+}	
 
 //getters
 
@@ -345,15 +351,15 @@ std::string Request::path_of_file()
 	{
 		
 		Path_in_request = Path_in_request.substr(Locations->get_path().length());
-		// std::cout << "path_request here -->" << Path_in_request << endl;
-        if(is_directory(path_of_file_dm + Locations->get_root()))
-        {
-            path_of_file_dm += Locations->get_root();
-			// std::cout << "path_of_file here?->" << path_of_file_dm << endl;
-        }else
-		{
-			path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
-		}
+		std::cout << "path_request here -->" << Path_in_request << endl;
+        // if(is_directory(path_of_file_dm + Locations->get_root()))
+        // {
+        //     path_of_file_dm += Locations->get_root();
+		// 	// std::cout << "path_of_file here?->" << path_of_file_dm << endl;
+        // }else
+		// {
+		// 	path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
+		// }
             
 		
 		// std::cout << "path->" << path_of_file_dm << endl;
@@ -363,9 +369,21 @@ std::string Request::path_of_file()
 	{
 		Path_in_request = Path;
 		if (Locations && Locations->get_index().length())
-			Path_in_request  += '/' + Locations->get_index();
-		else
-			Path_in_request  += '/' + Servers->get_index();
+		{
+			// if it is not a file we add index.html
+			if(is_directory(Path_in_request))
+			{
+				Path_in_request  += '/' + Locations->get_index();
+			}
+		}else
+		{
+			if(is_directory(Path_in_request))
+			{
+				Path_in_request  += '/' + Servers->get_index();
+			}
+		}
+
+			
 
 	}
 	if(is_directory(path_of_file_dm + Path_in_request))
@@ -376,6 +394,7 @@ std::string Request::path_of_file()
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
+	std::cout << "tmp here-->" << tmp_file << endl;
 	if(tmp_file[tmp_file.length() - 1] == '/')
 	{
 		if(Locations->get_index().length())
@@ -471,12 +490,6 @@ int Request::get_indice()
 	return 0; 
 }
 
-std::string Request::get_request_header(std::string name)
-{
-	if (request_headers.find(name) != request_headers.end())
-		return request_headers[name];
-	return "";
-}
 
 
 map<unsigned int, string> Request::Status_codes_means(void)
@@ -684,3 +697,10 @@ void Request::cgi_start(std::string &test)
 
 
 
+string Request::get_request_header(string element)
+{
+	if (request_headers.find(element) != request_headers.end())
+		return request_headers[element];
+	else
+		return "";
+}
