@@ -276,7 +276,6 @@ Points to a bit set of descriptors to check for writing.*/
 				// read incoming message....
 				std::cout << BLUE << "Read incoming message" << endl;
 				
-
 				if((*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);

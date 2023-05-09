@@ -33,6 +33,7 @@ class Request
         std::string path_of_file_dm;
         std::string version_http;
         size_t count_pos;
+        int indice_body;
         // int file_file_descriptor;
         
    
@@ -56,11 +57,13 @@ class Request
         std::string get_type_request();
         std::string get_path_of_file_dm();
         int get_Status_code();
+        int get_indice_body();
 
         // setters
         void set_Path(std::string path);
         void set_path_of_file_dm(std::string path_of_file);
         void set_Status_code(int code);
+        void set_indice_body(int indice);
         int check_request_with_config_file(const std::set<server*> &servers);
         void Path_of_FileAccess();
         std::string path_of_file();
@@ -75,7 +78,7 @@ class Request
        void cgi_start(std::string &body);
        char ** get_the_path(std::string extention_name);
        char * ft_strdup(std::string path);
-       std::string get_request_header(std::string element);
+       std::string &get_request_header(std::string element);
        void ADD_body(std::string buffer);
         
 

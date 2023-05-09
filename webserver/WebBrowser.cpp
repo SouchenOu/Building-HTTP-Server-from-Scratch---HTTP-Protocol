@@ -17,7 +17,7 @@
 #include <fcntl.h>
 
 
-#define BUFFUR_SIZE 30000
+#define BUFFUR_SIZE 4096
 
 // WebBrowsers::WebBrowsers()
 // {
@@ -60,7 +60,7 @@ int WebBrowsers::Read_request()
 
 	//std::cout << "read_request\n";
 		int recv_s;
-		char buffer[BUFFUR_SIZE] = "";
+		char buffer[BUFFUR_SIZE];
 		//std::string read_buffer;
 		value = 0;
 		
@@ -73,51 +73,71 @@ int WebBrowsers::Read_request()
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
 
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
-		//std::cout << "buffer -->" << buffer << endl;
+		std::cout << "buffer -->" << buffer << endl;
 		//std::cout << buffer << endl;
 		std::cout << "octet-->" << recv_s << endl; 
 		if(recv_s < 0)
 		{
 			std::cout << "No message are available to be received\n";
-			value = 1;
+			// value = 1;
 			return 2;
 		}else if(recv_s == 0)
 		{
 			std::cout << "Client disconnected\n";
-			value = 1;
+			// value = 1;
 			return 2;
 		}
 		if(request == NULL)
-		{
 			read_buffer = read_buffer + string(buffer, recv_s);
-		}
-		else if(request != NULL)
-		{
-			//std::cout << "buffer == " << buffer << endl;
-			std::cout << "request it is not empty\n";
-			//std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
-			// request->get_request_header("Body") = string(buffer, recv_s);
-			//std::cout << "buffer-->" << string(buffer, recv_s) << endl;
-			//std::cout << "body after is: " << request->get_request_header("Body") << endl;
-
-			request->ADD_body(buffer);
-		}
-		std::cout << "read_buffer:\n";
-		std::cout << read_buffer << endl;
+		// else if(request != NULL)
+		// {
+		// 	//std::cout << "buffer == " << buffer << endl;
+		// 	std::cout << "request it is not empty\n";
+		// 	//std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
+		// 	// request->get_request_header("Body") = string(buffer, recv_s);
+		// 	//std::cout << "buffer-->" << string(buffer, recv_s) << endl;
+		// 	//std::cout << "body after is: " << request->get_request_header("Body") << endl;
+		// 	// request->set_indice_body(1);
+		// 	// std::cout << "buffer-->" << buffer << endl; 
+		// 	request->ADD_body(buffer);
+		// }
+		// std::cout << "read_buffer:\n";
+		// std::cout << read_buffer << endl;
 	
 // If the datagram or message is not larger than the buffer specified,
-// check if all the informations of our request exist in buffer
-		if(recv_s < BUFFUR_SIZE)
-		{		
+// check if all the informations of our request exist in buffer		
 			// send request
-			if(request == NULL)
+			// if(request == NULL)
+			// {
+			// }
+			if(request == NULL && recv_s <= BUFFUR_SIZE && read_buffer.find("\r\n\r\n") != std::string::npos)
 			{
 				request = new Request(read_buffer);
+				std::cout << "outtt\n";
+				read_buffer.clear();
+				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
+					value = 1;
+				else if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
+					value = 1;
 			}
-			std::cout << "outtt\n";
-			read_buffer.clear();
-			value = 1;
-		}
+			else if (request != NULL)
+			{
+				for(int i = 0; i < recv_s; i++)
+					request->get_request_header("body").push_back(buffer[i]);
+				// request->ADD_body(buffer);
+				if (request->get_type_request() == "POST")
+				{
+					std::cout << request->get_request_header("Content-Length") << std::endl;
+					std::cout << request->get_request_header("body").length() << std::endl;
+				}
+					// exit (1);
+					// request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()
+				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
+					value = 1;
+				else if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
+					value = 1;
+			}
+			
 	return value;
 }
 
@@ -160,7 +180,11 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 void WebBrowsers::check_request()
 {
-	
+	// if (request_headers["body"].size() >= std::stol(request_headers["Content_Lengh"]))
+	// {
+	// 	std::cout << "true\n";
+	// 	exit(1);
+	// }
 	request->check_request_with_config_file(servers);
 
 }

@@ -122,8 +122,13 @@ Set the value of enctype to multipart/form-data because the data will be split i
 
 void Request::ADD_body(std::string buffer)
 {
-	
-	request_headers["body"] += buffer;
+	std::cout << "body befaure :" << request_headers["body"] << endl;
+	request_headers["body"] += std::string(buffer, buffer.size());
+	// request_headers["body"].
+	// for (size_t i = 0; i < buffer.size(); i++)
+	// 	request_headers["body"].push_back(buffer[i]);
+	// request_headers["body"] += buffer;
+	std::cout << "body after:" << request_headers["body"] << endl;
 	//request_headers.insert(pair<string, string>("Body", buffer.c_str()));
 	// std::cout << "so lets check body now -->" << request_headers["body"] << endl;
 }
@@ -289,19 +294,20 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		if(Locations->get_upload_enable() == 1)
 		{
 			// get our body
-			string body = request_headers["body"];
+			//string body = request_headers["body"];
+			//std::cout << "body->" << request_headers["body"] << endl;
 			vector<string> body_divise = ft_divise(request_headers["body"], "\n");
 			vector<string>::iterator iter = body_divise.begin() + 1;
-			vector<string> w_o_r_d = ft_divise(*iter, white_espace);
-			vector<string>name_file = ft_divise(w_o_r_d[3], "\"");
-			// std::cout << "name_file-->" << name_file[0] << endl;
-			// std::cout << "name_file-->" << name_file[1] << endl;
-			
+			vector<string> w_o_r_d = ft_divise(*iter, ";");
+			// std::cout <<"words->" << w_o_r_d[0] << endl; 
+			// std::cout <<"words->" << w_o_r_d[1] << endl;
+			// std::cout <<"words->" << w_o_r_d[2] << endl;
+			vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
 			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
 			// int fd = open(name_file[1].c_str(),O_RDONLY);
-			string str = "hello souchen";
+			//string str = "hello souchen";
 			// write(fd,str.c_str(),str.size());
-			myFile << str << endl;
+			myFile << request_headers["body"] << endl;
 			// string str = "souchen";
 			// write(name_file[1],str.c_str(), 10);
 
@@ -728,10 +734,11 @@ void Request::cgi_start(std::string &test)
 }
 
 
-string Request::get_request_header(string element)
+string &Request::get_request_header(string element)
 {
-	if (request_headers.find(element) != request_headers.end())
 		return request_headers[element];
-	else
-		return "";
+	// if (request_headers.find(element) != request_headers.end())
+	// 	return request_headers[element];
+	// else
+	// 	return "";
 }
