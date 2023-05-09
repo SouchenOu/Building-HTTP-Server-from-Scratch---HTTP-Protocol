@@ -96,7 +96,7 @@ int WebBrowsers::Read_request()
 			//std::cout << "buffer == " << buffer << endl;
 			std::cout << "request it is not empty\n";
 			//std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
-			request->get_request_header("Body") = string(buffer, recv_s);
+			// request->get_request_header("Body") = string(buffer, recv_s);
 			//std::cout << "buffer-->" << string(buffer, recv_s) << endl;
 			//std::cout << "body after is: " << request->get_request_header("Body") << endl;
 
@@ -181,7 +181,7 @@ void WebBrowsers::prepareResponse()
 	
 	// check if this path exist
 	// std::cout << "path_access->" << path_access << endl;
-	std::cout << "body final request-->" << request->get_request_header("body") << endl;
+	//std::cout << "body final request-->" << request->get_request_header("body") << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(!file_check || !file_check.is_open() || !file_check.good())
 	{

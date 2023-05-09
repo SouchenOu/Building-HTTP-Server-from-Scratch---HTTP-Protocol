@@ -283,6 +283,40 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		return 0;
 	}
+	// check uploading file..
+	if(request_headers["body"] != "")
+	{
+		if(Locations->get_upload_enable() == 1)
+		{
+			// get our body
+			string body = request_headers["body"];
+			vector<string> body_divise = ft_divise(request_headers["body"], "\n");
+			vector<string>::iterator iter = body_divise.begin() + 1;
+			vector<string> w_o_r_d = ft_divise(*iter, white_espace);
+			vector<string>name_file = ft_divise(w_o_r_d[3], "\"");
+			// std::cout << "name_file-->" << name_file[0] << endl;
+			// std::cout << "name_file-->" << name_file[1] << endl;
+			
+			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
+			// int fd = open(name_file[1].c_str(),O_RDONLY);
+			string str = "hello souchen";
+			// write(fd,str.c_str(),str.size());
+			myFile << str << endl;
+			// string str = "souchen";
+			// write(name_file[1],str.c_str(), 10);
+
+			// std::cout << "split body-->" << endl;
+			// for(std::vector<string>::iterator iter = body_divise.begin(); iter != body_divise.end(); iter++)
+			// {
+			// 	std::cout << "element -->" << *iter << endl;
+			// }
+
+		
+
+
+
+		}
+	}
 	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
 	std::cout << "to check allow-> " << endl;
@@ -571,7 +605,7 @@ char ** Request::get_the_path(std::string extention_name)
 	std::vector<std::string> path_final;
 	path_final.push_back(cgi_path);
 	path_final.push_back(path_actuel + "/" + path_of_file_dm.substr(0, path_of_file_dm.find_first_of('?', 0)));
-	std::cout << "path_final[1]-->" << path_final[1] << endl; 
+	//std::cout << "path_final[1]-->" << path_final[1] << endl; 
 	//std::cout << "path_final size-->" << path_final.size() << endl;
 	// put our vector in char ** variable
 
@@ -694,10 +728,10 @@ void Request::cgi_start(std::string &test)
 }
 
 
-// string Request::get_request_header(string element)
-// {
-// 	if (request_headers.find(element) != request_headers.end())
-// 		return request_headers[element];
-// 	else
-// 		return "";
-// }
+string Request::get_request_header(string element)
+{
+	if (request_headers.find(element) != request_headers.end())
+		return request_headers[element];
+	else
+		return "";
+}
