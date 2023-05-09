@@ -42,12 +42,9 @@ Request::~Request()
 void Request::Parcing_request(std::string buffer)
 {
 	vector<string> request_divise = ft_divise(buffer, "\r\n");
-    //std::cout << "request back-->" << request_divise.back() << endl;
 
     vector<string>::iterator iter = request_divise.begin();
-    // std::cout << "First-->" << *iter << endl;
-    //vector<string> First_line = ft_divise(*iter, white_espace);
-    // path = *iter + 1;
+   
 
 	vector<string> w_o_r_d = ft_divise(*iter, white_espace);
 
@@ -107,9 +104,6 @@ void Request::Parcing_request(std::string buffer)
 /******** mutlipart/form-data − This is used when you want to upload binary data in the form of files like image, word file etc.*/
 
 
-
-
-
 /*****enctype='multipart/form-data' means that no characters will be encoded. that is why this type is used while uploading files to server.
 So multipart/form-data is used when a form requires binary data, like the contents of a file, to be uploaded*/
 
@@ -123,18 +117,17 @@ Set the value of enctype to multipart/form-data because the data will be split i
 	// {
 	// 	request_headers.insert(pair<string, string>("Body", request_divise.back()));
 	// }
-
-	//    std::cout << "request_headers******\n";
-    //         for(std::map<string,string>::iterator it = request_headers.begin(); it != request_headers.end(); it++)
-    //         {
-    //             std::cout <<"*************\n";
-    //             std::cout << "First->" <<it->first << endl;
-    //             std::cout << "Second->"<<it->second  << endl;
-    //             std::cout <<"*************\n";
-
-    //         }
-	// std::cout << "content-type-->" << request_headers["Content-Type"] << endl;
+	
 }	
+
+void Request::ADD_body(std::string buffer)
+{
+	
+	request_headers["body"] += buffer;
+	//request_headers.insert(pair<string, string>("Body", buffer.c_str()));
+	// std::cout << "so lets check body now -->" << request_headers["body"] << endl;
+}
+
 
 //getters
 
@@ -189,7 +182,6 @@ int Request::check_which_location_compatible()
             break ;
         }
         path_navigate = path_navigate.substr(0, count);
-		// std::cout << "path_navigate-->" << path_navigate << endl;
 		
 
     }
@@ -202,7 +194,6 @@ int Request::check_which_location_compatible()
 			   	return 1;
 		    }
 	    }
-	// if(this->Locations == NULL)
 		return 0;
 }
 
@@ -225,27 +216,23 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
-		// 	std::cout << "Host-->" << Host << endl;
-		// std::cout << "here'''\n";
+	
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
 		return 0;
 	}
-	// std::cout << "port->" << port << endl;
 	// if i have in my request header server_name = localhost and there no port 
 	if(request_headers.find("Port") != request_headers.end())
 	{
 		port = atoi(request_headers.find("Port")->second.c_str());
 	}else if(Host != "localhost" && port != 0)
 	{
-		//port = 0;
 		Status_Code = 400;
 		std::cout << "Bad request : The server cannot or will not process the request\n";
 		return 0;
 	}
-		// if i have in my request header server_name = localhost and there no port 
-
+	// if i have in my request header server_name = localhost and there no port 
 	if(Host ==  "localhost" && port == 0)
 	{
 		port = 80;
@@ -267,11 +254,9 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 				this->Servers = (*iter3);
 			}
 		}
-		// if i have server_name in the config file
 
 	}
-	// std::cout << "host->" << Host << endl;
-	// std::cout << "Port->" << port << endl;
+
 	
 	if(this->Servers == NULL)
 	{
@@ -336,7 +321,6 @@ std::string Request::path_of_file()
 	string Path_in_request;
 	string tmp_file;
 	int file_des;
-    // int value = 0;
     if(Locations == NULL || Servers == NULL)
     {
 		std::cout << "There is no server or location\n";
@@ -659,7 +643,6 @@ void Request::cgi_start(std::string &test)
 			std::cout << "Get ofcourse\n";
 			// here for example php_website/index.php
 			enverment.push_back("QUERY_STRING="+ path_of_file_dm.substr(path_of_file_dm.find_first_of('?') + 1));
-			// enverment.push_back("CONTENT_LENGTH=0");
 		}else if(type_request == "POST")
 		{
 			if(Status_Code == 314)
@@ -675,20 +658,12 @@ void Request::cgi_start(std::string &test)
 		}
 		env[enverment.size()] = 0;
 		argv = get_the_path(extention_name);
-
-		// std::cout << "check enveroment-->\n";
-		// std::cout << "env[0] = " << env[0] << endl;
-		// std::cout << "env[1] = " << env[1] << endl;
-
-		// std::cout << "argv[0] = " << argv[0] << endl; 
 		close(fd_pipe[0]);
-		//int file_desc = open("souchen.txt",O_WRONLY | O_APPEND);
 		if(dup2(fd_pipe[1], 1) == -1)
 		{
 			std::cout<< "Error dup\n";
 			exit(0);
 		}
-		// std::cout << "yesss\n";
 
 		// std::cout << "argv[0]-->" << argv[0] << endl;
 		// std::cout << "argv[1]-->" << argv[1] << endl;
@@ -697,26 +672,19 @@ void Request::cgi_start(std::string &test)
 			std::cout << "execve error\n";
 			Status_Code = 404;
 		}
-		// exit(0);
 	}else
 	{
 		close(fd_pipe[1]);
 		wait(0);
-		// std::cout << "here parent\n";
-		
+		std::cout << "here parent\n";
 		char reading;
-		
-		// while(read(fd_pipe[0], &reading, 1) > 0)
-		// 	body += reading;
 		while (read(fd_pipe[0], &reading, 1) > 0)
 			body = body + reading;
 		//std::cout << "reading-->" << reading << endl;
 		//std::cout << "body ==" << body << endl;
-	vector<string> header = ft_divise(body, "\r");
-	
-	test = header[3];
-
-	// std::cout << "test-->" << test << endl;
+		vector<string> header = ft_divise(body, "\r");	
+		test = header[3];
+		// std::cout << "test-->" << test << endl;
 		close(fd_pipe[0]);
 		
 	}
@@ -726,12 +694,10 @@ void Request::cgi_start(std::string &test)
 }
 
 
-
-
-string Request::get_request_header(string element)
-{
-	if (request_headers.find(element) != request_headers.end())
-		return request_headers[element];
-	else
-		return "";
-}
+// string Request::get_request_header(string element)
+// {
+// 	if (request_headers.find(element) != request_headers.end())
+// 		return request_headers[element];
+// 	else
+// 		return "";
+// }

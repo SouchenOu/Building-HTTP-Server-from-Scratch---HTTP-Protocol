@@ -76,6 +76,7 @@ class Request
        char ** get_the_path(std::string extention_name);
        char * ft_strdup(std::string path);
        std::string get_request_header(std::string element);
+       void ADD_body(std::string buffer);
         
 
 

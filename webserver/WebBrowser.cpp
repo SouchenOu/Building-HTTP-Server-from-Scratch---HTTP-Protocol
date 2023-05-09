@@ -95,10 +95,12 @@ int WebBrowsers::Read_request()
 		{
 			//std::cout << "buffer == " << buffer << endl;
 			std::cout << "request it is not empty\n";
-			std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
+			//std::cout << "body befaure is: " << request->get_request_header("Body") << endl;
 			request->get_request_header("Body") = string(buffer, recv_s);
-			std::cout << "buffer-->" << buffer << endl;
-			std::cout << "body after is: " << request->get_request_header("Body") << endl;
+			//std::cout << "buffer-->" << string(buffer, recv_s) << endl;
+			//std::cout << "body after is: " << request->get_request_header("Body") << endl;
+
+			request->ADD_body(buffer);
 		}
 		std::cout << "read_buffer:\n";
 		std::cout << read_buffer << endl;
@@ -203,26 +205,14 @@ void WebBrowsers::prepareResponse()
 	if(status == 0 && value == 0)
 	{
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
-		// int size_actuel = BUFFUR_SIZE;
-		// if (send_byte + size_actuel > response_buffer.size())
-		// 	size_actuel= response_buffer.size() - send_byte;
-		// send(file_descriptor, response_buffer.c_str() + send_byte,size_actuel, 0);
-		// send_byte = send_byte + size_actuel;
-		// if (send_byte == response_buffer.size())
-		// {
-		// 	std::cout << "size and response_buffer-->" << send_byte << endl;
-		// 	response_buffer.clear();
-			indice = 2;
-			delete request;
-			request = 0;
+		indice = 2;
+		delete request;
+		request = 0;
 
-		// }
 	}else if(status == 0 && value != 0)
 	{
 		std::string body;
-		// std::cout <<"enter cgi\n";
 		request->cgi_start(body);
-		// std::cout << "body out : " << body << endl;
 		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus);
 		response_buffer = response_buffer + body;
 		// std::cout << "response-->" << response_buffer << endl;
@@ -248,15 +238,11 @@ void WebBrowsers::send_response()
 void WebBrowsers::send1()
 {
 	
-	send(file_descriptor, response_buffer.c_str(), response_buffer.size(), 0);
-	// std::cout << "size and response_buffer-->" << send_byte << endl;
-	
-		response_buffer.clear();
-		indice = 3;
-		delete request;
-		request = 0;
-	
-	
+	send(file_descriptor, response_buffer.c_str(), response_buffer.size(), 0);	
+	response_buffer.clear();
+	indice = 3;
+	delete request;
+	request = 0;
 
 }
 
