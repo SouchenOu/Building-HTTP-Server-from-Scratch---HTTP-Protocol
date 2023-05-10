@@ -291,11 +291,12 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	// check uploading file..
 	if(request_headers["body"] != "")
 	{
+		// char *body_final;
+		std::vector<string> vect_body;
 		if(Locations->get_upload_enable() == 1)
 		{
+			string body_final;
 			// get our body
-			//string body = request_headers["body"];
-			//std::cout << "body->" << request_headers["body"] << endl;
 			vector<string> body_divise = ft_divise(request_headers["body"], "\n");
 			vector<string>::iterator iter = body_divise.begin() + 1;
 			vector<string> w_o_r_d = ft_divise(*iter, ";");
@@ -304,23 +305,30 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 			// std::cout <<"words->" << w_o_r_d[2] << endl;
 			vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
 			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
-			// int fd = open(name_file[1].c_str(),O_RDONLY);
-			//string str = "hello souchen";
-			// write(fd,str.c_str(),str.size());
-			myFile << request_headers["body"] << endl;
-			// string str = "souchen";
-			// write(name_file[1],str.c_str(), 10);
-
-			// std::cout << "split body-->" << endl;
-			// for(std::vector<string>::iterator iter = body_divise.begin(); iter != body_divise.end(); iter++)
+			// vect_body = request_headers["body"];
+			//std::map<string, string>::iterator iter = request_headers.begin() + 1;
+			// for(std::map<string, string>::iterator iter = request_headers.begin(); iter != request_headers.end(); iter++)
 			// {
-			// 	std::cout << "element -->" << *iter << endl;
+			// 	vect_body.push_back(*iter);
+			// }
+			// for(std::vector<string>::iterator iterVect = vect_body.begin(); iterVect != vect_body.end(); iterVect++)
+			// {
+			// 	std::cout << "element-->" << *iterVect << endl;
 			// }
 
+			// std::cout << "request_body-->" << request_headers["body"][144] << endl;
+			// std::cout << "size-->" << request_headers["body"].size() << endl;
+			// std::cout << "position-->" << request_headers["body"].find_first_of("%");
+			size_t pos = request_headers["body"].find_first_of("%");
+			while(pos != request_headers["body"].size())
+			{
+				request_headers["upload"].push_back(request_headers["body"][pos]);
+				pos++;
+			}
+			
+			 myFile << request_headers["upload"] << endl;
 		
-
-
-
+			// myFile << request_headers["body"] << endl;
 		}
 	}
 	
