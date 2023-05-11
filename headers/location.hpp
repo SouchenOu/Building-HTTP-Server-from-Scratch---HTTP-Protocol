@@ -55,9 +55,9 @@ class Location
 
     std::string get_root();
     std::string get_try_files();
-    std::string get_return_line();
     std::string get_alias();
     int  get_http_redirection();
+    std::string get_return_line();
     std::string get_autoindex();
     int get_upload_enable();
     std::string get_index();

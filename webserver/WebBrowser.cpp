@@ -158,6 +158,8 @@ void WebBrowsers::check_request()
 	// 	exit(1);
 	// }
 	request->check_request_with_config_file(servers);
+	Locations = request->get_location();
+	// std::cout << "check location-->" << Locations->get_root() << endl;
 
 }
 
@@ -197,17 +199,19 @@ void WebBrowsers::prepareResponse()
 	// std::cout << "path_access->" << path_access << endl;
 	//std::cout << "body final request-->" << request->get_request_header("body") << endl;
 	check_error_page();
+	std::cout << "status-->" << request->get_Status_code() << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
-	if(!file_check || !file_check.is_open() || !file_check.good())
+	if((!file_check || !file_check.is_open() || !file_check.good()))
 	{
 		std::cout << "file not found\n";
 		request->set_Status_code(404);
 		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
 	}
-	else if(autoindex == 1)
+	if(autoindex == 1)
 	{
 		value_status = 3;
+		file_check.close();
 	}else if(autoindex == 0)
 	{
 		std::cout << "file exist\n";
@@ -216,6 +220,7 @@ void WebBrowsers::prepareResponse()
 			value_status = 2;
 		file_check.close();
 	}
+	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
 	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
@@ -224,7 +229,8 @@ void WebBrowsers::prepareResponse()
 	response Response;
 	if(value_status == 0)
 	{
-		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
+		std::cout << "hna\n";
+		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations);
 		indice = 2;
 		delete request;
 		request = 0;
@@ -233,7 +239,7 @@ void WebBrowsers::prepareResponse()
 	{
 		std::string body;
 		request->cgi_start(body);
-		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus);
+		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations);
 		response_buffer = response_buffer + body;
 		// std::cout << "response-->" << response_buffer << endl;
 		file_file_descriptor = 0;
@@ -246,7 +252,7 @@ void WebBrowsers::prepareResponse()
 		std::cout << "auto index\n";
 		string str;
 		request->auto_index(str,  path_access);
-		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus);
+		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations);
 		response_buffer = response_buffer + str;
 		file_file_descriptor = 0;
 		indice = 2;

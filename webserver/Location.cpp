@@ -16,7 +16,7 @@
 
 Location::Location()
 {
-
+    http_redirection = 0;
 }
 
 Location::~Location()
@@ -30,25 +30,20 @@ std::string Location::get_root()
     return root;
 }
 
-std::string Location::get_try_files()
-{
-    return try_files;
-}
 
 std::string Location::get_return_line()
 {
     return return_line;
 }
 
-std::string Location::get_alias()
-{
-    return alias;
-}
+
 
 int Location::get_http_redirection()
 {
     return http_redirection;
 }
+
+
 
 std::string Location::get_autoindex()
 {

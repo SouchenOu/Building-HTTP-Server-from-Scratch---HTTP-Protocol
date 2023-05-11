@@ -37,9 +37,11 @@ response::~response()
     /*************************************************/
 
 
-std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus)
+std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus, Location *locations)
 {
 	// std::cout << "path_access--->" << path_access << endl;
+	std::cout << "check location out-->" << locations->get_http_redirection() << endl;
+	std::cout << "check location out-->" << locations->get_return_line() << endl;
 	if(var == 0)
 	{
 		ifstream our_file(path_access.c_str(),std::ios::in);
@@ -56,7 +58,9 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	// response_header << "Content_type: text/html; charset=UTF-8"<< endl;
 	// response_header << "X-Powered-By: PHP/8.1.12" << endl;
 	response_header << "Content-Length: " << size_of_file << endl;
-	// response_header << "Connection: Closed" << endl;
+	response_header << "Connection: Closed" << endl;
+	if (locations && locations->get_http_redirection() > 0)
+		response_header << "Location: " << locations->get_return_line() << endl;
 	response_header << endl;
 
 	return response_header.str();

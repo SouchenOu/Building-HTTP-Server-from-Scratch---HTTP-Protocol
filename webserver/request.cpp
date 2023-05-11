@@ -386,6 +386,10 @@ std::string Request::path_of_file()
 		std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
 		return "";
 	}
+	if(Locations->get_http_redirection() > 0)
+	{
+		// should work for it here...
+	}
 	
 	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
@@ -622,7 +626,7 @@ void Request::cgi_start(std::string &test)
 		std::vector<std::string> enverment;
 		enverment.push_back("REQUEST_METHOD="+type_request);
 		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm);
-		enverment.push_back("REDIRECT_STATUS=");
+		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
 		if(type_request == "GET")
@@ -635,7 +639,7 @@ void Request::cgi_start(std::string &test)
 			if(Status_Code == 314)
 				enverment.push_back("CONTENT_LENGTH=0");
 			else
-				enverment.push_back("CONTENT_LENGTH=0");
+				enverment.push_back("CONTENT_LENGTH="+request_headers["Content-Length"]);
 		}
 
 		env = static_cast<char **>(malloc(sizeof(char *) * (enverment.size() + 1)));
@@ -730,4 +734,9 @@ void Request::auto_index(std::string &str, std::string path_access)
 					</html>";
 	Status_Code = 200;
 	str = auto_index.str();
+}
+
+Location *Request::get_location()
+{
+	return Locations;
 }
