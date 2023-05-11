@@ -484,11 +484,12 @@ std::string	Request::error_pages(int error_code)
 int Request::check_auto_index(std::string path_access)
 {
 	
-
+std::cout << "path in auto index-->" << path_access << endl;
 	if (is_directory(path_access))
 	{
 		if (path_access[path_access.size() - 1] == '/' && Locations->get_autoindex() == 1)
 		{
+			std::cout << "yessss hereee\n";
 			Status_Code = 200;
 			return 1;
 		}
@@ -702,4 +703,46 @@ string &Request::get_request_header(string element)
 	// 	return request_headers[element];
 	// else
 	// 	return "";
+}
+
+
+void Request::auto_index(std::string &str, std::string path_access)
+{
+	stringstream auto_index;
+	//passed_cgi = true;
+	auto_index << "	<html lang=\"en\">\n\
+					<body style=\"background-color: yellow; color: black;\">\n\
+					<div style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;\">\n\
+						<h1>Index of</h1>\n";
+	auto_index << Path;
+	DIR *directory;
+	struct dirent *entry;
+	//The opendir() function opens a directory stream corresponding to the directory named by the dirname argument
+
+	//Upon successful completion, opendir() returns a pointer to an object of type DIR
+	if ((directory = opendir(path_access.c_str())) != NULL)
+	{
+		while ((entry = readdir(directory)) != NULL)
+		{
+			// It returns a null pointer upon reaching the end of the directory stream
+			string our_link = entry->d_name;
+			// std::cout << "link here-->" << our_link << endl;
+			if (is_directory(path_access + '/' + our_link))
+			{
+				our_link += '/';
+			}	
+			auto_index << "<p><a href=\"" << our_link << "\" class=\"active\">" << our_link << "</a></p>\n";
+		}
+		closedir (directory);
+	}
+	else
+	{
+		std::cout << "Open Dir error\n";
+		exit(0);
+	}
+	auto_index << "	</div>\n\
+					</body>\n\
+					</html>";
+	Status_Code = 200;
+	str = auto_index.str();
 }

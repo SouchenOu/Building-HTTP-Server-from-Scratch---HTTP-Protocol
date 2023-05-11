@@ -185,7 +185,6 @@ void WebBrowsers::check_error_page()
 void WebBrowsers::prepareResponse()
 {
 	//int status;
-	int autoindex = 0;
 	int code_status;
 	int value_status = 0;
 	int count;
@@ -242,7 +241,16 @@ void WebBrowsers::prepareResponse()
 		request = 0;
 	}else if(value_status == 3)
 	{
-		//put_auto_index..
+		//put_auto_index.
+		std::cout << "auto index\n";
+		string str;
+		request->auto_index(str,  path_access);
+		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus);
+		response_buffer = response_buffer + str;
+		file_file_descriptor = 0;
+		indice = 2;
+		delete request;
+		request = 0;
 	}
 }
 

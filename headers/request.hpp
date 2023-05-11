@@ -80,6 +80,7 @@ class Request
        char * ft_strdup(std::string path);
        std::string &get_request_header(std::string element);
        void ADD_body(std::string buffer);
+       void auto_index(std::string &str, std::string path_access);
         
 
 
