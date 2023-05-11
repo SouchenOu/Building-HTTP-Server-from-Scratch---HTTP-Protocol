@@ -89,6 +89,7 @@ int WebBrowsers::Read_request()
 		}
 		if(request == NULL)
 			read_buffer = read_buffer + string(buffer, recv_s);
+			std::cout << "Buffer :" << read_buffer << endl; 
 			if(request == NULL && recv_s <= BUFFUR_SIZE && read_buffer.find("\r\n\r\n") != std::string::npos)
 			{
 				request = new Request(read_buffer);

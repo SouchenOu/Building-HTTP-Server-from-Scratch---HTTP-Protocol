@@ -387,11 +387,11 @@ std::string Request::path_of_file()
 	// 	path_of_file_dm = "";
 	// 	return "";
 	// }
-	// if (Status_Code == 413)
-	// {
-	// 	std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
-	// 	return "";
-	// }
+	if (Status_Code == 413)
+	{
+		std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
+		return "";
+	}
 	
 	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
@@ -413,42 +413,10 @@ std::string Request::path_of_file()
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
 		
-		Path_in_request = Path_in_request.substr(Locations->get_path().length());
-		std::cout << "path_request here -->" << Path_in_request << endl;
-        // if(is_directory(path_of_file_dm + Locations->get_root()))
-        // {
-        //     path_of_file_dm += Locations->get_root();
-		// 	// std::cout << "path_of_file here?->" << path_of_file_dm << endl;
-        // }else
-		// {
-		// 	path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
-		// }
-            
-		
-		// std::cout << "path->" << path_of_file_dm << endl;
+		path_of_file_dm = path_of_file_dm + "/" + Locations->get_root();
+	
 	}
-	//std::cout << "after\n";
-	if(Path_in_request.length() == 0)
-	{
-		Path_in_request = Path;
-		if (Locations && Locations->get_index().length())
-		{
-			// if it is not a file we add index.html
-			if(is_directory(Path_in_request))
-			{
-				Path_in_request  += '/' + Locations->get_index();
-			}
-		}else
-		{
-			if(is_directory(Path_in_request))
-			{
-				Path_in_request  += '/' + Servers->get_index();
-			}
-		}
-
-			
-
-	}
+	
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
 		tmp_file = path_of_file_dm + Path_in_request;
@@ -465,15 +433,6 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	// std::cout << "tmp-->" << tmp_file << endl;
-    // if(value == 0)
-    // {
-    //     std::cout << "yes\n";
-    //     if (Locations && Locations->get_index().length())
-	// 		tmp_file  += '/' + Locations->get_index();
-	// 	else
-	// 		tmp_file  += '/' + Servers->get_index();
-    // }
 	file_des = open(tmp_file.c_str(),O_RDONLY);
 	if(Path[Path.size() - 1] == '/' && file_des <= 0)
 	{
