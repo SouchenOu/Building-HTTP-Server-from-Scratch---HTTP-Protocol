@@ -165,7 +165,8 @@ void WebBrowsers::ThePath_of_acces_file()
 {
 	autoindex = 0;
 	path_access = request->path_of_file();
-	autoindex = request->check_auto_index(path_access);
+	if(path_access != "")
+		autoindex = request->check_auto_index(path_access);
 
 }
 void WebBrowsers::check_error_page()
@@ -204,7 +205,7 @@ void WebBrowsers::prepareResponse()
 		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
 	}
-	if(autoindex == 1)
+	else if(autoindex == 1)
 	{
 		value_status = 3;
 	}else if(autoindex == 0)

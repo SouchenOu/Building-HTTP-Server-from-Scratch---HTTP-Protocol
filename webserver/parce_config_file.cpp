@@ -379,9 +379,9 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 						std::cout << "should have another argument after autoindex" << endl;
 						exit(0);
 					}
-					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
+					if(w_o_r_d[1] == "on" || w_o_r_d[1] == "off")
 					{
-						location.set_autoindex(atoi(w_o_r_d[1].c_str()));
+						location.set_autoindex(w_o_r_d[1]);
 					}	
 				}
 				else if(w_o_r_d[0] == "upload_enable")

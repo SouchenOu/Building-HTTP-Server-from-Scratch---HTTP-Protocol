@@ -171,8 +171,7 @@ int Request::check_which_location_compatible()
 		return 0;
 	}
 	//std::set<Location>::iterator i1;
-    while(path_navigate != "")
-    {
+   
         for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
 	    {
 		    if((i1)->get_path() == path_navigate)
@@ -181,15 +180,8 @@ int Request::check_which_location_compatible()
 			    return 1;
 		    }
 	    }
-        size_t count = path_navigate.find_last_of("/");
-        if(count == string::npos)
-        {
-            break ;
-        }
-        path_navigate = path_navigate.substr(0, count);
-		
-
-    }
+       
+    
 		path_navigate  = "/";
 		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
 	    {
@@ -274,12 +266,13 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	//Basically it is the number of bytes of data in the body of the request or response.
 	// atoll() string to long long int
-	// std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
+	std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
 	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
 		std::cout << "Payload Too Large\n";
 		std::cout << "413 Request Entity Too Large\n";
 		Status_Code = 413;
+		return 0;
 	}
 
 
@@ -289,6 +282,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		return 0;
 	}
 	// check uploading file..
+	// should add just multipart Content-type
 	if(request_headers["body"] != "")
 	{
 		// char *body_final;
@@ -333,11 +327,11 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
-	std::cout << "to check allow-> " << endl;
-	for(std::vector<std::string>::iterator test = method_allow.begin(); test != method_allow.end(); test++)
-	{
-		std::cout << *test << endl;
-	}
+	// std::cout << "to check allow-> " << endl;
+	// for(std::vector<std::string>::iterator test = method_allow.begin(); test != method_allow.end(); test++)
+	// {
+	// 	std::cout << *test << endl;
+	// }
 	for (vector<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
 	{
 		if (*iter_method == type_request)
@@ -461,13 +455,6 @@ std::string	Request::error_pages(int error_code)
 	{
 		std::cout << "yes error_page\n";
 		string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];
-		ifstream error_page(file_page.c_str(), ofstream::in);
-		if (!error_page || !error_page.is_open() || !error_page.good())
-		{
-			std::cout << "This error_page dont exist\n";
-			return (0);
-		}
-		error_page.close();
 		return (Servers->get_root() + Servers->get_error_pages().find(error_code)->second);
 	}
 	else
@@ -475,7 +462,7 @@ std::string	Request::error_pages(int error_code)
 		stringstream str_data;
 		str_data << error_code;
 
-		return ("default_error/" + str_data.str() + ".html");
+		return (Servers->get_root() + "/default_error/" + str_data.str() + ".html");
 	}
 		
 }
@@ -483,13 +470,12 @@ std::string	Request::error_pages(int error_code)
 
 int Request::check_auto_index(std::string path_access)
 {
-	
+	std::cout << "check value auto-->" << Locations->get_autoindex() << endl;
 std::cout << "path in auto index-->" << path_access << endl;
 	if (is_directory(path_access))
 	{
-		if (path_access[path_access.size() - 1] == '/' && Locations->get_autoindex() == 1)
+		if (path_access[path_access.size() - 1] == '/' && Locations->get_autoindex() == "on")
 		{
-			std::cout << "yessss hereee\n";
 			Status_Code = 200;
 			return 1;
 		}
@@ -497,7 +483,6 @@ std::cout << "path in auto index-->" << path_access << endl;
 		{
 			Status_Code = 403;
 			std::cout << "The client does not have the access right to the content\n";
-			//path_access = error_pages(403);
 			return 2;
 		}
 	}
