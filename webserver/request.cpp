@@ -368,19 +368,19 @@ std::string Request::path_of_file()
 {
 	string Path_in_request;
 	string tmp_file;
-	int file_des;
+	//int file_des;
     if(Locations == NULL || Servers == NULL)
     {
 		std::cout << "There is no server or location\n";
         path_of_file_dm = "";
 		return path_of_file_dm;
     }
-	// if (Path.find("//") != string::npos)
-	// {
-	// 	std::cout << "403 Not found\n";
-	// 	Status_Code = 404;
-	// 	return "";
-	// }
+	if (Path.find("//") != string::npos)
+	{
+		std::cout << "403 Not found\n";
+		Status_Code = 404;
+		return "";
+	}
 	// if (type_request == "DELETE" && Status_Code != 403)
 	// {
 	// 	Status_Code = 200;
@@ -419,13 +419,12 @@ std::string Request::path_of_file()
 	
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
-		tmp_file = path_of_file_dm + Path_in_request;
+		tmp_file = path_of_file_dm + Path_in_request + "/";
 	}
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
-	std::cout << "tmp here-->" << tmp_file << endl;
 	if(tmp_file[tmp_file.length() - 1] == '/')
 	{
 		if(Locations->get_index().length())
@@ -433,16 +432,16 @@ std::string Request::path_of_file()
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	file_des = open(tmp_file.c_str(),O_RDONLY);
-	if(Path[Path.size() - 1] == '/' && file_des <= 0)
-	{
-		std::cout << "failed or what\n";
-		path_of_file_dm = Servers->get_root() + '/';
-	}
-	else
-		path_of_file_dm = tmp_file;
+	// file_des = open(tmp_file.c_str(),O_RDONLY);
+	// if(tmp_file[tmp_file.size() - 1] == '/' && file_des <= 0)
+	// {
+	// 	std::cout << "failed or what\n";
+	// 	path_of_file_dm = Servers->get_root() + '/';
+	// }
+	// // else
+	 path_of_file_dm = tmp_file;
 
-	close(file_des);
+	// close(file_des);
 	std::size_t found = path_of_file_dm.find("//");
 	if(found != std::string::npos)
 	{
@@ -456,10 +455,11 @@ std::string Request::path_of_file()
 
 
 
-std::string	Request::check_error_page(int error_code)
+std::string	Request::error_pages(int error_code)
 {
 	if (Servers && Servers->get_error_pages().size() && Servers->get_error_pages().find(error_code) != Servers->get_error_pages().end() && Servers->get_error_pages()[error_code].size())
 	{
+		std::cout << "yes error_page\n";
 		string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];
 		ifstream error_page(file_page.c_str(), ofstream::in);
 		if (!error_page || !error_page.is_open() || !error_page.good())
@@ -481,20 +481,13 @@ std::string	Request::check_error_page(int error_code)
 }
 
 
-int Request::get_indice()
+int Request::check_auto_index(std::string path_access)
 {
 	
-	if(Status_Code == 0)
+
+	if (is_directory(path_access))
 	{
-		Status_Code = 200; //OK
-	}else if (Status_Code == 400 || Status_Code == 403 || Status_Code == 404 || Status_Code == 413)
-	{
-		path_of_file_dm = check_error_page(Status_Code);
-		return 0;
-	}
-	if (is_directory(path_of_file_dm))
-	{
-		if (path_of_file_dm[path_of_file_dm.size() - 1] == '/' && Locations->get_autoindex())
+		if (path_access[path_access.size() - 1] == '/' && Locations->get_autoindex() == 1)
 		{
 			Status_Code = 200;
 			return 1;
@@ -503,7 +496,8 @@ int Request::get_indice()
 		{
 			Status_Code = 403;
 			std::cout << "The client does not have the access right to the content\n";
-			path_of_file_dm = check_error_page(403);
+			//path_access = error_pages(403);
+			return 2;
 		}
 	}
 	

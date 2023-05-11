@@ -163,13 +163,31 @@ void WebBrowsers::check_request()
 
 void WebBrowsers::ThePath_of_acces_file()
 {
+	autoindex = 0;
 	path_access = request->path_of_file();
+	autoindex = request->check_auto_index(path_access);
+
+}
+void WebBrowsers::check_error_page()
+{
+	if(request->get_Status_code() == 0)
+	{
+		request->set_Status_code(200);
+	}
+	if(request->get_Status_code() == 400 || request->get_Status_code() == 403 || request->get_Status_code() == 404 || request->get_Status_code() == 413)
+	{
+		path_access = request->error_pages(request->get_Status_code());
+	}
+	
+	
+
 }
 void WebBrowsers::prepareResponse()
 {
-	int status;
+	//int status;
+	int autoindex = 0;
 	int code_status;
-	int value = 0;
+	int value_status = 0;
 	int count;
 	send_byte = 0;
 	//unsigned int length = atoi(request->get_request_header("Content-Length").c_str());
@@ -178,34 +196,40 @@ void WebBrowsers::prepareResponse()
 	// check if this path exist
 	// std::cout << "path_access->" << path_access << endl;
 	//std::cout << "body final request-->" << request->get_request_header("body") << endl;
+	check_error_page();
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(!file_check || !file_check.is_open() || !file_check.good())
 	{
 		std::cout << "file not found\n";
 		request->set_Status_code(404);
-		file_check.close();
-	}else
-	{
-		std::cout << "file exist\n";
-		 count= request->check_cgi();
-		if(count > 0)
-			value = 2;
+		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
 	}
-	status = request->get_indice();
+	if(autoindex == 1)
+	{
+		value_status = 3;
+	}else if(autoindex == 0)
+	{
+		std::cout << "file exist\n";
+		count = request->check_cgi();
+		if(count > 0)
+			value_status = 2;
+		file_check.close();
+	}
+	// status = request->get_indice();
 	code_status = request->get_Status_code();
 	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	// std::cout << "file_file-->" << file_file_descriptor << endl;
 	response Response;
-	if(status == 0 && value == 0)
+	if(value_status == 0)
 	{
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus);
 		indice = 2;
 		delete request;
 		request = 0;
 
-	}else if(status == 0 && value != 0)
+	}else if(value_status == 2)
 	{
 		std::string body;
 		request->cgi_start(body);
@@ -216,6 +240,9 @@ void WebBrowsers::prepareResponse()
 		indice = 2;
 		delete request;
 		request = 0;
+	}else if(value_status == 3)
+	{
+		//put_auto_index..
 	}
 }
 

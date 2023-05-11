@@ -36,6 +36,7 @@ class   WebBrowsers
             unsigned int send_byte;
             int indice;
             int file_file_descriptor;
+            int autoindex;
 
 
     public:
@@ -71,6 +72,7 @@ class   WebBrowsers
         void send_response();
         void send1();
         void send2();
+        void check_error_page();
         
 };
 

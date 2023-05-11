@@ -68,10 +68,10 @@ class Request
         void Path_of_FileAccess();
         std::string path_of_file();
         //std::string response_header(int fileSize, bool test);
-        int get_indice();
+        int check_auto_index(std::string path_access);
         void Parcing_request(std::string buffer);
         bool check_client_max_body_size(unsigned int size);
-        std::string check_error_page(int Status_code);
+        std::string error_pages(int Status_code);
         int check_which_location_compatible();
        std::map<unsigned int, std::string> Status_codes_means(void);
        int check_cgi();
