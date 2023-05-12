@@ -501,14 +501,25 @@ std::cout << "path in auto index-->" << path_access << endl;
 map<unsigned int, string> Request::Status_codes_means(void)
 {
 	map<unsigned int, string> code_stat;
+	   code_stat.insert(std::pair<unsigned int, std::string>(100, "contenue"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(200, "200 OK"));
-	   code_stat.insert(std::pair<unsigned int, std::string>(203, "303 See Other"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(201, "201 Created"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(202, "202 Accepted"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(203, "203 Non-Authoritative Information"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(204, "204 No Content"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(205, "205 Reset content"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(300, "300 Multiple choices"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(301, "301 Moved Permanently"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(302, "302 Found"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(303, "303 see other"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(304, "304 used proxy"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(306, "306 Unused"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(307, "307 Temporary Redirect"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(400, "400 Bad Request"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(403, "403 Forbidden"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(404, "404 Not Found"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(405, "405 Method Not allow"));
-    	
+	
 		return code_stat ;
 }
 
