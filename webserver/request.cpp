@@ -313,7 +313,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 			// std::cout << "request_body-->" << request_headers["body"][144] << endl;
 			// std::cout << "size-->" << request_headers["body"].size() << endl;
 			// std::cout << "position-->" << request_headers["body"].find_first_of("%");
-			size_t pos = request_headers["body"].find_first_of("%");
+			size_t pos = request_headers["body"].find_first_of("\r\n\r\n");
 			while(pos != request_headers["body"].size())
 			{
 				request_headers["upload"].push_back(request_headers["body"][pos]);

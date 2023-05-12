@@ -52,6 +52,7 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	}
 
 	stringstream response_header;
+	std::cout << "code-->" << status_code << endl;
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
 	// //response_header << "Date: " << << endl;
 	response_header << "Server: webserv/0.01" << endl;

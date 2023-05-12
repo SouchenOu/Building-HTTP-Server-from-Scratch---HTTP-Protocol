@@ -201,7 +201,7 @@ void WebBrowsers::prepareResponse()
 	check_error_page();
 	std::cout << "status-->" << request->get_Status_code() << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
-	if((!file_check || !file_check.is_open() || !file_check.good()))
+	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
 		std::cout << "file not found\n";
 		request->set_Status_code(404);
@@ -223,6 +223,7 @@ void WebBrowsers::prepareResponse()
 	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
+	std::cout << "status-->" << request->get_Status_code() << endl;
 	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	// std::cout << "file_file-->" << file_file_descriptor << endl;

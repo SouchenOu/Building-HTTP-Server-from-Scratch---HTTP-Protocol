@@ -10,6 +10,9 @@
 <body>
     <?php
         echo "hello cgi";
+        // for(;;){
+        //     //Statement that will execute infinite times
+        // }
     ?>
 </body>
 </html>
