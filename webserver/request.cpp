@@ -751,3 +751,29 @@ Location *Request::get_location()
 {
 	return Locations;
 }
+
+void Request::delete_request()
+{
+	string new_path;
+	new_path = "./" + Servers->get_root();
+	if(Path.find(Locations->get_path()) == 0)
+	{
+		//string tmp = Path.substr(Locations->get_path());
+		new_path = new_path + "/" + Locations->get_root();
+		// if(tmp.size())
+		// {
+			new_path = new_path + '/' + Path + "/" + Locations->get_index();
+		//}
+	}else{
+		new_path = new_path + Path;
+	}
+
+
+	std::cout << "new_path-->" << new_path << endl;
+	if(remove(new_path.c_str()) == -1)
+	{
+		std::cout << "failed\n";
+		Status_Code = 404;
+	}
+	
+}

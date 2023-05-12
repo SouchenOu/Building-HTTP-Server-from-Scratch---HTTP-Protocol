@@ -190,6 +190,7 @@ void WebBrowsers::prepareResponse()
 	//int status;
 	int code_status;
 	int value_status = 0;
+	int delete_indice = 0;
 	int count;
 	send_byte = 0;
 	//unsigned int length = atoi(request->get_request_header("Content-Length").c_str());
@@ -199,7 +200,6 @@ void WebBrowsers::prepareResponse()
 	// std::cout << "path_access->" << path_access << endl;
 	//std::cout << "body final request-->" << request->get_request_header("body") << endl;
 	check_error_page();
-	std::cout << "status-->" << request->get_Status_code() << endl;
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
@@ -220,6 +220,11 @@ void WebBrowsers::prepareResponse()
 			value_status = 2;
 		file_check.close();
 	}
+
+	if(request->get_type_request() == "DELETE")
+	{
+		delete_indice = 2;
+	}
 	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
@@ -228,15 +233,14 @@ void WebBrowsers::prepareResponse()
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	// std::cout << "file_file-->" << file_file_descriptor << endl;
 	response Response;
-	if(value_status == 0)
+	if(value_status == 0 && delete_indice == 0)
 	{
-		std::cout << "hna\n";
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations);
 		indice = 2;
 		delete request;
 		request = 0;
 
-	}else if(value_status == 2)
+	}else if(value_status == 2 && delete_indice == 0)
 	{
 		std::string body;
 		request->cgi_start(body);
@@ -247,7 +251,7 @@ void WebBrowsers::prepareResponse()
 		indice = 2;
 		delete request;
 		request = 0;
-	}else if(value_status == 3)
+	}else if(value_status == 3 && delete_indice == 0)
 	{
 		//put_auto_index.
 		std::cout << "auto index\n";
@@ -259,6 +263,16 @@ void WebBrowsers::prepareResponse()
 		indice = 2;
 		delete request;
 		request = 0;
+	}else if(delete_indice == 2)
+	{
+		std::cout << "yes delete";
+		request->delete_request();	
+		response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations);
+		indice = 2;
+		file_file_descriptor = 0;
+		delete request;
+		request = 0;
+
 	}
 }
 
