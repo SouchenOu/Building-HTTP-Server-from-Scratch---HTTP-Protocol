@@ -19,13 +19,6 @@
 
 #define BUFFUR_SIZE 4096
 
-// WebBrowsers::WebBrowsers()
-// {
-// 	file_descriptor = 0;
-// 	//file_descriptor = 0;
-// 	std::cout << "hello, thie is new client\n";
-// }
-
 WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0)
 {
 	
@@ -89,9 +82,10 @@ int WebBrowsers::Read_request()
 		}
 		if(request == NULL)
 			read_buffer = read_buffer + string(buffer, recv_s);
-			std::cout << "Buffer :" << read_buffer << endl; 
+		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && read_buffer.find("\r\n\r\n") != std::string::npos)
 			{
+				// get all the request with body ou without body
 				request = new Request(read_buffer);
 
 				read_buffer.clear();
@@ -103,10 +97,13 @@ int WebBrowsers::Read_request()
 			else if (request != NULL)
 			{
 				for(int i = 0; i < recv_s; i++)
+				{
 					request->get_request_header("body").push_back(buffer[i]);
-				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
-					value = 1;
-				else if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
+					
+
+				}
+			
+				if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					value = 1;
 			}
 			
@@ -152,14 +149,9 @@ void WebBrowsers::set_file_descriptor(int fd)
 
 void WebBrowsers::check_request()
 {
-	// if (request_headers["body"].size() >= std::stol(request_headers["Content_Lengh"]))
-	// {
-	// 	std::cout << "true\n";
-	// 	exit(1);
-	// }
+
 	request->check_request_with_config_file(servers);
 	Locations = request->get_location();
-	// std::cout << "check location-->" << Locations->get_root() << endl;
 
 }
 
@@ -193,17 +185,11 @@ void WebBrowsers::prepareResponse()
 	int delete_indice = 0;
 	int count;
 	send_byte = 0;
-	//unsigned int length = atoi(request->get_request_header("Content-Length").c_str());
-	//request->check_client_max_body_size(length);
 	
-	// check if this path exist
-	// std::cout << "path_access->" << path_access << endl;
-	//std::cout << "body final request-->" << request->get_request_header("body") << endl;
 	check_error_page();
 	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
-		std::cout << "file not found\n";
 		request->set_Status_code(404);
 		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
@@ -214,7 +200,6 @@ void WebBrowsers::prepareResponse()
 		file_check.close();
 	}else if(autoindex == 0)
 	{
-		std::cout << "file exist\n";
 		count = request->check_cgi();
 		if(count > 0)
 			value_status = 2;
@@ -228,10 +213,8 @@ void WebBrowsers::prepareResponse()
 	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
-	std::cout << "status-->" << request->get_Status_code() << endl;
 	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
-	// std::cout << "file_file-->" << file_file_descriptor << endl;
 	response Response;
 	if(value_status == 0 && delete_indice == 0)
 	{
@@ -246,15 +229,13 @@ void WebBrowsers::prepareResponse()
 		request->cgi_start(body);
 		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations);
 		response_buffer = response_buffer + body;
-		// std::cout << "response-->" << response_buffer << endl;
 		file_file_descriptor = 0;
 		indice = 2;
 		delete request;
 		request = 0;
 	}else if(value_status == 3 && delete_indice == 0)
 	{
-		//put_auto_index.
-		std::cout << "auto index\n";
+		
 		string str;
 		request->auto_index(str,  path_access);
 		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations);
@@ -265,7 +246,6 @@ void WebBrowsers::prepareResponse()
 		request = 0;
 	}else if(delete_indice == 2)
 	{
-		std::cout << "yes delete";
 		request->delete_request();	
 		response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations);
 		indice = 2;
@@ -302,7 +282,6 @@ void WebBrowsers::send1()
 void WebBrowsers::send2()
 {
 	int fd;
-	//char hello[100] = "hello souchen";
 	char 	buff[BUFFUR_SIZE];
 	if(file_file_descriptor == 0)
 	{
@@ -325,19 +304,12 @@ void WebBrowsers::send2()
 		file_file_descriptor = 0;
 		request = NULL;
 	}
-	// std::string str = "HTTP/1.1 200 OK\r\nContent-Length: 363\r\n\r\n";
-	// send(file_descriptor, str.c_str(), str.length(), 0);
-	//std::cout << "befaure\n";
-	
-	//std::cout << "buffer->" << buff << endl;
+
 	send(file_descriptor, buff, fd, 0);
 	
-	
-	//write(file_descriptor, hello, strlen(hello));
-	//std::cout << "after\n";
+
 	if (fd < BUFFUR_SIZE)
 	{
-		// if all the size of the image or the text is sended
 		std::cout << "sendig file to client !\n";
 		close(file_file_descriptor);
 		delete(request);

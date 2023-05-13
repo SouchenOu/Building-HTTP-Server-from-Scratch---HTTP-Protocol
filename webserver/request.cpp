@@ -70,28 +70,14 @@ void Request::Parcing_request(std::string buffer)
         {
             vector<string> split_Host = ft_divise(First_line[1], ":");
          
-            // if(First_line.size() != 3)
-            // {
-            //     break ;
-            // }else{
-                // server and browser exchange meta information about the document via the HTTP header.
-                request_headers.insert(pair<string,string>("Host", First_line[1]));
-                request_headers.insert(pair<string,string>("Port",First_line[2]));
-            //}
+            // server and browser exchange meta information about the document via the HTTP header.
+            request_headers.insert(pair<string,string>("Host", First_line[1]));
+            request_headers.insert(pair<string,string>("Port",First_line[2]));
+           
         }else
             request_headers.insert(pair<string, string>(First_line[0], First_line[1]));
 
 
-            // std::map<string, string>::iterator it;
-            // std::cout << "request_headers******\n";
-            // for(it = request_headers.begin(); it != request_headers.end(); it++)
-            // {
-            //     std::cout <<"*************\n";
-            //     std::cout << "First->" <<it->first << endl;
-            //     std::cout << "Second->"<<it->second  << endl;
-            //     std::cout <<"*************\n";
-
-            // }
 
         iter++;
 
@@ -120,18 +106,6 @@ Set the value of enctype to multipart/form-data because the data will be split i
 	
 }	
 
-void Request::ADD_body(std::string buffer)
-{
-	std::cout << "body befaure :" << request_headers["body"] << endl;
-	request_headers["body"] += std::string(buffer, buffer.size());
-	// request_headers["body"].
-	// for (size_t i = 0; i < buffer.size(); i++)
-	// 	request_headers["body"].push_back(buffer[i]);
-	// request_headers["body"] += buffer;
-	std::cout << "body after:" << request_headers["body"] << endl;
-	//request_headers.insert(pair<string, string>("Body", buffer.c_str()));
-	// std::cout << "so lets check body now -->" << request_headers["body"] << endl;
-}
 
 
 //getters
@@ -222,7 +196,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
-	
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
@@ -275,7 +248,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	//Basically it is the number of bytes of data in the body of the request or response.
 	// atoll() string to long long int
-	std::cout << "Servers->get_client_max_body_size() " << Servers->get_client_max_body_size()  << endl;
 	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
 		std::cout << "Payload Too Large\n";
@@ -303,44 +275,36 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 			vector<string> body_divise = ft_divise(request_headers["body"], "\n");
 			vector<string>::iterator iter = body_divise.begin() + 1;
 			vector<string> w_o_r_d = ft_divise(*iter, ";");
-			// std::cout <<"words->" << w_o_r_d[0] << endl; 
-			// std::cout <<"words->" << w_o_r_d[1] << endl;
-			// std::cout <<"words->" << w_o_r_d[2] << endl;
+		
 			vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
 			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
-			// vect_body = request_headers["body"];
-			//std::map<string, string>::iterator iter = request_headers.begin() + 1;
-			// for(std::map<string, string>::iterator iter = request_headers.begin(); iter != request_headers.end(); iter++)
-			// {
-			// 	vect_body.push_back(*iter);
-			// }
-			// for(std::vector<string>::iterator iterVect = vect_body.begin(); iterVect != vect_body.end(); iterVect++)
-			// {
-			// 	std::cout << "element-->" << *iterVect << endl;
-			// }
-
-			// std::cout << "request_body-->" << request_headers["body"][144] << endl;
-			// std::cout << "size-->" << request_headers["body"].size() << endl;
-			// std::cout << "position-->" << request_headers["body"].find_first_of("%");
-			size_t pos = request_headers["body"].find_first_of("\r\n\r\n");
-			while(pos != request_headers["body"].size())
+		
+			size_t pos = request_headers["body"].find("\n\r\n");
+			size_t count;
+			count = pos + 1;
+			while(count != request_headers["body"].size())
 			{
-				request_headers["upload"].push_back(request_headers["body"][pos]);
-				pos++;
+				request_headers["upload"].push_back(request_headers["body"][count]);
+				count++;
+			}
+
+			size_t new_pos = request_headers["upload"].find_first_of("\n");
+			size_t new_one;
+			new_one = new_pos + 1;
+
+			while(new_one != request_headers["upload"].size())
+			{
+				request_headers["new_body"].push_back(request_headers["upload"][new_one]);
+				new_one++;
 			}
 			
-			 myFile << request_headers["upload"] << endl;
+			 myFile << request_headers["new_body"] << endl;
 		
-			// myFile << request_headers["body"] << endl;
 		}
 	}
 	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
-	// std::cout << "to check allow-> " << endl;
-	// for(std::vector<std::string>::iterator test = method_allow.begin(); test != method_allow.end(); test++)
-	// {
-	// 	std::cout << *test << endl;
-	// }
+=
 	for (vector<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
 	{
 		if (*iter_method == type_request)
@@ -409,7 +373,6 @@ std::string Request::path_of_file()
 			Path_in_request += '/' + Locations->get_index();
 		else
 			Path_in_request += '/' + Servers->get_index();
-        // value = 1;
 	}
 	//return Path_in_request;
 	//The function returns the index of the first occurrence of the sub-string.
@@ -451,7 +414,6 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-    std::cout << "path hereee-->" << path_of_file_dm << endl;
     return path_of_file_dm;
 
 }
@@ -463,7 +425,6 @@ std::string	Request::error_pages(int error_code)
 {
 	if (Servers && Servers->get_error_pages().size() && Servers->get_error_pages().find(error_code) != Servers->get_error_pages().end() && Servers->get_error_pages()[error_code].size())
 	{
-		std::cout << "yes error_page\n";
 		string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];
 		return (Servers->get_root() + Servers->get_error_pages().find(error_code)->second);
 	}
@@ -480,8 +441,6 @@ std::string	Request::error_pages(int error_code)
 
 int Request::check_auto_index(std::string path_access)
 {
-	std::cout << "check value auto-->" << Locations->get_autoindex() << endl;
-std::cout << "path in auto index-->" << path_access << endl;
 	if (is_directory(path_access))
 	{
 		if (path_access[path_access.size() - 1] == '/' && Locations->get_autoindex() == "on")
@@ -705,10 +664,7 @@ void Request::cgi_start(std::string &test)
 string &Request::get_request_header(string element)
 {
 		return request_headers[element];
-	// if (request_headers.find(element) != request_headers.end())
-	// 	return request_headers[element];
-	// else
-	// 	return "";
+	
 }
 
 

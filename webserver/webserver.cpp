@@ -239,7 +239,6 @@ Points to a bit set of descriptors to check for writing.*/
 			// so we use fD_ISSET to check to see if that one is set, and if it is then we accept() the connection to read the request
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "enter server -->" << (*iter2)->get_port_listen()<< endl;
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
