@@ -171,8 +171,9 @@ int Request::check_which_location_compatible()
 		return 0;
 	}
 	//std::set<Location>::iterator i1;
-   
-        for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
+	while(path_navigate != "")
+	{
+		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
 	    {
 		    if((i1)->get_path() == path_navigate)
 		    {
@@ -180,6 +181,14 @@ int Request::check_which_location_compatible()
 			    return 1;
 		    }
 	    }
+		size_t count = path_navigate.find_last_of("/");
+		if(count == std::string::npos)
+		{
+			break;
+		}
+		path_navigate = path_navigate.substr(0,count);
+	}
+       
        
     
 		path_navigate  = "/";
@@ -362,7 +371,7 @@ std::string Request::path_of_file()
 {
 	string Path_in_request;
 	string tmp_file;
-	//int file_des;
+	
     if(Locations == NULL || Servers == NULL)
     {
 		std::cout << "There is no server or location\n";
@@ -375,20 +384,16 @@ std::string Request::path_of_file()
 		Status_Code = 404;
 		return "";
 	}
-	// if (type_request == "DELETE" && Status_Code != 403)
-	// {
-	// 	Status_Code = 200;
-	// 	path_of_file_dm = "";
-	// 	return "";
-	// }
+	if (type_request == "DELETE" && Status_Code != 403)
+	{
+		Status_Code = 200;
+		path_of_file_dm = "";
+		return "";
+	}
 	if (Status_Code == 413)
 	{
 		std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
 		return "";
-	}
-	if(Locations->get_http_redirection() > 0)
-	{
-		// should work for it here...
 	}
 	
 	Path_in_request = Path; // in my case i have / 
@@ -410,34 +415,35 @@ std::string Request::path_of_file()
 	//The function returns the index of the first occurrence of the sub-string.
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		
 		path_of_file_dm = path_of_file_dm + "/" + Locations->get_root();
 	
 	}
 	
 	if(is_directory(path_of_file_dm + Path_in_request))
 	{
-		tmp_file = path_of_file_dm + Path_in_request + "/";
+		tmp_file = path_of_file_dm + Path_in_request;
 	}
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
 	}
-	if(tmp_file[tmp_file.length() - 1] == '/')
+	if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] != '/')
+	{
+		if(Locations->get_index().length())
+		{
+			tmp_file = tmp_file +  "/" +Locations->get_index();
+		}
+	}else if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] == '/')
 	{
 		if(Locations->get_index().length())
 		{
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	// file_des = open(tmp_file.c_str(),O_RDONLY);
-	// if(tmp_file[tmp_file.size() - 1] == '/' && file_des <= 0)
-	// {
-	// 	std::cout << "failed or what\n";
-	// 	path_of_file_dm = Servers->get_root() + '/';
-	// }
-	// // else
-	 path_of_file_dm = tmp_file;
+	
+	if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] != '/')
+		tmp_file = tmp_file + '/';
+	path_of_file_dm = tmp_file;
 
 	// close(file_des);
 	std::size_t found = path_of_file_dm.find("//");
