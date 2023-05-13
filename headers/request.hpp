@@ -34,6 +34,7 @@ class Request
         std::string version_http;
         size_t count_pos;
         int indice_body;
+        std::string content_type;
         // int file_file_descriptor;
         
    
@@ -58,6 +59,7 @@ class Request
         std::string get_path_of_file_dm();
         int get_Status_code();
         int get_indice_body();
+        std::string get_content_type();
 
         // setters
         void set_Path(std::string path);

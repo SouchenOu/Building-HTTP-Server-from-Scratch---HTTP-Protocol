@@ -82,6 +82,20 @@ void Request::Parcing_request(std::string buffer)
         iter++;
 
     }
+	// check content type
+	size_t pos;
+	if((pos = buffer.find("Content-Type: ")) != std::string::npos)
+	{
+		content_type = buffer.substr(pos, buffer.find('\n', pos));
+		pos = content_type.find_first_of(": ") + 2;
+		content_type = content_type.substr(pos, (content_type.find("\n", 0) - pos));
+	}
+	if(request_headers.count("content_Length") > 0 && (content_type.find("application")) != std::string::npos)
+	{
+		request_headers.insert(pair<string,string>("body_application",request_divise.back()));
+	}
+
+	
 
 // Here for POST request
 
@@ -304,7 +318,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	
 	vector<std::string> method_allow = Locations->get_http_allow_method();
-=
+
 	for (vector<string>::iterator iter_method = method_allow.begin(); iter_method != method_allow.end(); iter_method++)
 	{
 		if (*iter_method == type_request)
@@ -342,23 +356,11 @@ std::string Request::path_of_file()
         path_of_file_dm = "";
 		return path_of_file_dm;
     }
-	if (Path.find("//") != string::npos)
-	{
-		std::cout << "403 Not found\n";
-		Status_Code = 404;
-		return "";
-	}
-	if (type_request == "DELETE" && Status_Code != 403)
-	{
-		Status_Code = 200;
-		path_of_file_dm = "";
-		return "";
-	}
-	if (Status_Code == 413)
-	{
-		std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
-		return "";
-	}
+	// if (Status_Code == 413)
+	// {
+	// 	std::cout << "Request entity is larger than limits defined by server||  so we cant parse our path\n";
+	// 	return "";
+	// }
 	
 	Path_in_request = Path; // in my case i have / 
 	path_of_file_dm = Servers->get_root();
@@ -414,6 +416,7 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
+	std::cout << "path_final-->" << path_of_file_dm << endl;
     return path_of_file_dm;
 
 }
@@ -543,7 +546,8 @@ char ** Request::get_the_path(std::string extention_name)
 	// put our vector in char ** variable
 
 	argument = static_cast<char **>(malloc(sizeof(char *) * (path_final.size() + 1)));
-
+	if(argument == NULL)
+		free(argument);
 	for(size_t i = 0; i < path_final.size(); i++)
 	{
 		argument[i] = ft_strdup(path_final[i]);
@@ -574,6 +578,9 @@ void Request::cgi_start(std::string &test)
 {
 	// int *status = NULL;
 	// int options;
+
+
+	std::cout << "Yes cgi\n";
 	char **argv;
 	char **env;
 	
@@ -585,11 +592,20 @@ void Request::cgi_start(std::string &test)
 	std::cout << "extention_name-->" << extention_name << endl;
 
 	int fd_pipe[2];
+	int post_pipe[2];
 
 	if(pipe(fd_pipe) == -1)
 	{
 		std::cout << "Error pipe\n";
 		exit(0);
+	}
+	if(type_request == "POST")
+	{
+		if(pipe(post_pipe) == -1)
+		{
+			std::cout << "Error pipe\n";
+			exit(0);
+		}
 	}
 	pid_t pid = fork();
 	if(pid < 0)
@@ -601,30 +617,46 @@ void Request::cgi_start(std::string &test)
 		std::cout<< "shild process\n";
 		std::vector<std::string> enverment;
 		enverment.push_back("REQUEST_METHOD="+type_request);
-		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm);
+		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm.substr(0,path_of_file_dm.find_first_of('?',0)));
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
 		if(type_request == "GET")
 		{
-			std::cout << "Get ofcourse\n";
 			// here for example php_website/index.php
 			enverment.push_back("QUERY_STRING="+ path_of_file_dm.substr(path_of_file_dm.find_first_of('?') + 1));
-		}else if(type_request == "POST")
+			extention_name = extention_name.substr(0,extention_name.find_first_of('?'));
+		}
+		else if(type_request == "POST")
 		{
-			if(Status_Code == 314)
+			std::cout << "yes post\n";
+			// std::cout << "content_type-->" << content_type << endl;
+			enverment.push_back("CONTENT_TYPE=" + content_type);
+			if(Status_Code == 413)
 				enverment.push_back("CONTENT_LENGTH=0");
 			else
 				enverment.push_back("CONTENT_LENGTH="+request_headers["Content-Length"]);
 		}
-
 		env = static_cast<char **>(malloc(sizeof(char *) * (enverment.size() + 1)));
+		if(env == NULL)
+		{
+			free(env);
+		}
 		for(size_t k =0; k < enverment.size() ; k++)
 		{
 			env[k] = ft_strdup(enverment[k]);
 		}
 		env[enverment.size()] = 0;
 		argv = get_the_path(extention_name);
+		if(type_request == "POST" && Status_Code != 413)
+		{
+			close(post_pipe[1]);
+			if (dup2(post_pipe[0], 0) == -1)
+			{
+				std::cout<< "dup2 error\n";
+				exit(0);
+			}
+		}
 		close(fd_pipe[0]);
 		if(dup2(fd_pipe[1], 1) == -1)
 		{
@@ -641,6 +673,13 @@ void Request::cgi_start(std::string &test)
 		}
 	}else
 	{
+		if (type_request == "POST" && Status_Code != 413)
+		{
+			close(post_pipe[0]);
+			if (write(post_pipe[1], request_headers["body_application"].c_str(), request_headers["body"].size()) < 0)
+				std::cout << "write error\n";
+			close(post_pipe[1]);
+		}
 		close(fd_pipe[1]);
 		wait(0);
 		std::cout << "here parent\n";
@@ -651,7 +690,7 @@ void Request::cgi_start(std::string &test)
 		//std::cout << "body ==" << body << endl;
 		vector<string> header = ft_divise(body, "\r");	
 		test = header[3];
-		// std::cout << "test-->" << test << endl;
+		std::cout << "test-->" << test << endl;
 		close(fd_pipe[0]);
 		
 	}
@@ -722,20 +761,27 @@ void Request::delete_request()
 	{
 		//string tmp = Path.substr(Locations->get_path());
 		new_path = new_path + "/" + Locations->get_root();
-		// if(tmp.size())
-		// {
-			new_path = new_path + '/' + Path + "/" + Locations->get_index();
-		//}
+		new_path = new_path + '/' + Path + "/" + Locations->get_index();
+	
 	}else{
-		new_path = new_path + Path;
+		new_path = new_path + "/" + Path;
 	}
 
-
-	std::cout << "new_path-->" << new_path << endl;
+	std::size_t found = new_path.find("//");
+	if(found != std::string::npos)
+	{
+		new_path.replace(found, 2 ,"/");
+	}
+	Status_Code = 200;
 	if(remove(new_path.c_str()) == -1)
 	{
-		std::cout << "failed\n";
+		std::cout << "remove failed\n";
 		Status_Code = 404;
 	}
 	
+}
+
+std::string Request::get_content_type()
+{
+	return content_type;
 }

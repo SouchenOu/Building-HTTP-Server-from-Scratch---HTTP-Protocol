@@ -66,7 +66,7 @@ int WebBrowsers::Read_request()
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
 
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 ); 
-		// std::cout << "buffer -->" << buffer << endl;
+		std::cout << "buffer -->" << buffer << endl;
 		//std::cout << buffer << endl;
 		// std::cout << "octet-->" << recv_s << endl; 
 		if(recv_s < 0)
@@ -85,14 +85,22 @@ int WebBrowsers::Read_request()
 		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && read_buffer.find("\r\n\r\n") != std::string::npos)
 			{
+				std::cout << "parse request\n";
 				// get all the request with body ou without body
 				request = new Request(read_buffer);
+				size_t pos = request->get_content_type().find("application");
+			
 
 				read_buffer.clear();
 				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
 					value = 1;
 				else if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					value = 1;
+				else if(request->get_type_request() == "POST" && pos != std::string::npos)
+				{
+					std::cout << "yes go cgi\n";
+					value = 1;
+				}
 			}
 			else if (request != NULL)
 			{

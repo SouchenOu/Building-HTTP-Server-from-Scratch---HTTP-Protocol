@@ -20,14 +20,14 @@
 ?>
 
 	<h2>Post Request</h2>
-<form action="./Register.php" method="post">
+<form action="Register" method="post">
  	<p>Your FullName: <input type="text" name="Your_name" /></p>
  	<p>Your Age: <input type="text" name="Your_Age" /></p>
  	<p><input type="submit" /></p>
 </form>
 
  	<h2>Get Request</h2>
- <form action="./Register.php" method="get">
+ <form action="Register" method="get">
  	<p>Your FullName: <input type="text" name="Your_name" /></p>
  	<p>Your Age : <input type="text" name="Your_Age" /></p>
  	<p><input type="submit" /></p>
