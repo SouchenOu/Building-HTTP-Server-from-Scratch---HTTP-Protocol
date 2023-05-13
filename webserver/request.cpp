@@ -354,7 +354,7 @@ std::string Request::path_of_file()
     {
 		std::cout << "There is no server or location\n";
         path_of_file_dm = "";
-		return path_of_file_dm;
+		exit(0);
     }
 	// if (Status_Code == 413)
 	// {

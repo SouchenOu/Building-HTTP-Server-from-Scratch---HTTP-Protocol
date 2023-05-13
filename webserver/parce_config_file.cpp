@@ -230,9 +230,9 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		// the index directive defines the index file is name (The default value is index.html)
 		else if (words2[0] == "index")
 		{
-			if (words2.size() != 2)
+			if (words2.size() !=  2)
 			{
-				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after index" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have one argument after index" << endl;
 		
 				exit(0);
 			}

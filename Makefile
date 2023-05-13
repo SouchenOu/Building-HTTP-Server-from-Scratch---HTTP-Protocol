@@ -18,7 +18,7 @@ FILES =  webserver/it_is_dir_or_file.cpp webserver/Location.cpp  webserver/parce
 INC =  headers/Location.hpp headers/request.hpp headers/server.hpp headers/binding_socket.hpp headers/webserver.hpp headers/WebBrowser.hpp headers/request.hpp headers/response.hpp headers/tools.hpp
 
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+FLAGS = -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
 
 all: $(NAME)
 

@@ -27,8 +27,17 @@ int main(int argc, char *argv[])
     //signal(SIGPIPE, SIG_IGN);
     if(argc != 2)
     {
-        std::cout << "Error: We need a config file!\n";
-        return -1;
+        std::cout << "Add default config file!\n";
+        ifstream FileToCheck("config_file/config_file-default.conf");
+		    if (!FileToCheck.is_open())
+		    {
+			    std::cout << "Error: opening file--> This file doesnt exist" << std::endl;
+			    return -1;
+		    }
+		    FileToCheck.close();
+        Webserver webserver;
+        webserver.parcing_config_file("config_file/config_file-default.conf");
+        webserver.Establish_connection();
     }
     else if(argc == 2)
     {
@@ -40,10 +49,11 @@ int main(int argc, char *argv[])
 			    return -1;
 		    }
 		    FileToCheck.close();
+        Webserver webserver;
+        webserver.parcing_config_file(argv[1]);
+        webserver.Establish_connection();
     }
-    Webserver webserver;
-    webserver.parcing_config_file(argv[1]);
-    webserver.Establish_connection();
+   
 
     
 
