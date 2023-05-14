@@ -28,7 +28,7 @@
 
 server::server()
 {
-	client_max_body_size = 1000000;
+	client_max_body_size = 10000;
 	fd_socket = 0;
 }
 
@@ -67,6 +67,7 @@ creating a TCP socket looks like this:*/
    /*************************************************************/
 
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
+	std::cout << "fd_socket-->" << fd_socket << endl;
 	if (fd_socket == -1)
 	{
 		perror("Error: Problem creation a socket");

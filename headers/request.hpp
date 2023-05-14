@@ -35,6 +35,7 @@ class Request
         size_t count_pos;
         int indice_body;
         std::string content_type;
+        std::string transfer_encoding;
         // int file_file_descriptor;
         
    
@@ -85,6 +86,7 @@ class Request
        void auto_index(std::string &str, std::string path_access);
        Location *get_location();
        void delete_request();
+       std::string get_transfer_encoding();
     
         
 

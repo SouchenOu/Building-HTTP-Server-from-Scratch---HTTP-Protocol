@@ -39,9 +39,6 @@ response::~response()
 
 std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus, Location *locations)
 {
-	// std::cout << "path_access--->" << path_access << endl;
-	std::cout << "check location out-->" << locations->get_http_redirection() << endl;
-	std::cout << "check location out-->" << locations->get_return_line() << endl;
 	if(var == 0)
 	{
 		ifstream our_file(path_access.c_str(),std::ios::in);

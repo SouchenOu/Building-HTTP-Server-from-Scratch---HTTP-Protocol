@@ -43,55 +43,36 @@ void Webserver::parcing_config_file(string config_file)
 	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
 
     std::ifstream read_file(config_file.c_str());
-	// firstly we need to change the get position value to know the size of our file
-	// here it will stop in the end of our file (to calcule the number exact of our character in the file)
-	// read_file.seekg(0, ios::end);
-	// size = read_file.tellg();
-	// if(size == 0)
-	// {
-	// 	std::cout << "Error: File is empty\n";
-	// }
-	//string str;
-	// if(!getline(read_file, str))
-	// {
-	// 	cout << "config file is empty\n";
-	// }
+	
 	// now we should convert ifstream to string
 	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
 	read_file.close();
 	vector<string> config_line = ft_divise(the_str, "\n");
-	// vector<string>::iterator ii ;
-	// for(ii = config_line.begin(); ii != config_line.end(); ii++)
-	// {
-	// 	std::cout << "Line by line -->" << *ii << std::endl; 
-	// }
-	// exit(0);
+	
 	while (cmp < config_line.size())
 	{
 		vector<string>::iterator iter1 = config_line.begin() + cmp;
 		vector<string> world_line = ft_divise(*iter1, " ");
-		// std::cout << "word[0] -->" << world_line[0] << endl;
-		// std::cout << "word[1] -->" << world_line[1] << endl;
-
-		// vector<string>::iterator ip ;
-		// for(ip = word_line.begin(); ip != word_line.end(); ip++)
-		// {
-		// 	std::cout << "elem->" << *ip << endl;
-		// }
+		
 		vector<string>::iterator iter2 = world_line.begin();
 		if (*iter2 == "server")
 		{
 			server *serv = parse_server(config_line, &cmp);
 			// std::cout << "port:" << serv->get_port_listen() << endl;
 			// std::cout << "ip:" << serv->get_ip_address() << endl;
-			for(set<server*>::iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
+			for(std::set<server*>::const_iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
 			{
 				if((*iter1)->get_ip_address() == serv->get_ip_address() && (*iter1)->get_port_listen() == serv->get_port_listen())
 				{
-					set<string> server_names = (*iter1)->get_server_name();
+					std::set<std::string> server_names = (*iter1)->get_server_name();
+					if(server_names.size() == 0 || serv->get_server_name().size() == 0)
+					{
+						return ;
+					}
 					for(set<string>::iterator iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
 					{
-						for(set<string>::iterator iter3 = serv->get_server_name().begin(); iter3 != serv->get_server_name().end(); iter3++)
+						std::set<std::string> new_server_names = serv->get_server_name();
+						for(set<string>::const_iterator iter3 = new_server_names.begin(); iter3 != new_server_names.end(); iter3++)
 						{
 							if((*iter2) == (*iter3))
 							{
@@ -114,20 +95,29 @@ void Webserver::Establish_connection(void)
 {
 	
 	int fd_socket;
-	//int cmp = 0;
-
-	//int new_socket;
-	// string message = "hello souchen";
+	
 	fd_max = 0;
 	int fd_client;
 	//Clear an fd_set
 	//This macro initializes the file descriptor set set to be the empty set.
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
-	for (set<server*>::iterator server = servers.begin(); server != servers.end(); server++)
+	for (set<server*>::iterator iter = servers.begin(); iter != servers.end(); iter++)
 	{
-		std::cout << "create socket servers\n";
-		fd_socket = (*server)->Create_server_socket();	
+		std::cout << "first-->" << (*iter)->get_port_listen() << endl;
+		bool add_already_use = false;
+		for (set<server*>::iterator check = servers.begin(); check != iter; check++)
+		{
+			std::cout << "equal-->" << (*check)->get_port_listen() << endl;
+			if ((*check)->get_ip_address() == (*iter)->get_ip_address() && (*check)->get_port_listen() == (*iter)->get_port_listen())
+
+				add_already_use = true;
+		}
+		if (add_already_use == true)
+		{
+			continue;
+		}
+		fd_socket = (*iter)->Create_server_socket();	
 //Add a file_descriptor to an fd_set
 /*****The fd_set structure is used by various Windows Sockets functions and service providers, such as the select function, to place sockets into a "set" for various purposes, such as testing a given socket for readability using the readfds parameter of the select function.*/
 
@@ -239,6 +229,7 @@ Points to a bit set of descriptors to check for writing.*/
 			// so we use fD_ISSET to check to see if that one is set, and if it is then we accept() the connection to read the request
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
+				std::cout << "fd_socket-->" << (*iter2)->get_fd_socket() << endl;
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
@@ -289,6 +280,7 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			else if((*iter3)->get_value() == 1)
 			{
+				std::cout << "here ";
 				if((*iter3)->get_indice() == 0)
 				{
 					std::cout << "prepare response\n";

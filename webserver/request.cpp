@@ -94,6 +94,16 @@ void Request::Parcing_request(std::string buffer)
 	{
 		request_headers.insert(pair<string,string>("body_application",request_divise.back()));
 	}
+	// check chuncked request
+	size_t count;
+	if((count = buffer.find("Transfer-Encoding: ")) != std::string::npos)
+	{
+		transfer_encoding = buffer.substr(count, buffer.find('\n', count));
+		count = transfer_encoding.find_first_of(": ") + 2;
+		transfer_encoding = transfer_encoding.substr(count, (transfer_encoding.find("\n", 0) - count));
+		std::cout << "yes chunked\n";
+		std::cout << "transfer-encoding-->" << transfer_encoding << endl;
+	}
 
 	
 
@@ -199,10 +209,14 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	unsigned int port = 0;
 	string path_navigate;
 	int indice = 0;
+	int test  = 0;
 	path_navigate = Path;
-	std::set<server*>::iterator iter1;
+	int var_test = 0;
+	int var2 = 0;
+	std::set<server*>::iterator const_iter1;
 	std::set<string>::iterator iter2;
 	std::set<server*>::iterator iter3;
+	std::set<server*>::iterator iter4;
 	this->Servers =  NULL;
 	if(request_headers.find("Host") != request_headers.end())
 	{
@@ -219,12 +233,13 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	if(request_headers.find("Port") != request_headers.end())
 	{
 		port = atoi(request_headers.find("Port")->second.c_str());
-	}else if(Host != "localhost" && port != 0)
-	{
-		Status_Code = 400;
-		std::cout << "Bad request : The server cannot or will not process the request\n";
-		return 0;
 	}
+	//else if(Host != "localhost" && port != 0)
+	// {
+	// 	Status_Code = 400;
+	// 	std::cout << "Bad request : The server cannot or will not process the request\n";
+	// 	return 0;
+	// }
 	// if i have in my request header server_name = localhost and there no port 
 	if(Host ==  "localhost" && port == 0)
 	{
@@ -234,21 +249,53 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	
 	for(iter3 = servers.begin(); iter3 != servers.end(); iter3++)
 	{
-		if((*iter3)->get_port_listen() == port)
-		{
-			this->Servers = (*iter3);
-			//break ;
-		}
-		set<string> server_names = (*iter3)->get_server_name();
-		for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
-		{
-			if((((*iter2) == Host || *iter2 == "0.0.0.0")  && ((*iter3)->get_port_listen() == port)))
+		// we can have two servers with the same port
+		
+			if((*iter3)->get_port_listen() == port)
 			{
-				this->Servers = (*iter3);
+				if((*iter3)->get_server_name().empty() == 0)
+				{
+					test++;
+				}
+				if(var_test == 0)
+				{
+					this->Servers = (*iter3);
+				}
+					
+				var_test++;
 			}
-		}
+	
 
 	}
+	if(test == 0 && var_test == 2)
+	{
+		std::cout << "server: [warn] conflicting server name "" on 0.0.0.0: "<< Servers->get_port_listen() << " ignored" << endl;
+		exit(0);
+	}
+		
+	if(port == 0 || var_test == 2)
+	{
+		std::cout << "enter here\n";
+		for(iter4 = servers.begin(); iter4 != servers.end(); iter4++)
+		{
+			set<std::string> server_names = (*iter4)->get_server_name();
+			for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
+			{
+				
+				if(((*iter2) == Host))
+				{
+					var2++;
+					this->Servers = (*iter4);
+				}
+			}
+		}
+	}
+	if(var2 == 2)
+	{
+		std::cout << "server: [warn] conflicting server name "" on 0.0.0.0:  ignored" << endl;
+		exit(0);
+	}
+
 
 	
 	if(this->Servers == NULL)
@@ -262,14 +309,14 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	//Basically it is the number of bytes of data in the body of the request or response.
 	// atoll() string to long long int
-	if (Servers->get_client_max_body_size() != -1 && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
+	// std::cout << "body size->" << Servers->get_client_max_body_size() << endl;
+	if (Servers->get_client_max_body_size() != -1  && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
 		std::cout << "Payload Too Large\n";
 		std::cout << "413 Request Entity Too Large\n";
 		Status_Code = 413;
 		return 0;
 	}
-
 
 	var = check_which_location_compatible();
 	if (var == 0)
@@ -784,4 +831,9 @@ void Request::delete_request()
 std::string Request::get_content_type()
 {
 	return content_type;
+}
+
+std::string Request::get_transfer_encoding()
+{
+	return transfer_encoding;
 }
