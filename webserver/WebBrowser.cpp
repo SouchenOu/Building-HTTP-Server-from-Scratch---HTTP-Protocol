@@ -106,9 +106,7 @@ int WebBrowsers::Read_request()
 			{
 				for(int i = 0; i < recv_s; i++)
 				{
-					request->get_request_header("body").push_back(buffer[i]);
-					
-
+					request->get_request_header("body").push_back(buffer[i]);	
 				}
 			
 				if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
@@ -318,7 +316,6 @@ void WebBrowsers::send2()
 	}
 
 	send(file_descriptor, buff, fd, 0);
-	
 
 	if (fd < BUFFUR_SIZE)
 	{
