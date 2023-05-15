@@ -142,11 +142,24 @@ int WebBrowsers::Read_request()
 				read_buffer = read_buffer + buffer;
 				std::cout << "read_buffer in chunked-->\n";
 				std::cout << read_buffer << endl;
-				if(read_buffer.find("0\r\n\r\n"))
+				if(EndChunked(read_buffer, "0\r\n\r\n") == 1)
 				{
 					std::cout << "chunked test\n";
 					std::string header = read_buffer.substr(0, read_buffer.find("\r\n\r\n"));
-					std::string chunk = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
+					std::string chunks = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
+					std::string subchunk = chunk.substr(0,100);
+					int			chunksize = strtol(subchunk.c_str(), NULL, 16);
+					size_t		i = 0;
+					while (chunksize)
+					{
+						i = chunks.find("\r\n", i) + 2;
+						body += chunks.substr(i, chunksize);
+						i += chunksize + 2;
+						subchunk = chunks.substr(i, 100);
+						chunksize = strtol(subchunk.c_str(), NULL, 16);
+	
+					}
+
 				}
 				
 				
@@ -175,7 +188,20 @@ int WebBrowsers::Read_request()
 }
 
 
+int WebBrowser::EndChunked(std::string &buffer, std::string &end_check)
+{
+	size_t	i = buffer.size();
+	size_t	j = end_check.size();
 
+	while (j > 0)
+	{
+		i--;
+		j--;
+		if (i < 0 || buffer[i] != end_check[j])
+			return (0);
+	}
+	return (1);
+}
 
 int WebBrowsers::get_check_fd()
 {

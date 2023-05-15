@@ -74,6 +74,8 @@ class   WebBrowsers
         void send1();
         void send2();
         void check_error_page();
+        int	EndChunked(std::string& buffer,std::string& end_chunk);
+
         
 };
 
