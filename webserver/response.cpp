@@ -58,6 +58,8 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	response_header << "Connection: Closed" << endl;
 	if (locations && locations->get_http_redirection() > 0)
 		response_header << "Location: " << locations->get_return_line() << endl;
+	if(request->get_request_header("cookies"))
+		response_header << "Set-Cookies :" << request_header["cookies"] << endl;
 	response_header << endl;
 
 	return response_header.str();

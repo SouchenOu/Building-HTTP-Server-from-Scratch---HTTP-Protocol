@@ -667,6 +667,8 @@ void Request::cgi_start(std::string &test)
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
+		if (request->request_headers["Cookie"] != "")
+			enverment.push_back("HTTP_COOKIE="+ request->request_headers["Cookie"]);
 		if(type_request == "GET")
 		{
 			// here for example php_website/index.php
