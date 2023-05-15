@@ -104,11 +104,9 @@ void Webserver::Establish_connection(void)
 	FD_ZERO(&writefds);
 	for (set<server*>::iterator iter = servers.begin(); iter != servers.end(); iter++)
 	{
-		std::cout << "first-->" << (*iter)->get_port_listen() << endl;
 		bool add_already_use = false;
 		for (set<server*>::iterator check = servers.begin(); check != iter; check++)
 		{
-			std::cout << "equal-->" << (*check)->get_port_listen() << endl;
 			if ((*check)->get_ip_address() == (*iter)->get_ip_address() && (*check)->get_port_listen() == (*iter)->get_port_listen())
 
 				add_already_use = true;
@@ -280,7 +278,6 @@ Points to a bit set of descriptors to check for writing.*/
 			}
 			else if((*iter3)->get_value() == 1)
 			{
-				std::cout << "here ";
 				if((*iter3)->get_indice() == 0)
 				{
 					std::cout << "prepare response\n";

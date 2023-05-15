@@ -65,11 +65,13 @@ int WebBrowsers::Read_request()
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
-	
+		// std::cout << "test\n";
+		// std::cout << test << endl;
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 );
-		// std::cout << "buffer -->\n";
-		std::cout<< buffer << endl;
-		//std::cout << buffer << endl;
+		std::cout << "recv_s-->" << recv_s << endl;
+		// std::cout << "size_buffer-->" << strlen(buffer) << endl;
+		std::cout << "buffer -->\n";
+		std::cout << buffer << endl;
 		// std::cout << "octet-->" << recv_s << endl; 
 		if(recv_s < 0)
 		{
@@ -87,17 +89,34 @@ int WebBrowsers::Read_request()
 		{
 			read_buffer = read_buffer + string(buffer, recv_s);
 			std::cout << "read_buffer:\n";
-			// std::cout << read_buffer << endl;
+			std::cout << read_buffer << endl;
 			// std::cout << "recv_s-->" << recv_s << endl;
-			size_t p = read_buffer.find("\r\n\r\n");
-			std::cout << "pos-->" << p << endl;
-			if(request == NULL && recv_s <= BUFFUR_SIZE && read_buffer.find("\r\n\r\n") != std::string::npos)
+			size_t p2 = read_buffer.find("\\r\\n\\r\\n");
+			if(p2 != std::string::npos)
+			{
+				std::cout << "true there is a -->" << endl;
+			}
+			// size_t p = read_buffer.find("//n");
+			// if(p != std::string::npos)
+			// {
+			// 	std::cout << "true there is a -->" << endl;
+			// }
+			//std::cout << "pos-->" << p << endl;
+			if(request == NULL && recv_s <= BUFFUR_SIZE && (read_buffer.find("\r\n\r\n") != std::string::npos || p2 != std::string::npos))
 			{
 				
 				std::cout << "parse request\n";
 				// get all the request with body ou without body
 				request = new Request(read_buffer);
-				read_buffer.clear();
+				// if(read_buffer.find("Content-Length: ") == std::string::npos)
+				// {
+				// 		if(read_buffer.find("Transfer-Encoding: chunked") != std::string::npos)
+				// 		{
+
+				// 		}
+				// }
+				
+				
 				size_t pos = request->get_content_type().find("application");
 				// if(request->get_transfer_encoding().find("chunked") != std::string::npos)
 				// {
@@ -113,12 +132,26 @@ int WebBrowsers::Read_request()
 					value = 1;
 				}
 			}
+			//read_buffer.clear();
 		}
 		else if (request != NULL)
 		{
-			std::cout << "Add simple body\n";
-			if(request->get_transfer_encoding().find("chunked") == std::string::npos)
+			
+			if(request->get_transfer_encoding().find("chunked") != std::string::npos)
 			{
+				read_buffer = read_buffer + buffer;
+				std::cout << "read_buffer in chunked-->\n";
+				std::cout << read_buffer << endl;
+				if(read_buffer.find("0\r\n\r\n"))
+				{
+					std::cout << "chunked test\n";
+					std::string header = read_buffer.substr(0, read_buffer.find("\r\n\r\n"));
+					std::string chunk = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
+				}
+				
+				
+
+			}else{
 				for(int i = 0; i < recv_s; i++)
 				{
 					request->get_request_header("body").push_back(buffer[i]);	
@@ -126,8 +159,10 @@ int WebBrowsers::Read_request()
 			
 				if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					value = 1;	
-			}else
-				std::cout << "chunk\n";
+			}
+			
+				
+			
 					
 				
 		}

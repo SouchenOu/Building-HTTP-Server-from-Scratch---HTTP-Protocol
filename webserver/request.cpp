@@ -275,7 +275,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		
 	if(port == 0 || var_test == 2)
 	{
-		std::cout << "enter here\n";
 		for(iter4 = servers.begin(); iter4 != servers.end(); iter4++)
 		{
 			set<std::string> server_names = (*iter4)->get_server_name();
