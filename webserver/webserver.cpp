@@ -262,7 +262,7 @@ Points to a bit set of descriptors to check for writing.*/
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
-				std::cout << BLUE << "Read incoming message" << endl;
+				//std::cout << BLUE << "Read incoming message" << endl;
 				
 				if((*iter3)->Read_request() == 2)
 				{

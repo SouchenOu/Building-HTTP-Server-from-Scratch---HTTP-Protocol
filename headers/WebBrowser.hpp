@@ -38,6 +38,7 @@ class   WebBrowsers
             int indice;
             int file_file_descriptor;
             int autoindex;
+            int cmp;
 
 
     public:
@@ -74,7 +75,7 @@ class   WebBrowsers
         void send1();
         void send2();
         void check_error_page();
-        int	EndChunked(std::string& buffer,std::string& end_chunk);
+        int	EndChunked(std::string& buffer,const std::string& end_chunk);
 
         
 };

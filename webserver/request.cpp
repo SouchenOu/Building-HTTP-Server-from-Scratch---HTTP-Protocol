@@ -41,6 +41,7 @@ Request::~Request()
 }
 void Request::Parcing_request(std::string buffer)
 {
+	std::cout << "parsing\n";
 	vector<string> request_divise = ft_divise(buffer, "\r\n");
 
     vector<string>::iterator iter = request_divise.begin();
@@ -84,8 +85,10 @@ void Request::Parcing_request(std::string buffer)
     }
 	// check content type
 	size_t pos;
+	std::cout << "check-content-type\n";
 	if((pos = buffer.find("Content-Type: ")) != std::string::npos)
 	{
+		std::cout << "yes there is content-type\n";
 		content_type = buffer.substr(pos, buffer.find('\n', pos));
 		pos = content_type.find_first_of(": ") + 2;
 		content_type = content_type.substr(pos, (content_type.find("\n", 0) - pos));
@@ -98,9 +101,11 @@ void Request::Parcing_request(std::string buffer)
 	size_t count;
 	if((count = buffer.find("Transfer-Encoding: ")) != std::string::npos)
 	{
+		std::cout << "yes there is chunk\n";
 		transfer_encoding = buffer.substr(count, buffer.find('\n', count));
 		count = transfer_encoding.find_first_of(": ") + 2;
 		transfer_encoding = transfer_encoding.substr(count, (transfer_encoding.find("\n", 0) - count));
+		request_headers.insert(pair<string,string>("body_chunk",""));
 		std::cout << "yes chunked\n";
 		std::cout << "transfer-encoding-->" << transfer_encoding << endl;
 	}
@@ -326,39 +331,36 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	// should add just multipart Content-type
 	if(request_headers["body"] != "")
 	{
-		// char *body_final;
 		std::vector<string> vect_body;
 		if(Locations->get_upload_enable() == 1)
 		{
+			std::cout << "uploading......\n";
 			string body_final;
 			// get our body
-			vector<string> body_divise = ft_divise(request_headers["body"], "\n");
-			vector<string>::iterator iter = body_divise.begin() + 1;
-			vector<string> w_o_r_d = ft_divise(*iter, ";");
-		
-			vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
-			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
-		
-			size_t pos = request_headers["body"].find("\n\r\n");
-			size_t count;
-			count = pos + 1;
-			while(count != request_headers["body"].size())
+			// vector<string> body_divise = ft_divise(request_headers["body"], "\n");
+			// vector<string>::iterator iter = body_divise.begin() + 1;
+			// // std::cout << "iter-->" << *iter << endl;
+			// vector<string> w_o_r_d = ft_divise(*iter, ";");
+			// // std::cout << "word-->" << w_o_r_d[1] << endl;
+			// vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
+			if(transfer_encoding.find("chunked") != std::string::npos)
 			{
-				request_headers["upload"].push_back(request_headers["body"][count]);
-				count++;
+				std::fstream myFile("test.pdf", std::ios::in | std::ios::out | std::ios::trunc);
+				myFile << request_headers["body"];
 			}
+			else{
+				vector<string> body_divise = ft_divise(request_headers["body"], "\n");
+				vector<string>::iterator iter = body_divise.begin() + 1;
+				// std::cout << "iter-->" << *iter << endl;
+				vector<string> w_o_r_d = ft_divise(*iter, ";");
+				// std::cout << "word-->" << w_o_r_d[1] << endl;
+				vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
+				request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
+				std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
+				myFile << request_headers["body"];
 
-			size_t new_pos = request_headers["upload"].find_first_of("\n");
-			size_t new_one;
-			new_one = new_pos + 1;
-
-			while(new_one != request_headers["upload"].size())
-			{
-				request_headers["new_body"].push_back(request_headers["upload"][new_one]);
-				new_one++;
 			}
-			
-			 myFile << request_headers["new_body"] << endl;
+			 
 		
 		}
 	}
@@ -667,8 +669,8 @@ void Request::cgi_start(std::string &test)
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
-		if (request->request_headers["Cookie"] != "")
-			enverment.push_back("HTTP_COOKIE="+ request->request_headers["Cookie"]);
+		//if (request->request_headers["Cookie"] != "")
+			//enverment.push_back("HTTP_COOKIE="+ request->request_headers["Cookie"]);
 		if(type_request == "GET")
 		{
 			// here for example php_website/index.php

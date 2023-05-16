@@ -52,21 +52,21 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
 	response_header << "Date: " << get_time() << endl;
 	response_header << "Server: webserv/0.01" << endl;
-	response_header << "Content_type:"<< get_content_type(path_access, val) << endl;
-	response_header << "X-Powered-By: PHP/8.1.12" << endl;
+	//response_header << "Content_type:"<< get_content_type(path_access, val) << endl;
+	//response_header << "X-Powered-By: PHP/8.1.12" << endl;
 	response_header << "Content-Length: " << size_of_file << endl;
 	response_header << "Connection: Closed" << endl;
 	if (locations && locations->get_http_redirection() > 0)
 		response_header << "Location: " << locations->get_return_line() << endl;
-	if(request->get_request_header("cookies"))
-		response_header << "Set-Cookies :" << request_header["cookies"] << endl;
+	//if(request->get_request_header("cookies"))
+	//	response_header << "Set-Cookies :" << request_header["cookies"] << endl;
 	response_header << endl;
 
 	return response_header.str();
 
 }
 
-std::string response::get_content_type	(const string &path_access, const bool& check)
+std::string response::get_content_type	(const std::string &path_access, const bool& check)
 {
 	std::string type;
 	if (check)
@@ -85,7 +85,7 @@ std::string response::get_content_type	(const string &path_access, const bool& c
 		type = "application/javascript";
 	else if (path_access.find(".html", path_access.length() - 5) != string::npos)
 		type = "text/html";
-	else if (path_access.find(".txt", str.length() - 4) != string::npos)
+	else if (path_access.find(".txt", path_access.length() - 4) != string::npos)
 		type = "text/plain";
 	else
 		type = "application/octet-stream";
