@@ -97,17 +97,20 @@ void Request::Parcing_request(std::string buffer)
 	{
 		request_headers.insert(pair<string,string>("body_application",request_divise.back()));
 	}
+	if(request_headers.count("content_Length") > 0)
+	{
+		request_headers.insert(pair<string,string>("body",""));
+	}
 	// check chuncked request
 	size_t count;
 	if((count = buffer.find("Transfer-Encoding: ")) != std::string::npos)
 	{
-		std::cout << "yes there is chunk\n";
+		
 		transfer_encoding = buffer.substr(count, buffer.find('\n', count));
 		count = transfer_encoding.find_first_of(": ") + 2;
 		transfer_encoding = transfer_encoding.substr(count, (transfer_encoding.find("\n", 0) - count));
 		request_headers.insert(pair<string,string>("body_chunk",""));
-		std::cout << "yes chunked\n";
-		std::cout << "transfer-encoding-->" << transfer_encoding << endl;
+		
 	}
 
 	
@@ -346,7 +349,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 				// // std::cout << "word-->" << w_o_r_d[1] << endl;
 				// vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
 				// request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
-				std::fstream myFile("test.mp4", std::ios::in | std::ios::out | std::ios::trunc);
+				std::fstream myFile("test.png", std::ios::in | std::ios::out | std::ios::trunc);
 				myFile << request_headers["body"];
 			}
 			else{

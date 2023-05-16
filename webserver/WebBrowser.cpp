@@ -32,11 +32,11 @@ WebBrowsers::~WebBrowsers()
 	std::cout << "Destructer client---> Client disconnected\n";
 	if (file_descriptor > 0)
 		close(file_descriptor);
-	// if (request != 0)
-	// {
-	// 	delete request;
-	// 	request = 0;
-	// }
+	if (request != 0)
+	{
+		delete request;
+		request = 0;
+	}
 
 }
 
@@ -88,10 +88,8 @@ int WebBrowsers::Read_request()
 	
 		if(request == NULL)
 		{
-			
 			read_buffer = read_buffer + string(buffer, recv_s);
-			// std::cout << "read_buffer:\n";
-			// std::cout << read_buffer << endl;
+			
 		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && (read_buffer.find("\r\n\r\n") != std::string::npos ))
 			{
@@ -103,15 +101,14 @@ int WebBrowsers::Read_request()
 				request = new Request(header);
 				if((read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size())).empty() == 0)
 				{
-			
+				
 					request->get_request_header("body") = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
-
+					
 					if(request->get_transfer_encoding().find("chunked") != std::string::npos && EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 					{
 						std::string body_chunk;
 						std::string body_final;
 						body_chunk.append(string(request->get_request_header("body")));
-						// std::cout << "chunk test first\n";
 						std::string subchunk = body_chunk.substr(0,100);
 						int			chunksize = strtol(subchunk.c_str(), NULL, 16);
 			 			size_t		i = 0;
@@ -119,8 +116,7 @@ int WebBrowsers::Read_request()
 						{
 							i = body_chunk.find("\r\n", i) + 2;
 							body_final += body_chunk.substr(i, chunksize);
-							// std::cout << "body->" << body_final << endl;
-							//request->get_request_header("body").append(string(body_final));
+						
 							if(EndChunked(body_final, "0\r\n\r\n") == 1)
 							{
 								break ;
@@ -132,7 +128,6 @@ int WebBrowsers::Read_request()
 						}
 						request->get_request_header("body").clear();
 						request->get_request_header("body").append(string(body_final));
-						// std::cout << "finish body-->~" << request->get_request_header("body") << "~"<< endl;
 						value = 1;
 					}
 				}
@@ -143,17 +138,18 @@ int WebBrowsers::Read_request()
 				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
 				{
 					value = 1;
-					read_buffer.clear();
+					// read_buffer.clear();
 				}
 					
 				else if(request->get_type_request() == "POST" && pos != std::string::npos)
 				{
 					value = 1;
+					// read_buffer.clear();
 				}
 			
 				
 			}
-			//read_buffer.clear();
+			read_buffer.clear();
 		}
 		else if (request != NULL)
 		{
@@ -163,16 +159,17 @@ int WebBrowsers::Read_request()
 			// std::cout << "size body-->" << request->get_request_header("body").size() << endl;
 			if(request->get_transfer_encoding().find("chunked") != std::string::npos)
 			{
-				std::string body_chunk = request->get_request_header("body");
+				// std::cout << "continue\n";
+				//std::string body_chunk;
+				//body_chunk.append(string(request->get_request_header("body")));
 				std::string body_final;
-				// std::cout << "wait......\n";
+				std::cout << "wait......\n";
 				for(int i = 0; i < recv_s; i++)
 				{
 					request->get_request_header("body").push_back(buffer[i]);
 				}
 				if(EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 				{
-					// std::cout <<  request->get_request_header("body") << endl;
 			 		std::string subchunk = request->get_request_header("body").substr(0,100);
 					int			chunksize = strtol(subchunk.c_str(), NULL, 16);
 			 		size_t		i = 0;
@@ -180,6 +177,7 @@ int WebBrowsers::Read_request()
 					{
 						i = request->get_request_header("body").find("\r\n", i) + 2;
 						body_final.append(string(request->get_request_header("body").substr(i, chunksize)));
+					
 						i += chunksize + 2;					
 						subchunk = request->get_request_header("body").substr(i, 100);
 						chunksize = strtol(subchunk.c_str(), NULL, 16);
@@ -196,10 +194,14 @@ int WebBrowsers::Read_request()
 
 			}else{
 					std::cout << "wait......\n";					
-					request->get_request_header("body").append(string(buffer, recv_s));	
+					//request->get_request_header("body").append(string(buffer, recv_s));	
+						for(int i = 0; i < recv_s; i++)
+						{
+							request->get_request_header("body").push_back(buffer[i]);
+						}
 					// std::cout << "size-->" << request->get_request_header("body").size() << endl;
 					// std::cout << "length-->" <<  request->get_request_header("Content-Length") << endl;
-					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
+					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) <=  (long)request->get_request_header("body").size()))
 					{
 						value = 1;
 					}
@@ -442,7 +444,9 @@ void WebBrowsers::send2()
 		indice = 0;
 		value = 0;
 		file_file_descriptor = 0;
+		
 		request = NULL;
+
 	}
 }
 
