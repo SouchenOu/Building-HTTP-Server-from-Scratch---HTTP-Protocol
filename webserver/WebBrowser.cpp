@@ -201,7 +201,7 @@ int WebBrowsers::Read_request()
 						}
 					// std::cout << "size-->" << request->get_request_header("body").size() << endl;
 					// std::cout << "length-->" <<  request->get_request_header("Content-Length") << endl;
-					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) <=  (long)request->get_request_header("body").size()))
+					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					{
 						value = 1;
 					}
