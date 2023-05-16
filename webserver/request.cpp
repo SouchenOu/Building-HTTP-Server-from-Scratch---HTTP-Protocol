@@ -336,16 +336,17 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		{
 			std::cout << "uploading......\n";
 			string body_final;
-			// get our body
-			// vector<string> body_divise = ft_divise(request_headers["body"], "\n");
-			// vector<string>::iterator iter = body_divise.begin() + 1;
-			// // std::cout << "iter-->" << *iter << endl;
-			// vector<string> w_o_r_d = ft_divise(*iter, ";");
-			// // std::cout << "word-->" << w_o_r_d[1] << endl;
-			// vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
 			if(transfer_encoding.find("chunked") != std::string::npos)
 			{
-				std::fstream myFile("test.pdf", std::ios::in | std::ios::out | std::ios::trunc);
+				//std::fstream myFile("test.mp4", std::ios::in | std::ios::out | std::ios::trunc);
+				// vector<string> body_divise = ft_divise(request_headers["body"], "\n");
+				// vector<string>::iterator iter = body_divise.begin() + 1;
+				// // std::cout << "iter-->" << *iter << endl;
+				// vector<string> w_o_r_d = ft_divise(*iter, ";");
+				// // std::cout << "word-->" << w_o_r_d[1] << endl;
+				// vector<string>name_file = ft_divise(w_o_r_d[2], "\"");
+				// request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
+				std::fstream myFile("test.mp4", std::ios::in | std::ios::out | std::ios::trunc);
 				myFile << request_headers["body"];
 			}
 			else{
