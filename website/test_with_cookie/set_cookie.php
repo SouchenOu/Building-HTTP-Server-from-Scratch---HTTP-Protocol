@@ -8,6 +8,6 @@ if (isset($_POST['user'])) {
         echo "<h1>Cookie is already set</h1>";
     }
 } else {
-    echo "<h1>pls set user in log_cookies.php</h1>";
+    echo "<h1>please enter user name</h1>";
 }
 ?>

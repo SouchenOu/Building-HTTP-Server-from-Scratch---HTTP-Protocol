@@ -71,8 +71,8 @@ int WebBrowsers::Read_request()
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 );
 		// std::cout << "recv_s-->" << recv_s << endl;
 		// std::cout << "size_buffer-->" << strlen(buffer) << endl;
-		// std::cout << "buffer -->\n";
-		// std::cout << buffer << endl;
+		std::cout << "buffer -->\n";
+		std::cout << buffer << endl;
 		// std::cout << "octet-->" << recv_s << endl; 
 		if(recv_s < 0)
 		{
@@ -103,7 +103,6 @@ int WebBrowsers::Read_request()
 				{
 				
 					request->get_request_header("body") = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
-					
 					if(request->get_transfer_encoding().find("chunked") != std::string::npos && EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 					{
 						std::string body_chunk;
@@ -138,13 +137,11 @@ int WebBrowsers::Read_request()
 				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
 				{
 					value = 1;
-					// read_buffer.clear();
 				}
 					
 				else if(request->get_type_request() == "POST" && pos != std::string::npos)
 				{
 					value = 1;
-					// read_buffer.clear();
 				}
 			
 				
@@ -310,17 +307,16 @@ void WebBrowsers::prepareResponse()
 	int delete_indice = 0;
 	int count;
 	send_byte = 0;
-	std::string new_path_access = "";
 	
-	new_path_access = path_access.substr(0, path_access.find_first_of('?',0));
-	// std::cout << "new_path-->" << new_path_access << endl;
+	
+	// path_access = path_access.substr(0, path_access.find_first_of('?',0));
 	check_error_page();
 
-	ifstream file_check(new_path_access.c_str(), ofstream::in);
+	ifstream file_check(path_access.c_str(), ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
 		request->set_Status_code(404);
-		new_path_access = request->error_pages(request->get_Status_code());
+		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
 	}
 	if(autoindex == 1)
@@ -343,11 +339,11 @@ void WebBrowsers::prepareResponse()
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
 	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
-	file_file_descriptor = open(new_path_access.c_str(), O_RDONLY);
+	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
 	if(value_status == 0 && delete_indice == 0)
 	{
-		response_buffer = Response.response_header(0 , 0, new_path_access, code_status, map_Codestatus, Locations);
+		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
 		indice = 2;
 		delete request;
 		request = 0;
@@ -356,7 +352,9 @@ void WebBrowsers::prepareResponse()
 	{
 		std::string body;
 		request->cgi_start(body);
-		response_buffer = Response.response_header(body.size() ,1, new_path_access, code_status, map_Codestatus, Locations);
+		std::cout << "body in post-->\n";
+		std::cout << body << endl;
+		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
 		response_buffer = response_buffer + body;
 		file_file_descriptor = 0;
 		indice = 2;
@@ -366,8 +364,8 @@ void WebBrowsers::prepareResponse()
 	{
 		
 		string str;
-		request->auto_index(str,  new_path_access);
-		response_buffer = Response.response_header(str.size() ,1, new_path_access, code_status, map_Codestatus, Locations);
+		request->auto_index(str,  path_access);
+		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
 		response_buffer = response_buffer + str;
 		file_file_descriptor = 0;
 		indice = 2;
@@ -376,7 +374,7 @@ void WebBrowsers::prepareResponse()
 	}else if(delete_indice == 2)
 	{
 		request->delete_request();	
-		response_buffer = Response.response_header(0 ,1, new_path_access, code_status, map_Codestatus, Locations);
+		response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations, request);
 		indice = 2;
 		file_file_descriptor = 0;
 		delete request;

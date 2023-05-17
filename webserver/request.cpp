@@ -52,6 +52,7 @@ void Request::Parcing_request(std::string buffer)
     type_request = w_o_r_d[0];
 	Path = w_o_r_d[1];
 	version_http = w_o_r_d[2];
+	Path = Path.substr(0, Path.find_first_of('?',0));
 
 
     while(iter != request_divise.end())
@@ -85,18 +86,13 @@ void Request::Parcing_request(std::string buffer)
     }
 	// check content type
 	size_t pos;
-	std::cout << "check-content-type\n";
 	if((pos = buffer.find("Content-Type: ")) != std::string::npos)
 	{
-		std::cout << "yes there is content-type\n";
 		content_type = buffer.substr(pos, buffer.find('\n', pos));
 		pos = content_type.find_first_of(": ") + 2;
 		content_type = content_type.substr(pos, (content_type.find("\n", 0) - pos));
 	}
-	if(request_headers.count("content_Length") > 0 && (content_type.find("application")) != std::string::npos)
-	{
-		request_headers.insert(pair<string,string>("body_application",request_divise.back()));
-	}
+
 	if(request_headers.count("content_Length") > 0)
 	{
 		request_headers.insert(pair<string,string>("body",""));
@@ -169,6 +165,7 @@ int Request::check_which_location_compatible()
 {
 	string path_navigate;
 	path_navigate = Path;
+
 	std::list<Location> locations = Servers->get_locations();
 	this->Locations = NULL;
 	if(locations.size() == 0)
@@ -332,7 +329,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	// check uploading file..
 	// should add just multipart Content-type
-	if(request_headers["body"] != "")
+	if(request_headers["body"] != "" && request_headers["Content-Type"].find("multipart") != std::string::npos)
 	{
 		std::vector<string> vect_body;
 		if(Locations->get_upload_enable() == 1)
@@ -414,7 +411,8 @@ std::string Request::path_of_file()
 	// 	return "";
 	// }
 	
-	Path_in_request = Path; // in my case i have / 
+	//Path_in_request = Path; // in my case i have / 
+	Path_in_request = Path;
 	path_of_file_dm = Servers->get_root();
 
     // std::cout << "server root->" << Servers->get_root() << endl;
@@ -432,7 +430,11 @@ std::string Request::path_of_file()
 	//The function returns the index of the first occurrence of the sub-string.
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		path_of_file_dm = path_of_file_dm + "/" + Locations->get_root();
+		if(is_directory(path_of_file_dm + Locations->get_root()))
+		{
+			path_of_file_dm = path_of_file_dm + Locations->get_root();
+		}else
+			path_of_file_dm = path_of_file_dm + "/" + Locations->get_root();
 	
 	}
 	
@@ -443,17 +445,26 @@ std::string Request::path_of_file()
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
+		
 	}
+	std::cout << "tmp file-->" << tmp_file << endl;
 	if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] != '/')
 	{
+	
 		if(Locations->get_index().length())
 		{
+			std::cout << "yes hereeee\n";
 			tmp_file = tmp_file +  "/" +Locations->get_index();
+		
 		}
 	}else if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] == '/')
 	{
+					std::cout << "yess here\n";
+
 		if(Locations->get_index().length())
 		{
+						std::cout << "yess here\n";
+
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
@@ -599,7 +610,11 @@ char ** Request::get_the_path(std::string extention_name)
 
 	argument = static_cast<char **>(malloc(sizeof(char *) * (path_final.size() + 1)));
 	if(argument == NULL)
+	{
 		free(argument);
+		exit(0);
+	}
+		
 	for(size_t i = 0; i < path_final.size(); i++)
 	{
 		argument[i] = ft_strdup(path_final[i]);
@@ -615,6 +630,11 @@ char ** Request::get_the_path(std::string extention_name)
 char *Request::ft_strdup(string path)
 {
 	char *var = static_cast<char*>(malloc(sizeof(char) * (path.size() + 1)));
+	if(var == NULL)
+	{
+		free(var);
+		exit(0);
+	}
 
 	unsigned int i = 0;
 	while (i < path.size())
@@ -626,7 +646,7 @@ char *Request::ft_strdup(string path)
 	return var;
 }
 
-void Request::cgi_start(std::string &test)
+void Request::cgi_start(std::string &body_final)
 {
 	// int *status = NULL;
 	// int options;
@@ -641,7 +661,6 @@ void Request::cgi_start(std::string &test)
 	char *path = getcwd(NULL, 0);
 	string path_actuel = string(path);
 	free(path);
-	std::cout << "extention_name-->" << extention_name << endl;
 
 	int fd_pipe[2];
 	int post_pipe[2];
@@ -673,19 +692,16 @@ void Request::cgi_start(std::string &test)
 		enverment.push_back("REDIRECT_STATUS=200");
 		enverment.push_back("GATEWAY_INTERFACE=cgi/1.1");
 		enverment.push_back("SERVER_PROTOCOL="+ version_http);
-		//if (request->request_headers["Cookie"] != "")
-			//enverment.push_back("HTTP_COOKIE="+ request->request_headers["Cookie"]);
+		if (request_headers["Cookie"] != "")
+			enverment.push_back("HTTP_COOKIE="+ request_headers["Cookie"]);
 		if(type_request == "GET")
 		{
-			// here for example php_website/index.php
 			enverment.push_back("QUERY_STRING="+ path_of_file_dm.substr(path_of_file_dm.find_first_of('?') + 1));
 			extention_name = extention_name.substr(0,extention_name.find_first_of('?'));
 		}
 		else if(type_request == "POST")
 		{
-			std::cout << "yes post\n";
-			// std::cout << "content_type-->" << content_type << endl;
-			enverment.push_back("CONTENT_TYPE=" + content_type);
+			enverment.push_back("CONTENT_TYPE="+content_type);
 			if(Status_Code == 413)
 				enverment.push_back("CONTENT_LENGTH=0");
 			else
@@ -695,6 +711,7 @@ void Request::cgi_start(std::string &test)
 		if(env == NULL)
 		{
 			free(env);
+			exit(0);
 		}
 		for(size_t k =0; k < enverment.size() ; k++)
 		{
@@ -727,24 +744,32 @@ void Request::cgi_start(std::string &test)
 		}
 	}else
 	{
-		if (type_request == "POST" && Status_Code != 413)
+		if (type_request == "POST" &&  Status_Code != 413)
 		{
-			close(post_pipe[0]);
-			if (write(post_pipe[1], request_headers["body_application"].c_str(), request_headers["body"].size()) < 0)
+			
+		 	close(post_pipe[0]);
+		
+			if (write(post_pipe[1], request_headers["body"].c_str(), request_headers["body"].size()) < 0)
 				std::cout << "write error\n";
+		
 			close(post_pipe[1]);
 		}
 		close(fd_pipe[1]);
 		wait(0);
-		std::cout << "here parent\n";
 		char reading;
 		while (read(fd_pipe[0], &reading, 1) > 0)
+		{
+			
 			body = body + reading;
-		//std::cout << "reading-->" << reading << endl;
-		//std::cout << "body ==" << body << endl;
-		vector<string> header = ft_divise(body, "\r");	
-		test = header[3];
-		std::cout << "test-->" << test << endl;
+		}
+			
+		if(extention_name == ".php")
+		{
+			vector<string> header = ft_divise(body, "\r");	
+			body_final = header[3];
+		}else
+			body_final = body;
+		
 		close(fd_pipe[0]);
 		
 	}

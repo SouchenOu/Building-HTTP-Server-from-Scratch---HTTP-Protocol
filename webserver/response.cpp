@@ -37,7 +37,7 @@ response::~response()
     /*************************************************/
 
 
-std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus, Location *locations)
+std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus, Location *locations,  Request  *request)
 {
 	if(var == 0)
 	{
@@ -58,8 +58,11 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	response_header << "Connection: Closed" << endl;
 	if (locations && locations->get_http_redirection() > 0)
 		response_header << "Location: " << locations->get_return_line() << endl;
-	//if(request->get_request_header("cookies"))
-	//	response_header << "Set-Cookies :" << request_header["cookies"] << endl;
+	if(request->get_request_header("Cookie").empty() == 0)
+	{
+		response_header << "Set-Cookies: " << request->get_request_header("Cookie") << endl;
+	}
+		// std::cout<<  "cookie " << request->get_request_header("Cookie") << endl;
 	response_header << endl;
 
 	return response_header.str();
