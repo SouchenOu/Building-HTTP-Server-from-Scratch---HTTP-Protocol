@@ -19,7 +19,7 @@
 
 #define BUFFUR_SIZE 4096
 
-WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0),cmp(0)
+WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0)
 {
 	
 	std::cout << "Connection......\n";
@@ -85,6 +85,7 @@ int WebBrowsers::Read_request()
 		if(request == NULL)
 		{
 			read_buffer = read_buffer + std::string(buffer, recv_s);
+			std::cout << read_buffer << std::endl;
 		
 			
 		
@@ -95,6 +96,7 @@ int WebBrowsers::Read_request()
 				// get all the request with body ou without body
 				
 				header = read_buffer.substr(0, read_buffer.find("\r\n\r\n"));
+				std::cout << "header-->" << header << std::endl;
 				request = new Request(header);
 				if((read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size())).empty() == 0)
 				{
@@ -104,6 +106,7 @@ int WebBrowsers::Read_request()
 					{
 						if(request->get_content_length_exist() == 0 && request->get_transfer_encoding().find("chunked") == std::string::npos)
 						{
+							std::cout << "enter here\n";
 			
 							request->get_request_header("body").clear();
 							value = 1;
@@ -313,6 +316,7 @@ void WebBrowsers::prepareResponse()
 	int code_status;
 	int value_status = 0;
 	int delete_indice = 0;
+	int error = 0;
 	int count;
 	send_byte = 0;
 	
@@ -322,6 +326,7 @@ void WebBrowsers::prepareResponse()
 	std::ifstream file_check(path_access.c_str(), std::ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
+		error = 1;
 		request->set_Status_code(404);
 		path_access = request->error_pages(request->get_Status_code());
 		file_check.close();
@@ -355,7 +360,7 @@ void WebBrowsers::prepareResponse()
 		delete request;
 		request = 0;
 
-	}else if(value_status == 2 && delete_indice == 0)
+	}else if(value_status == 2 && delete_indice == 0 && error == 0)
 	{
 		std::string body;
 		request->cgi_start(body);

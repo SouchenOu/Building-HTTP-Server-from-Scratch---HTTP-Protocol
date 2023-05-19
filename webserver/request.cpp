@@ -93,16 +93,25 @@ void Request::Parcing_request(std::string buffer)
 		request_headers.insert(std::pair<std::string,std::string>("body",""));
 	}
 	// check chuncked request
-	size_t count;
+	std::size_t count;
 	if((count = buffer.find("Transfer-Encoding: ")) != std::string::npos)
 	{
 		
 		transfer_encoding = buffer.substr(count, buffer.find('\n', count));
 		count = transfer_encoding.find_first_of(": ") + 2;
 		transfer_encoding = transfer_encoding.substr(count, (transfer_encoding.find("\n", 0) - count));
-		request_headers.insert(std::pair<std::string,std::string>("body_chunk",""));
 		
 	}
+	// std::size_t pos;
+	// if(pos = buffer.find("Cookie: ") != std::string::npos)
+	// {
+	// 	cookie = buffer.substr(pos, buffer.find('\n', pos));
+	// 	pos = cookie.find_first_of(": ") + 2;
+	// 	cookie = cookie.substr(pos, (cookie.find("\n", 0) - pos));
+
+	// 		std::cout << "cookie-->" << cookie << endl;
+	// }
+	std::cout << "Cookie --> "<<request_headers["Cookie"] << std::endl;
 
 	
 
@@ -224,6 +233,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
+		std::cout << "why\n";
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
@@ -373,14 +383,14 @@ std::string Request::path_of_file()
    	if(Status_Code == 400)
 	{
 		Status_Code = 400;
-		std::cout << RED << "Bad request\n";
+		// std::cout << RED << "Bad request\n";
 		path_of_file_dm = "";
 		return path_of_file_dm ;
 	}
     if(Locations == NULL || Servers == NULL)
     {
 		Status_Code = 400;
-		std::cout << RED << "Bad request\n";
+		// std::cout << RED << "Bad request\n";
 		path_of_file_dm = "";
 		return path_of_file_dm ;
     }
@@ -464,6 +474,7 @@ std::string Request::path_of_file()
 
 std::string	Request::error_pages(int error_code)
 {
+	std::cout << "error_page-->" << error_code << std::endl;
 	if (Servers && Servers->get_error_pages().size() && Servers->get_error_pages().find(error_code) != Servers->get_error_pages().end() && Servers->get_error_pages()[error_code].size())
 	{
 		std::string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];

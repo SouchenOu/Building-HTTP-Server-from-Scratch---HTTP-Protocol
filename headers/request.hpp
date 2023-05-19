@@ -37,6 +37,7 @@ class Request
         std::string content_type;
         std::string transfer_encoding;
         int content_length_exist;
+        std::string cookie;
         
    
     public:

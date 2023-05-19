@@ -1,19 +1,19 @@
-<?php 
-    if (isset($_COOKIE['user'])) {
-        $user = $_COOKIE['user'];
-        if ($user != null) {
-            echo "<h1>hello $user</h1>";
-        }
-    }
-    else {
-        echo "
-        <html>
-            <form method='POST' action='set_cookie.php'>
-                <input type='text' name='user'>
-
-                <button type='submit'> submit </button>
-            </form>
-        </html>
-        ";
-    }
-?>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cookie Example</title>
+    <script type="text/javascript" src="set_cookie.php"></script>
+</head>
+<body>
+	<?php
+	if(isset($_COOKIE["username"])) {
+	    // The "username" cookie is already set
+	    $username = $_COOKIE["username"];
+	    echo "<h1>Welcome back, $username!</h1>";
+	} else {
+	    // The "username" cookie is not set
+	    echo "<h1>Hello, we've set a cookie for you!</h1>";
+	}
+	?>
+</body>
+</html>
