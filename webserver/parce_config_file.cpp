@@ -18,7 +18,6 @@
 //#include "../headers/server.hpp"
 #include <iterator>
 
-//using namespace std;
 
 int is_integer(const std::string &str)
 {
@@ -27,7 +26,7 @@ int is_integer(const std::string &str)
     
     return (1);
 }
-int	ft_search(char const c, const string &search_data)
+int	ft_search(char const c, const std::string &search_data)
 {
 	int	i;
 
@@ -41,10 +40,10 @@ int	ft_search(char const c, const string &search_data)
 }
 
 
-vector<string> ft_divise(const string &str, const string &search)
+std::vector<std::string> ft_divise(const std::string &str, const std::string &search)
 {
-	vector<string> split_set;
-	string			the_str;
+	std::vector<std::string> split_set;
+	std::string			the_str;
 	size_t			i;
 	size_t			j;
 	int indice;
@@ -53,7 +52,6 @@ vector<string> ft_divise(const string &str, const string &search)
 
 	while (i < str.length())
 	{
-		//&& ft_search(str[i], search) == 1
 		while (i < str.length())
 		{
 			j = 0;
@@ -88,14 +86,6 @@ vector<string> ft_divise(const string &str, const string &search)
 		}
 	}
 
-	// std::vector<string>::iterator iter ;
-	
-	// for(iter = split_set.begin(); iter != split_set.end(); iter++)
-	// {
-	// 	std::cout << "*********************\n";
-	// 	std::cout << "Element : "<<*iter << std::endl;
-	// 	std::cout << "*********************\n";
-	// }
 
 	return split_set;
 }
@@ -103,33 +93,29 @@ vector<string> ft_divise(const string &str, const string &search)
 
 
 
-server	*parse_server(vector<string> config_file, size_t *cmp)
+server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 {
-	string address_ip;
-	string address_port;
-	//size_t size;
+	std::string address_ip;
+	std::string address_port;
 
 	server *serv = new server();
-	vector<string> word1 = ft_divise(config_file[*cmp], white_espace);
+	std::vector<std::string> word1 = ft_divise(config_file[*cmp], white_espace);
 
 	if (word1[1] != "{")
 	{
-		cout << "Invalid config file\n";
+		std::cout << "Invalid config file\n";
 		exit(0);
 	}
 		
 
-	vector<string>::iterator iter = config_file.begin() + *cmp;
-	// if (iter == config_file.end())
-	// {
-	// 	return NULL;
-	// }
+	std::vector<std::string>::iterator iter = config_file.begin() + *cmp;
+
 		
 	iter++;
 	(*cmp)++;
 	while (iter != config_file.end())
 	{
-		vector<string> words2 = ft_divise(*iter, white_espace);
+		std::vector<std::string> words2 = ft_divise(*iter, white_espace);
 		
 
 		if (!words2.size() || words2[0][0] == '#')
@@ -154,10 +140,10 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 			if (words2.size() != 2)
 			{
 				
-					std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after listen" << endl;
+					std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after listen" << std::endl;
 					exit(0);
 			}
-			vector<string> listen_words = ft_divise(words2[1], ":");
+			std::vector<std::string> listen_words = ft_divise(words2[1], ":");
 			
 			
 
@@ -181,14 +167,13 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 
 			if (is_integer(address_port) == 0)
 			{
-				std::cout << BLUE  << "--> server configuration is invalid: address port should be an integer" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: address port should be an integer" << std::endl;
 				exit(0);
 			}
 			serv->set_port_listen(atoi(address_port.c_str()));
 			serv->set_ip_address(address_ip);
 
-			// std::cout << "ip_address->" << serv->get_ip_address() << endl;
-			// std::cout << "ip_port-->" << serv->get_port_listen() << endl;
+		
 
 		}
 		// server_name
@@ -199,10 +184,10 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() < 2)
 			{
-				std::cout << BLUE  << "--> server configuration is invalid: should have another argument after server_name" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have another argument after server_name" << std::endl;
 				exit(0);
 			}
-			for (vector<string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
+			for (std::vector<std::string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
 			{
 				serv->insert_in_server_name(*server_name);
 				 
@@ -213,11 +198,11 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() != 2)
 			{
-				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after root" << endl;
+				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after root" << std::endl;
 
 				exit(0);
 			}
-			string root_tmp = words2[1];
+			std::string root_tmp = words2[1];
 			if (root_tmp.size() > 0 && root_tmp[0] == '/')
 			{
 				root_tmp = root_tmp.substr(1);
@@ -232,7 +217,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() !=  2)
 			{
-				std::cout << BLUE  <<  "--> server configuration is invalid: should have one argument after index" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have one argument after index" << std::endl;
 		
 				exit(0);
 			}
@@ -244,12 +229,12 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() != 2)
 			{
-				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after client_max_body_size" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after client_max_body_size" << std::endl;
 				exit(0);
 			}
 			if (is_integer(words2[1]) == 0)
 			{
-				std::cout << BLUE  <<  "--> server configuration is invalid: should have a number after client_max_body_size" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have a number after client_max_body_size" << std::endl;
 	
 				exit(0);
 			}
@@ -260,11 +245,11 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << std::endl;
 				exit(0);
 			}
 			//The C++ pair allows you to store two disparate items as a single entity.
-			serv->insert_in_error_page(pair<unsigned int, string>((unsigned int)atoi(words2[1].c_str()), words2[2]));
+			serv->insert_in_error_page(std::pair<unsigned int, std::string>((unsigned int)atoi(words2[1].c_str()), words2[2]));
 		}
 		/******Nginx fastcgi is used to translate requests of clients from an application server which was not handled the request of the client directly.*/
 		/****We can say that the nginx fastcgi protocol means improving the performance by running each request in a process that was separate in nginx.*/
@@ -274,7 +259,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 		{
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after cgi" << endl;
+				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after cgi" << std::endl;
 				exit(0);
 			}
 			serv->insert_in_cgi(words2[1], words2[2]);
@@ -295,13 +280,13 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 			
 			if (words2.size() != 3)
 			{
-				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << endl;
+				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << std::endl;
 				exit(0);
 			}
 			size_t old_cmp = *cmp;
 			//serv->insert_in_location(parse_location(config_file, cmp));
 
-			string path;
+			std::string path;
 			path = words2[1];
 
 			if(path.size() > 1 && path[path.size() - 1] == '/')
@@ -310,7 +295,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 			} 
 			if(words2[2] != "{")
 			{
-				std::cout << BLUE  <<  "--> should have open bracket after location and path" << endl;
+				std::cout << BLUE  <<  "--> should have open bracket after location and path" << std::endl;
 				exit(0);
 			}
 
@@ -318,10 +303,10 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 
 			(*cmp)++; // go to the next line
 
-			vector<string>::iterator iter2 = config_file.begin() + *cmp;
+			std::vector<std::string>::iterator iter2 = config_file.begin() + *cmp;
 			while(iter2 != config_file.end())
 			{
-				vector<string> w_o_r_d = ft_divise(*iter2, white_espace);
+				std::vector<std::string> w_o_r_d = ft_divise(*iter2, white_espace);
 				if(w_o_r_d.size() == 0 || w_o_r_d[0][0] == '#')
 				{
 					iter2++;
@@ -335,10 +320,9 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				// 	// root in location
 				if(w_o_r_d[0] == "root")
 				{
-					// std::cout << "enter\n";
 					if(w_o_r_d.size() != 2)
 					{
-						std::cout << BLUE  << "--> should have another argument after root" << endl;
+						std::cout << BLUE  << "--> should have another argument after root" << std::endl;
 						exit(0);
 					}
 					if(w_o_r_d[1].size() > 1 && w_o_r_d[1][w_o_r_d[1].size() - 1] == '/')
@@ -354,7 +338,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				{
 					if(w_o_r_d.size() != 3)
 					{
-						std::cout << BLUE  << "--> should have two argument after return" << endl;
+						std::cout << BLUE  << "--> should have two argument after return" << std::endl;
 						exit(0);
 					}
 					if(w_o_r_d[2].size() > 1 && w_o_r_d[2][w_o_r_d[2].size() - 1] == '/')
@@ -362,12 +346,6 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 						w_o_r_d[2].resize(w_o_r_d[2].size() - 1);
 					}
 					int number = atoi(w_o_r_d[1].c_str());
-
-					// if(number == 301 || number == 302  || number == 303 || number == 303 || number == 307 || number == 308 )
-					// {
-					// 	std::cout << BLUE  <<  "--> invalid http redirection number" << endl;
-					// 	exit(0);
-					// }
 					location.set_http_redirection(number);	
 					location.set_return_line(w_o_r_d[2]);
 				}
@@ -376,7 +354,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				{
 					if(w_o_r_d.size() != 2)
 					{
-						std::cout << "should have another argument after autoindex" << endl;
+						std::cout << "should have another argument after autoindex" << std::endl;
 						exit(0);
 					}
 					if(w_o_r_d[1] == "on" || w_o_r_d[1] == "off")
@@ -388,7 +366,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				{
 					if(w_o_r_d.size() != 2)
 					{
-						std::cout << "should have another argument after upload_enable" << endl;
+						std::cout << "should have another argument after upload_enable" << std::endl;
 						exit(0);
 					}
 					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
@@ -400,7 +378,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				{
 					if(w_o_r_d.size() < 2)
 					{
-						std::cout << "should have another argument after index" << endl;
+						std::cout << "should have another argument after index" << std::endl;
 						exit(0);
 					}
 					location.set_index(w_o_r_d[1]);
@@ -409,7 +387,7 @@ server	*parse_server(vector<string> config_file, size_t *cmp)
 				{
 					if(w_o_r_d.size() < 2)
 					{
-						std::cout << "shold have another argument after allow" << endl;
+						std::cout << "shold have another argument after allow" << std::endl;
 					}
 					//Use the Allowed HTTP Methods policy to specify which methods you want to allow, while automatically blocking all the others. As an example, you could allow only GET requests for static content.
 					std::vector<std::string>::iterator iter;

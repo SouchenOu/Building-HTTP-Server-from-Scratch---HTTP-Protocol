@@ -36,7 +36,7 @@ class Request
         int indice_body;
         std::string content_type;
         std::string transfer_encoding;
-        // int file_file_descriptor;
+        int content_length_exist;
         
    
     public:
@@ -61,6 +61,7 @@ class Request
         int get_Status_code();
         int get_indice_body();
         std::string get_content_type();
+        int get_content_length_exist();
 
         // setters
         void set_Path(std::string path);

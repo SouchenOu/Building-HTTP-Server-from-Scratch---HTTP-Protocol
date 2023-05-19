@@ -11,11 +11,9 @@
 /* ************************************************************************** */
 
 #include "../headers/webserver.hpp"
-//#include "parce_config_file.cpp"
 #include "../headers/server.hpp"
 #include "../headers/WebBrowser.hpp"
 #include <fcntl.h>
-// #include "../headers/Request.hpp"
 # define white_espace "; \t"
 
 
@@ -35,7 +33,7 @@ void	Webserver::push_in_server(server *serv)
 }
 
 
-void Webserver::parcing_config_file(string config_file)
+void Webserver::parcing_config_file(std::string config_file)
 {
 
 	size_t cmp = 0;
@@ -45,21 +43,19 @@ void Webserver::parcing_config_file(string config_file)
     std::ifstream read_file(config_file.c_str());
 	
 	// now we should convert ifstream to string
-	string the_str (istreambuf_iterator<char>(read_file),(istreambuf_iterator<char>()));
+	std::string the_str (std::istreambuf_iterator<char>(read_file),(std::istreambuf_iterator<char>()));
 	read_file.close();
-	vector<string> config_line = ft_divise(the_str, "\n");
+	std::vector<std::string> config_line = ft_divise(the_str, "\n");
 	
 	while (cmp < config_line.size())
 	{
-		vector<string>::iterator iter1 = config_line.begin() + cmp;
-		vector<string> world_line = ft_divise(*iter1, " ");
+		std::vector<std::string>::iterator iter1 = config_line.begin() + cmp;
+		std::vector<std::string> world_line = ft_divise(*iter1, " ");
 		
-		vector<string>::iterator iter2 = world_line.begin();
+		std::vector<std::string>::iterator iter2 = world_line.begin();
 		if (*iter2 == "server")
 		{
 			server *serv = parse_server(config_line, &cmp);
-			// std::cout << "port:" << serv->get_port_listen() << endl;
-			// std::cout << "ip:" << serv->get_ip_address() << endl;
 			for(std::set<server*>::const_iterator iter1 = servers.begin(); iter1 != servers.end() ; iter1++)
 			{
 				if((*iter1)->get_ip_address() == serv->get_ip_address() && (*iter1)->get_port_listen() == serv->get_port_listen())
@@ -69,14 +65,14 @@ void Webserver::parcing_config_file(string config_file)
 					{
 						return ;
 					}
-					for(set<string>::iterator iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
+					for(std::set<std::string>::iterator iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
 					{
 						std::set<std::string> new_server_names = serv->get_server_name();
-						for(set<string>::const_iterator iter3 = new_server_names.begin(); iter3 != new_server_names.end(); iter3++)
+						for(std::set<std::string>::const_iterator iter3 = new_server_names.begin(); iter3 != new_server_names.end(); iter3++)
 						{
 							if((*iter2) == (*iter3))
 							{
-								std::cout << BLUE << "MyServer: [warn] conflicting server name on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << endl;
+								std::cout << BLUE << "MyServer: [warn] conflicting server name on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << std::endl;
 								exit(0);
 							}
 						}
@@ -102,10 +98,10 @@ void Webserver::Establish_connection(void)
 	//This macro initializes the file descriptor set set to be the empty set.
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
-	for (set<server*>::iterator iter = servers.begin(); iter != servers.end(); iter++)
+	for (std::set<server*>::iterator iter = servers.begin(); iter != servers.end(); iter++)
 	{
 		bool add_already_use = false;
-		for (set<server*>::iterator check = servers.begin(); check != iter; check++)
+		for (std::set<server*>::iterator check = servers.begin(); check != iter; check++)
 		{
 			if ((*check)->get_ip_address() == (*iter)->get_ip_address() && (*check)->get_port_listen() == (*iter)->get_port_listen())
 
@@ -142,7 +138,7 @@ on that socket (which means you have to do accept(), etc. */
 		activity = 0;
 
 		// check if accept() failed or if client disconnected
-		for(list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
+		for(std::list<WebBrowsers*>::iterator iter1= Browsers.begin(); iter1 != Browsers.end(); iter1++)
 		{
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
@@ -211,7 +207,7 @@ Points to a bit set of descriptors to check for writing.*/
       	/* One or more descriptors are readable.  Need to         */
       	/* determine which ones they are.                         */
       	/**********************************************************/
-		for (set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
+		for (std::set<server*>::iterator iter2 = servers.begin(); iter2 != servers.end(); iter2++)
 		{
 			/*******************************************************/
          	/* Check to see if this descriptor is ready            */
@@ -227,7 +223,7 @@ Points to a bit set of descriptors to check for writing.*/
 			// so we use fD_ISSET to check to see if that one is set, and if it is then we accept() the connection to read the request
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "fd_socket-->" << (*iter2)->get_fd_socket() << endl;
+				std::cout << "fd_socket-->" << (*iter2)->get_fd_socket() << std::endl;
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
@@ -251,7 +247,7 @@ Points to a bit set of descriptors to check for writing.*/
 		
 		}
 
-		for(list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
+		for(std::list<WebBrowsers*>::iterator iter3 = Browsers.begin(); iter3 != Browsers.end(); iter3++ )
 		{
 			if((*iter3)->get_file_descriptor() > fd_max)
 			{
@@ -280,24 +276,19 @@ Points to a bit set of descriptors to check for writing.*/
 			{
 				if((*iter3)->get_indice() == 0)
 				{
-					std::cout << "prepare response\n";
 					(*iter3)->check_request();
 					(*iter3)->ThePath_of_acces_file();
 					(*iter3)->prepareResponse();
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
-					// std::cout << "send_response\n";
 					(*iter3)->send_response();
 				}
 				
 			}
 			
 		
-			// cmp++;
-
-			// if(cmp == 10000)
-			// 	exit(1);
+		
 
 		}
 
@@ -307,11 +298,6 @@ Points to a bit set of descriptors to check for writing.*/
 	}
 }
 
-
-// struct sockaddr* Webserver::get_address(void)
-// {
-// 	return (struct sockaddr*)(&address);
-// }
 
 
 int Webserver::get_value()

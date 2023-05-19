@@ -67,7 +67,6 @@ creating a TCP socket looks like this:*/
    /*************************************************************/
 
 	fd_socket = socket(AF_INET, SOCK_STREAM , 0);
-	std::cout << "fd_socket-->" << fd_socket << endl;
 	if (fd_socket == -1)
 	{
 		perror("Error: Problem creation a socket");
@@ -181,7 +180,7 @@ long long		server::get_client_max_body_size() const
 	return client_max_body_size;
 }
 
-list<Location>	server::get_locations() const
+std::list<Location>	server::get_locations() const
 {
 	return locations;
 }
@@ -209,7 +208,7 @@ int server::get_new_socket()
 }
 
 
-// ********************************setters
+// ********************************setters******
 
 void  server::set_new_socket(int new_socket)
 {
@@ -255,7 +254,7 @@ void	server::set_index(const std::string index)
 	this->index = index;
 }
 
-void	server::set_locations(const list<Location> locations)
+void	server::set_locations(const std::list<Location> locations)
 {
 	this->locations = locations;
 }
@@ -277,10 +276,7 @@ void	server::insert_in_cgi(const std::string extention_name, const std::string e
 void	server::insert_in_error_page(const std::pair<unsigned int, std::string> error_page)
 {
 	this->error_pages.insert(error_page);
-	// std::map<unsigned int, string>::iterator i;
-	// i = error_pages.begin();
-	// std::cout << "error_page :" << i->first << endl;
-	// std::cout << "error_page :" << i->second << endl;
+	
 }
 
 void	server::insert_in_server_name(std::string server_name)

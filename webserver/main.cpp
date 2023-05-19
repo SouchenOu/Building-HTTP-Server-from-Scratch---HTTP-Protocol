@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     if(argc != 2)
     {
         std::cout << "Add default config file!\n";
-        ifstream FileToCheck("config_file/config_file-default.conf");
+        std::ifstream FileToCheck("config_file/config_file-default.conf");
 		    if (!FileToCheck.is_open())
 		    {
 			    std::cout << "Error: opening file--> This file doesnt exist" << std::endl;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     else if(argc == 2)
     {
         //This data type represents the input file stream and is used to read information from files.
-        	ifstream FileToCheck(argv[1]);
+        	std::ifstream FileToCheck(argv[1]);
 		    if (!FileToCheck.is_open())
 		    {
 			    std::cout << "Error: opening file--> This file doesnt exist" << std::endl;

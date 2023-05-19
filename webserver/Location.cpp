@@ -16,12 +16,14 @@
 
 Location::Location()
 {
+
     http_redirection = 0;
+    upload_enable = 0;
 }
 
 Location::~Location()
 {
-
+    std::cout << "Location destructer\n";
 }
 // getters
 
@@ -54,23 +56,22 @@ int Location::get_upload_enable()
     return upload_enable;
 }
 
-string Location::get_index()
+std::string Location::get_index()
 {
     return index;
 }
 
-string Location::get_path()
+std::string Location::get_path()
 {
     return path;
 }
 
-vector<std::string>	Location::get_http_allow_method()
+std::vector<std::string>	Location::get_http_allow_method()
 {
 	return (this->http_allow_method);
 }
 
 // setters
-
 void Location::set_root(std::string root)
 {
     this->root = root;

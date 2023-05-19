@@ -37,33 +37,32 @@ response::~response()
     /*************************************************/
 
 
-std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, map<unsigned int, string> map_Codestatus, Location *locations,  Request  *request)
+std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, std::map<unsigned int, std::string> map_Codestatus, Location *locations,  Request  *request)
 {
 	if(var == 0)
 	{
-		ifstream our_file(path_access.c_str(),std::ios::in);
-		our_file.seekg(0, ios::end);
+		std::ifstream our_file(path_access.c_str(),std::ios::in);
+		our_file.seekg(0, std::ios::end);
 		//Say we have entered 20 characters in a text file, and you want to read it.
 //		But along with reading you also want to know the position of the last position in the text file.
 		size_of_file = our_file.tellg();
 	}
 
-	stringstream response_header;
-    response_header << "HTTP/1.1 " << map_Codestatus[status_code] << endl;
-	response_header << "Date: " << get_time() << endl;
-	response_header << "Server: webserv/0.01" << endl;
-	//response_header << "Content_type:"<< get_content_type(path_access, val) << endl;
-	//response_header << "X-Powered-By: PHP/8.1.12" << endl;
-	response_header << "Content-Length: " << size_of_file << endl;
-	response_header << "Connection: Closed" << endl;
+	std::stringstream response_header;
+    response_header << "HTTP/1.1 " << map_Codestatus[status_code] << std::endl;
+	response_header << "Date: " << get_time() << std::endl;
+	response_header << "Server: webserv/0.01" << std::endl;
+	//response_header << "Content_type:"<< get_content_type(path_access, val) << std::endl;
+	//response_header << "X-Powered-By: PHP/8.1.12" << std::endl;
+	response_header << "Content-Length: " << size_of_file << std::endl;
+	response_header << "Connection: Closed" << std::endl;
 	if (locations && locations->get_http_redirection() > 0)
-		response_header << "Location: " << locations->get_return_line() << endl;
+		response_header << "Location: " << locations->get_return_line() << std::endl;
 	if(request->get_request_header("Cookie").empty() == 0)
 	{
-		response_header << "Set-Cookies: " << request->get_request_header("Cookie") << endl;
+		response_header << "Set-Cookies: " << request->get_request_header("Cookie") << std::endl;
 	}
-		// std::cout<<  "cookie " << request->get_request_header("Cookie") << endl;
-	response_header << endl;
+	response_header << std::endl;
 
 	return response_header.str();
 
@@ -74,21 +73,21 @@ std::string response::get_content_type	(const std::string &path_access, const bo
 	std::string type;
 	if (check)
 		type = "text/html";
-	else if (path_access.find(".png", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".png", path_access.length() - 4) != std::string::npos)
 		type = "image/png";
-	else if (path_access.find(".jpg", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".jpg", path_access.length() - 4) != std::string::npos)
 		type = "image/jpg";
-	else if (path_access.find(".png", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".png", path_access.length() - 4) != std::string::npos)
 		type = "image/x-icon";
-	else if (path_access.find(".ico", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".ico", path_access.length() - 4) != std::string::npos)
 		type = "image/x-icon";
-	else if (path_access.find(".css", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".css", path_access.length() - 4) != std::string::npos)
 		type = "text/css";
-	else if (path_access.find(".js", path_access.length() - 3) != string::npos)
+	else if (path_access.find(".js", path_access.length() - 3) != std::string::npos)
 		type = "application/javascript";
-	else if (path_access.find(".html", path_access.length() - 5) != string::npos)
+	else if (path_access.find(".html", path_access.length() - 5) != std::string::npos)
 		type = "text/html";
-	else if (path_access.find(".txt", path_access.length() - 4) != string::npos)
+	else if (path_access.find(".txt", path_access.length() - 4) != std::string::npos)
 		type = "text/plain";
 	else
 		type = "application/octet-stream";
@@ -156,7 +155,7 @@ std::string response::get_time(void)
 	time_t now = time(0);
 
 	tm *time = gmtime(&now);
-	stringstream output;
+	std::stringstream output;
 	output << getdayofweek(time->tm_wday);
 
 	if (time->tm_mday < 10)

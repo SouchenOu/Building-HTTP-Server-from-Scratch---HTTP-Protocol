@@ -18,7 +18,6 @@
 #define LOCATION_HPP
 
 #include "tools.hpp"
-// using namespace std;
 
 class Location
 {

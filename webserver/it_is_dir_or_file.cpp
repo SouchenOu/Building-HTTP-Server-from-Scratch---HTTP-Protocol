@@ -17,9 +17,8 @@
 
 #include "../headers/tools.hpp"
 
-using namespace std;
 
-bool is_directory(const string &our_file)
+bool is_directory(const std::string &our_file)
 {
 	//The stat() function shall obtain information about the named file and write it to the area pointed to by the buf argument
 	struct stat buffer;
@@ -30,11 +29,11 @@ bool is_directory(const string &our_file)
 	//This macro returns non-zero if the file is a directory.
 	if(S_ISDIR(buffer.st_mode))
 	{
-		//std::cout << "it is diiir\n";
+		//std::cout << "directory\n";
 		return 1;
 	}else if(S_ISREG(buffer.st_mode))
 	{
-		//std::cout << "it is a file\n";
+		//std::cout << "File\n";
 		return 0;
 	}
 	return 0;

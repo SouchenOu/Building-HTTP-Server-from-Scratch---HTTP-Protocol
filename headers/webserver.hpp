@@ -30,24 +30,20 @@ class Webserver
 	 * because each instance defines a specific virtual server to handle client 
 	 * requests. You can have as many server blocks as you need, each of which can handle 
 	 * a specific subset of connections.*/
-		set<server*>		servers;
-		list<WebBrowsers*>   Browsers;
-		// fd_set      		set_fd;
+		std::set<server*>		servers;
+		std::list<WebBrowsers*>   Browsers;
 		int 				fd_max;
 		fd_set				readfds;
 		fd_set				writefds;
 		fd_set				r_fds;
 		fd_set				w_fds;
 		int					activity;
-		// Request     		*request_Headers;
 		int 				value;
-		//int new_socket;
-		//struct sockaddr_in					address;
+	
 	
 
 	public:
     // constructer
-		//Webserver(const string config_file);
 		Webserver();
     // Destructer
 		~Webserver();
@@ -59,7 +55,6 @@ class Webserver
 		void accept_connection();
 
 		// getters
-
 		int get_value();
 		
 };

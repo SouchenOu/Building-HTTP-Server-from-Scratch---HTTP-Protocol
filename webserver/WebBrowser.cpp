@@ -69,11 +69,7 @@ int WebBrowsers::Read_request()
 		// std::cout << "test\n";
 		// std::cout << test << endl;
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 );
-		// std::cout << "recv_s-->" << recv_s << endl;
-		// std::cout << "size_buffer-->" << strlen(buffer) << endl;
-		std::cout << "buffer -->\n";
-		std::cout << buffer << endl;
-		// std::cout << "octet-->" << recv_s << endl; 
+
 		if(recv_s < 0)
 		{
 			std::cout << "No message are available to be received\n";
@@ -88,7 +84,8 @@ int WebBrowsers::Read_request()
 	
 		if(request == NULL)
 		{
-			read_buffer = read_buffer + string(buffer, recv_s);
+			read_buffer = read_buffer + std::string(buffer, recv_s);
+		
 			
 		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && (read_buffer.find("\r\n\r\n") != std::string::npos ))
@@ -103,11 +100,22 @@ int WebBrowsers::Read_request()
 				{
 				
 					request->get_request_header("body") = read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size() - 1);
+					if(request->get_request_header("body").empty() == 0)
+					{
+						if(request->get_content_length_exist() == 0 && request->get_transfer_encoding().find("chunked") == std::string::npos)
+						{
+			
+							request->get_request_header("body").clear();
+							value = 1;
+							request->set_Status_code(400);
+							return 0; 
+						}
+					}
 					if(request->get_transfer_encoding().find("chunked") != std::string::npos && EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 					{
 						std::string body_chunk;
 						std::string body_final;
-						body_chunk.append(string(request->get_request_header("body")));
+						body_chunk.append(std::string(request->get_request_header("body")));
 						std::string subchunk = body_chunk.substr(0,100);
 						int			chunksize = strtol(subchunk.c_str(), NULL, 16);
 			 			size_t		i = 0;
@@ -126,21 +134,22 @@ int WebBrowsers::Read_request()
 							subchunk = body_chunk.substr(0,100);
 						}
 						request->get_request_header("body").clear();
-						request->get_request_header("body").append(string(body_final));
+						request->get_request_header("body").append(std::string(body_final));
 						value = 1;
 					}
 				}
 		
 				
-				size_t pos = request->get_content_type().find("application");
+				std::size_t pos = request->get_content_type().find("application");
 				
 				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
 				{
 					value = 1;
 				}
-					
-				else if(request->get_type_request() == "POST" && pos != std::string::npos)
+				
+				if(request->get_type_request() == "POST" && pos != std::string::npos)
 				{
+					std::cout << "end here\n";
 					value = 1;
 				}
 			
@@ -151,14 +160,18 @@ int WebBrowsers::Read_request()
 		else if (request != NULL)
 		{
 			
-
-			// std::cout << "length-->" << request->get_request_header("Content-Length") << endl;
-			// std::cout << "size body-->" << request->get_request_header("body").size() << endl;
+				if(request->get_content_length_exist() == 0 && request->get_transfer_encoding().find("chunked") == std::string::npos)
+				{
+			
+						request->get_request_header("body").clear();
+						value = 1;
+						request->set_Status_code(400);
+						return 0; 
+				}
+			l;
 			if(request->get_transfer_encoding().find("chunked") != std::string::npos)
 			{
-				// std::cout << "continue\n";
-				//std::string body_chunk;
-				//body_chunk.append(string(request->get_request_header("body")));
+			
 				std::string body_final;
 				std::cout << "wait......\n";
 				for(int i = 0; i < recv_s; i++)
@@ -173,7 +186,7 @@ int WebBrowsers::Read_request()
 					while (chunksize)
 					{
 						i = request->get_request_header("body").find("\r\n", i) + 2;
-						body_final.append(string(request->get_request_header("body").substr(i, chunksize)));
+						body_final.append(std::string(request->get_request_header("body").substr(i, chunksize)));
 					
 						i += chunksize + 2;					
 						subchunk = request->get_request_header("body").substr(i, 100);
@@ -181,23 +194,18 @@ int WebBrowsers::Read_request()
 						std::string subchunk = request->get_request_header("body").substr(0,100);
 					}
 					request->get_request_header("body").clear() ;
-					request->get_request_header("body").append(string(body_final));
-					// for(int i = 0; i < body_final.length(); i++)
-					// {
-					// 	request->get_request_header("body").push_back(body_final[i]);
-					// }
+					request->get_request_header("body").append(std::string(body_final));
+				
 					value = 1;
 			 	 }
 
 			}else{
 					std::cout << "wait......\n";					
-					//request->get_request_header("body").append(string(buffer, recv_s));	
 						for(int i = 0; i < recv_s; i++)
 						{
 							request->get_request_header("body").push_back(buffer[i]);
 						}
-					// std::cout << "size-->" << request->get_request_header("body").size() << endl;
-					// std::cout << "length-->" <<  request->get_request_header("Content-Length") << endl;
+					
 					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					{
 						value = 1;
@@ -311,8 +319,7 @@ void WebBrowsers::prepareResponse()
 	
 	// path_access = path_access.substr(0, path_access.find_first_of('?',0));
 	check_error_page();
-
-	ifstream file_check(path_access.c_str(), ofstream::in);
+	std::ifstream file_check(path_access.c_str(), std::ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
 		request->set_Status_code(404);
@@ -338,7 +345,7 @@ void WebBrowsers::prepareResponse()
 	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
-	map<unsigned int, string> map_Codestatus = request->Status_codes_means();
+	std::map<unsigned int, std::string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
 	if(value_status == 0 && delete_indice == 0)
@@ -352,8 +359,6 @@ void WebBrowsers::prepareResponse()
 	{
 		std::string body;
 		request->cgi_start(body);
-		std::cout << "body in post-->\n";
-		std::cout << body << endl;
 		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
 		response_buffer = response_buffer + body;
 		file_file_descriptor = 0;
@@ -363,7 +368,7 @@ void WebBrowsers::prepareResponse()
 	}else if(value_status == 3 && delete_indice == 0)
 	{
 		
-		string str;
+		std::string str;
 		request->auto_index(str,  path_access);
 		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
 		response_buffer = response_buffer + str;
