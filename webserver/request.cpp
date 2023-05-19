@@ -454,7 +454,7 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	// std::cout << "path_final-->" << path_of_file_dm << std::endl;
+	std::cout << "path_final-->" << path_of_file_dm << std::endl;
     return path_of_file_dm;
 
 }
@@ -843,7 +843,7 @@ std::string Request::get_transfer_encoding()
 {
 	return transfer_encoding;
 }
-std::int get_content_length_exist()
+int Request::get_content_length_exist()
 {
 	return content_length_exist;
 }

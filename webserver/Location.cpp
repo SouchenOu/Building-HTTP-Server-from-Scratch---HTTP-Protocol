@@ -23,7 +23,7 @@ Location::Location()
 
 Location::~Location()
 {
-    std::cout << "Location destructer\n";
+   
 }
 // getters
 
