@@ -52,7 +52,7 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << std::endl;
 	response_header << "Date: " << get_time() << std::endl;
 	response_header << "Server: webserv/0.01" << std::endl;
-	//response_header << "Content_type:"<< get_content_type(path_access, val) << std::endl;
+	response_header << "Content_type:"<< get_content_type(path_access, var) << std::endl;
 	//response_header << "X-Powered-By: PHP/8.1.12" << std::endl;
 	response_header << "Content-Length: " << size_of_file << std::endl;
 	response_header << "Connection: Closed" << std::endl;
@@ -71,7 +71,7 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 std::string response::get_content_type	(const std::string &path_access, const bool& check)
 {
 	std::string type;
-	if (check)
+	if (check == 0)
 		type = "text/html";
 	else if (path_access.find(".png", path_access.length() - 4) != std::string::npos)
 		type = "image/png";

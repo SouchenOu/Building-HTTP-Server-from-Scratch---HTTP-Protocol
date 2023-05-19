@@ -143,9 +143,6 @@ on that socket (which means you have to do accept(), etc. */
 			fd_client	= (*iter1)->get_file_descriptor();
 			if(fd_client == -1)
 			{
-				std::cout << "accept() failed \n";
-				// close client_file_descriptor if client disconnected
-
 				delete(*iter1);
 				iter1 = Browsers.erase(iter1);
 				(*iter1) = 0;
@@ -194,6 +191,9 @@ Points to a bit set of descriptors to check for writing.*/
 			meaning that it changes our FD_SET, so we passed in the set of file descriptors  to tell select which file descriptors to keep an eye on and when 
 			it returns now that same FD_SET containes just the file descriptors that are ready for reading, that is why we made a copy .
 			we didnt want to lose the list of descriptors that i'm watching */
+
+		//time is forever because timeout is specified as a null pointer
+		/****The three middle arguments, readset, writeset, and exceptset, specify the descriptors that we want the kernel to test for reading, writing, and exception conditions****/
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
@@ -223,7 +223,6 @@ Points to a bit set of descriptors to check for writing.*/
 			// so we use fD_ISSET to check to see if that one is set, and if it is then we accept() the connection to read the request
 			if (FD_ISSET((*iter2)->get_fd_socket(), &r_fds))
 			{
-				std::cout << "fd_socket-->" << (*iter2)->get_fd_socket() << std::endl;
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);

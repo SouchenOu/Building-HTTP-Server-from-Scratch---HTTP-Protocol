@@ -87,7 +87,7 @@ class Request
        void ADD_body(std::string buffer);
        void auto_index(std::string &str, std::string path_access);
        Location *get_location();
-       void delete_request();
+       void delete_request(std::string &path);
        std::string get_transfer_encoding();
     
         

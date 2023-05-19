@@ -233,7 +233,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	else 
 	{
-		std::cout << "why\n";
 		Host = "";
 		Status_Code = 400;
 		std::cout << "Bad request\n";
@@ -311,6 +310,8 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	//The Content-Length header indicates the size of the message body, in bytes, sent to the recipient.
 
 	//Basically it is the number of bytes of data in the body of the request or response.
+	std::cout << "max_body_size-->" << Servers->get_client_max_body_size() << std::endl;
+
 	if (Servers->get_client_max_body_size() != -1  && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
 		std::cout << "Payload Too Large\n";
@@ -357,7 +358,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 	if(indice == 0)
 	{
-		std::cout << "Method not allowed\n";
 		Status_Code = 405;
 		return 0;
 	}
@@ -377,13 +377,26 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 
 std::string Request::path_of_file()
 {
+
 	std::string Path_in_request;
 	std::string tmp_file;
-	
+		if(Status_Code == 405)
+	{
+		Status_Code = 405;
+		// std::cout << RED << "Bad request\n";
+		path_of_file_dm = "";
+		return path_of_file_dm ;
+	}
    	if(Status_Code == 400)
 	{
 		Status_Code = 400;
 		// std::cout << RED << "Bad request\n";
+		path_of_file_dm = "";
+		return path_of_file_dm ;
+	}
+	if (Status_Code == 413)
+	{
+		std::cout << RED << "Request entity is larger than limits defined by server\n";
 		path_of_file_dm = "";
 		return path_of_file_dm ;
 	}
@@ -394,12 +407,7 @@ std::string Request::path_of_file()
 		path_of_file_dm = "";
 		return path_of_file_dm ;
     }
-	if (Status_Code == 413)
-	{
-		std::cout << RED << "Request entity is larger than limits defined by server\n";
-		path_of_file_dm = "";
-		return path_of_file_dm ;
-	}
+	
 	
 	Path_in_request = Path;
 	path_of_file_dm = Servers->get_root();
@@ -464,7 +472,6 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	std::cout << "path_final-->" << path_of_file_dm << std::endl;
     return path_of_file_dm;
 
 }
@@ -474,7 +481,6 @@ std::string Request::path_of_file()
 
 std::string	Request::error_pages(int error_code)
 {
-	std::cout << "error_page-->" << error_code << std::endl;
 	if (Servers && Servers->get_error_pages().size() && Servers->get_error_pages().find(error_code) != Servers->get_error_pages().end() && Servers->get_error_pages()[error_code].size())
 	{
 		std::string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];
@@ -817,31 +823,21 @@ Location *Request::get_location()
 	return Locations;
 }
 
-void Request::delete_request()
+void Request::delete_request(std::string &path)
 {
-	std::string new_path;
-	new_path = "./" + Servers->get_root();
-	if(Path.find(Locations->get_path()) == 0)
-	{
-		//string tmp = Path.substr(Locations->get_path());
-		new_path = new_path + "/" + Locations->get_root();
-		new_path = new_path + '/' + Path + "/" + Locations->get_index();
 	
-	}else{
-		new_path = new_path + "/" + Path;
-	}
-
-	std::size_t found = new_path.find("//");
-	if(found != std::string::npos)
-	{
-		new_path.replace(found, 2 ,"/");
-	}
 	Status_Code = 200;
-	if(remove(new_path.c_str()) == -1)
+	if(remove(path_of_file_dm.c_str()) == -1)
 	{
-		std::cout << "remove failed\n";
+		std::cout << RED << "remove failed\n";
 		Status_Code = 404;
 	}
+
+	if(Status_Code == 404)
+	{
+		path = error_pages(Status_Code);
+	}
+	
 	
 }
 

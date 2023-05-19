@@ -39,6 +39,7 @@ class   WebBrowsers
             int file_file_descriptor;
             int autoindex;
             int cmp;
+            bool check_error ;
 
 
     public:

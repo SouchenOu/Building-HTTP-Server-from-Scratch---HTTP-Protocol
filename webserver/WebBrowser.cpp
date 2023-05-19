@@ -19,7 +19,7 @@
 
 #define BUFFUR_SIZE 4096
 
-WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0)
+WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0),check_error(false)
 {
 	
 	std::cout << "Connection......\n";
@@ -85,7 +85,6 @@ int WebBrowsers::Read_request()
 		if(request == NULL)
 		{
 			read_buffer = read_buffer + std::string(buffer, recv_s);
-			std::cout << read_buffer << std::endl;
 		
 			
 		
@@ -96,7 +95,7 @@ int WebBrowsers::Read_request()
 				// get all the request with body ou without body
 				
 				header = read_buffer.substr(0, read_buffer.find("\r\n\r\n"));
-				std::cout << "header-->" << header << std::endl;
+			
 				request = new Request(header);
 				if((read_buffer.substr(read_buffer.find("\r\n\r\n") + 4, read_buffer.size())).empty() == 0)
 				{
@@ -106,7 +105,6 @@ int WebBrowsers::Read_request()
 					{
 						if(request->get_content_length_exist() == 0 && request->get_transfer_encoding().find("chunked") == std::string::npos)
 						{
-							std::cout << "enter here\n";
 			
 							request->get_request_header("body").clear();
 							value = 1;
@@ -302,8 +300,9 @@ void WebBrowsers::check_error_page()
 	{
 		request->set_Status_code(200);
 	}
-	if(request->get_Status_code() == 400 || request->get_Status_code() == 403 || request->get_Status_code() == 404 || request->get_Status_code() == 413)
+	if(request->get_Status_code() == 400 || request->get_Status_code() == 405 || request->get_Status_code() == 404 || request->get_Status_code() == 413)
 	{
+		check_error = true;
 		path_access = request->error_pages(request->get_Status_code());
 	}
 	
@@ -323,6 +322,8 @@ void WebBrowsers::prepareResponse()
 	
 	// path_access = path_access.substr(0, path_access.find_first_of('?',0));
 	check_error_page();
+	std::cout << "code_status-" << request->get_Status_code() << std::endl;
+	std::cout << "path-->" << path_access << std::endl;
 	std::ifstream file_check(path_access.c_str(), std::ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
@@ -350,10 +351,11 @@ void WebBrowsers::prepareResponse()
 	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
+	std::cout << "code_status-" << code_status << std::endl;
 	std::map<unsigned int, std::string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
-	if(value_status == 0 && delete_indice == 0)
+	if(check_error == true || (value_status == 0 && delete_indice == 0))
 	{
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
 		indice = 2;
@@ -383,10 +385,19 @@ void WebBrowsers::prepareResponse()
 		request = 0;
 	}else if(delete_indice == 2)
 	{
-		request->delete_request();	
-		response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations, request);
+		std::string path;
+		request->delete_request(path);
+		if(request->get_Status_code() == 404)	
+		{
+			path_access = path;
+			response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
+		}else
+		{
+			response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations, request);
+			file_file_descriptor = 0;
+		}
+			
 		indice = 2;
-		file_file_descriptor = 0;
 		delete request;
 		request = 0;
 
