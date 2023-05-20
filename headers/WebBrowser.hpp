@@ -72,9 +72,9 @@ class   WebBrowsers
         // int check_request_with_config_file(const std::set<server*> &servers, std::map<std::string, std::string> headers, std::string path);
         void Connection(int new_listen_fd);
         int Read_request();
-        void send_response();
-        void send1();
-        void send2();
+        int send_response();
+        int send1();
+        int send2();
         void check_error_page();
         int	EndChunked(std::string& buffer,const std::string& end_chunk);
 

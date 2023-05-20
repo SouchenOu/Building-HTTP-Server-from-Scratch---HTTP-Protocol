@@ -66,7 +66,8 @@ void Webserver::parcing_config_file(std::string config_file)
 					std::set<std::string> server_names = (*iter1)->get_server_name();
 					if(server_names.size() == 0 || serv->get_server_name().size() == 0)
 					{
-						return ;
+						std::cout << BLUE << "MyServer: [warn] conflicting port on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << std::endl;
+						exit(0);
 					}
 					for(std::set<std::string>::iterator iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
 					{
@@ -151,8 +152,6 @@ on that socket (which means you have to do accept(), etc. */
 				(*iter1) = 0;
 	
 			}	
-			
-			
 		}
 
 
@@ -194,10 +193,10 @@ Points to a bit set of descriptors to check for writing.*/
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
-		if((activity < 0) && (errno != EINTR))
-		{
-			std::cout << RED << "Select error\n";
-		}
+		// if((activity < 0) && (errno != EINTR))
+		// {
+		// 	std::cout << RED << "Select error\n";
+		// }
 		/**********************************************************/
       	/* One or more descriptors are readable.  Need to         */
       	/* determine which ones they are.                         */
@@ -221,7 +220,7 @@ Points to a bit set of descriptors to check for writing.*/
 				// i enter here if client send request
 				int client_socket = 0;
 			 	WebBrowsers *browser = new WebBrowsers(servers);
-				std::cout << "Confirmation, accepting to receive a call from a sender\n";
+				std::cout << GREEN << "Confirmation, accepting to receive a call from a sender\n";
 			 	int addrlen = sizeof(browser->get_address_client());
 				// //The accept() call is used by a server to accept a connection request from a client
 
@@ -252,8 +251,7 @@ Points to a bit set of descriptors to check for writing.*/
 			if(FD_ISSET((*iter3)->get_file_descriptor(), &r_fds))
 			{
 				// read incoming message....
-				//std::cout << BLUE << "Read incoming message" << endl;
-				
+
 				if((*iter3)->Read_request() == 2)
 				{
 					FD_CLR((*iter3)->get_file_descriptor(), &readfds);
@@ -276,7 +274,15 @@ Points to a bit set of descriptors to check for writing.*/
 				}
 				else if((*iter3)->get_indice() > 0)
 				{
-					(*iter3)->send_response();
+					if((*iter3)->send_response() == -1)
+					{
+						FD_CLR((*iter3)->get_file_descriptor(), &readfds);
+						FD_CLR((*iter3)->get_file_descriptor(), &writefds);
+						close((*iter3)->get_file_descriptor());
+						(*iter3)->set_file_descriptor(-1);
+						delete(*iter3);
+						iter3 = Browsers.erase(iter3);
+					}
 				}
 				
 			}

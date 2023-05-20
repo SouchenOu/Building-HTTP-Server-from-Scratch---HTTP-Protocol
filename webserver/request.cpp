@@ -37,6 +37,8 @@ Request::~Request()
 {
 	if (this->Locations != 0)
 		delete(this->Locations);
+	if(this->Servers != 0)
+		delete(this->Servers);
 }
 void Request::Parcing_request(std::string buffer)
 {
@@ -187,9 +189,9 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	unsigned int port = 0;
 	std::string path_navigate;
 	int indice = 0;
-	int test  = 0;
+
 	path_navigate = Path;
-	int var_test = 0;
+	int var_test = 1;
 	int var2 = 0;
 	std::set<server*>::iterator const_iter1;
 	std::set<std::string>::iterator iter2;
@@ -225,25 +227,15 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		
 			if((*iter3)->get_port_listen() == port)
 			{
-				if((*iter3)->get_server_name().empty() == 0)
-				{
-					test++;
-				}
-				if(var_test == 0)
-				{
+			
 					this->Servers = (*iter3);
-				}
-					
-				var_test++;
+				
 			}
 	
 
 	}
-	if(test == 0 && var_test == 2)
-	{
-		std::cout << RED << "server: [warn] conflicting server name "" on 0.0.0.0: "<< Servers->get_port_listen() << " ignored" << std::endl;
-		exit(0);
-	}
+	
+	
 		
 	if(port == 0 || var_test == 2)
 	{

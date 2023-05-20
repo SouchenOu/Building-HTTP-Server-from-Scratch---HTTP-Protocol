@@ -389,30 +389,37 @@ void WebBrowsers::prepareResponse()
 	}
 }
 
-void WebBrowsers::send_response()
+int WebBrowsers::send_response()
 {
 	if(indice == 2)
 	{
-		send1();
+		if(send1() == -1)
+			return -1;
 	}else if(indice == 3)
 	{
-		send2();
+		if(send2() == -1)
+			return -1;
 	}
-	
+	return 1;
 }
 
-void WebBrowsers::send1()
+int WebBrowsers::send1()
 {
 	
-	send(file_descriptor, response_buffer.c_str(), response_buffer.size(), 0);	
+	if(send(file_descriptor, response_buffer.c_str(), response_buffer.size(), 0) == -1)
+	{
+		std::cout << "RED" << "Send failed\n";
+		return -1;
+	}
 	response_buffer.clear();
 	indice = 3;
 	delete request;
 	request = 0;
+	return 1;
 
 }
 
-void WebBrowsers::send2()
+int WebBrowsers::send2()
 {
 	int fd;
 	char 	buff[BUFFUR_SIZE];
@@ -423,7 +430,7 @@ void WebBrowsers::send2()
 		indice = 0;
 		request = NULL;
 		std::cout << GREEN << "Sending file to client.....\n";
-		return ;
+		return 1;
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
 	if(fd <= 0)
@@ -439,6 +446,7 @@ void WebBrowsers::send2()
 	if(send(file_descriptor, buff, fd, 0) == -1)
 	{
 		std::cout << RED << "Send failed" << std::endl;
+		return -1;
 	}
 
 	if (fd < BUFFUR_SIZE)
@@ -452,6 +460,7 @@ void WebBrowsers::send2()
 		request = NULL;
 
 	}
+	return 1;
 }
 
 
