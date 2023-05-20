@@ -19,13 +19,11 @@
 
 Webserver::Webserver()
 {
-	std::cout << "Welcome this is my server\n";
+	std::cout << GREEN << "Welcome this is my server\n";
 }
 
 Webserver::~Webserver()
-{
-	
-}
+{}
 
 void	Webserver::push_in_server(server *serv)
 {
@@ -43,7 +41,7 @@ void Webserver::parcing_config_file(std::string config_file)
     std::ifstream read_file(config_file.c_str());
 	if(is_empty(read_file))
 	{
-		std::cout << RED << "config_file is empty\n";
+		std::cout << RED << "Config_file is empty\n";
 		exit(0);
 	}
 	
@@ -163,11 +161,7 @@ on that socket (which means you have to do accept(), etc. */
 
 // wait for an activity on one of the sockets
 // so wait indefinitely
-
-
 /******If your application allocates sockets 3, 4, 5, 6, and 7, and you want to check all of your allocations, nfds should be set to 8, the highest socket descriptor you specified, plus 1. If your application checks sockets 3 and 4, nfds should be set to 5.*/
-
-
 //Socket numbers are assigned starting with number 3 because numbers 0, 1, and 2 are used by the C socket interface.
 
 /*****readfds
@@ -177,9 +171,7 @@ Points to a bit set of descriptors to check for writing.*/
 
 // here in fd_max we specified file descripters that we will check if its ready for reading or ready for writing 
 
-
 //The fd_max argument specifies the range of file descriptors to be tested. The select() function tests file descriptors in the range of 0 to nfds-1.
-
 
 // without multeplexing , server process can entertain only one client at a time, and can not entertain other client is requests until it finishes with the current client
 
@@ -204,10 +196,8 @@ Points to a bit set of descriptors to check for writing.*/
 		//The select function returns the number of sockets meeting the conditions
 		if((activity < 0) && (errno != EINTR))
 		{
-			std::cout << "select error\n";
+			std::cout << RED << "Select error\n";
 		}
-		// i enter here selon how much i click the 
-
 		/**********************************************************/
       	/* One or more descriptors are readable.  Need to         */
       	/* determine which ones they are.                         */

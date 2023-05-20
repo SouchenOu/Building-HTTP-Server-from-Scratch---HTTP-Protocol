@@ -22,14 +22,13 @@
 WebBrowsers::WebBrowsers(std::set<server*>& servers ) : file_descriptor(0),value(0),servers(servers),request(0),indice(0),check_error(false)
 {
 	
-	std::cout << "Connection......\n";
+	std::cout << GREEN << "Connection......\n";
 
 
 	
 }
 WebBrowsers::~WebBrowsers()
 {
-	std::cout << "Destructer client---> Client disconnected\n";
 	if (file_descriptor > 0)
 		close(file_descriptor);
 	if (request != 0)
@@ -51,12 +50,10 @@ WebBrowsers::~WebBrowsers()
 int WebBrowsers::Read_request()
 {
 
-	//std::cout << "read_request\n";
 		int recv_s;
 		char buffer[BUFFUR_SIZE];
 		std::string header ;
-		// int test = 0;
-		//std::string read_buffer;
+	
 		value = 0;
 		
 		//For connection-oriented sockets (type SOCK_STREAM for example), calling recv will return as much data as is currently available—up to the size of the buffer specified
@@ -66,8 +63,7 @@ int WebBrowsers::Read_request()
 		Wait! recv() can return 0. This can mean only one thing: the remote side has closed the connection on you! A return value of 0 is recv()’s way of letting you know this has occurred.*/
 
 		/*******This call returns the length of the incoming message or data. If a datagram packet is too long to fit in the supplied buffer, datagram sockets discard excess bytes. If data is not available for the socket socket, and socket is in blocking mode, the recv() call blocks the caller until data arrives. If data is not available and socket is in nonblocking mode, recv() returns a -1 and sets the error code to EWOULDBLOCK.*/
-		// std::cout << "test\n";
-		// std::cout << test << endl;
+	
 		recv_s = recv(file_descriptor, buffer,BUFFUR_SIZE, 0 );
 
 		if(recv_s < 0)
@@ -85,13 +81,11 @@ int WebBrowsers::Read_request()
 		if(request == NULL)
 		{
 			read_buffer = read_buffer + std::string(buffer, recv_s);
-		
-			
+	
 		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && (read_buffer.find("\r\n\r\n") != std::string::npos ))
 			{
 				
-				// std::cout << "parse request\n";
 				// get all the request with body ou without body
 				
 				header = read_buffer.substr(0, read_buffer.find("\r\n\r\n"));
@@ -171,7 +165,7 @@ int WebBrowsers::Read_request()
 			{
 			
 				std::string body_final;
-				std::cout << YELLOW << "wait......\n";
+				std::cout << YELLOW << "Wait......\n";
 				for(int i = 0; i < recv_s; i++)
 				{
 					request->get_request_header("body").push_back(buffer[i]);
@@ -209,19 +203,9 @@ int WebBrowsers::Read_request()
 						value = 1;
 					}
 
-			}
-				
-				
-				
-			
-					
-				
+			}	
 		}
 	
-		
-			
-	
-		
 	return value;
 }
 
@@ -317,9 +301,7 @@ void WebBrowsers::prepareResponse()
 	send_byte = 0;
 	
 	
-	// path_access = path_access.substr(0, path_access.find_first_of('?',0));
 	check_error_page();
-	std::cout << "path_access->" << path_access << std::endl;
 	std::ifstream file_check(path_access.c_str(), std::ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
@@ -352,7 +334,6 @@ void WebBrowsers::prepareResponse()
 	response Response;
 	if(error == 1 || check_error == true || (value_status == 0 && delete_indice == 0))
 	{
-		std::cout << "herreeee\n";
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
 		indice = 2;
 		delete request;
@@ -360,7 +341,6 @@ void WebBrowsers::prepareResponse()
 
 	}else if(value_status == 2 && delete_indice == 0 && error == 0)
 	{
-		std::cout << "enter cgi\n";
 		std::string body;
 		request->cgi_start(body);
 		if(request->get_Status_code() == 500)
@@ -442,12 +422,10 @@ void WebBrowsers::send2()
 		value = 0;
 		indice = 0;
 		request = NULL;
-		std::cout << "Sending file to client.....\n";
+		std::cout << GREEN << "Sending file to client.....\n";
 		return ;
 	}
 	fd = read(file_file_descriptor, buff, BUFFUR_SIZE);
-	
-	// std::cout << "fd = " << fd << endl;
 	if(fd <= 0)
 	{
 		close(file_file_descriptor);
@@ -457,18 +435,20 @@ void WebBrowsers::send2()
 		file_file_descriptor = 0;
 		request = NULL;
 	}
-
-	send(file_descriptor, buff, fd, 0);
+	/****** A connection can be dropped by a peer socket and a SIGPIPE signal generated at a later time if data delivery is not complete.*/
+	if(send(file_descriptor, buff, fd, 0) == -1)
+	{
+		std::cout << RED << "Send failed" << std::endl;
+	}
 
 	if (fd < BUFFUR_SIZE)
 	{
-		std::cout << "sendig file to client !\n";
+		std::cout << GREEN << "Sendig file to client !\n";
 		close(file_file_descriptor);
 		delete(request);
 		indice = 0;
 		value = 0;
 		file_file_descriptor = 0;
-		
 		request = NULL;
 
 	}

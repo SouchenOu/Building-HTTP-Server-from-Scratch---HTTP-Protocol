@@ -22,7 +22,7 @@
 
 Request::Request()
 {
-    std::cout << "Send a request\n";
+    std::cout << YELLOW << "Send a request\n";
 }
 
 Request::Request(std::string buffer):Locations(0),Status_Code(0),content_length_exist(0)
@@ -103,30 +103,8 @@ void Request::Parcing_request(std::string buffer)
 		
 	}
 	
-	std::cout << "port-->" << request_headers["Port"] << std::endl;
-	std::cout << "Host-->" << request_headers["Host"] << std::endl;
-	
-
-// Here for POST request
-
-/******* application/x-www-form-urlencoded − This is the standard method most forms use in simple scenarios.*/
-
-/******** mutlipart/form-data − This is used when you want to upload binary data in the form of files like image, word file etc.*/
 
 
-/*****enctype='multipart/form-data' means that no characters will be encoded. that is why this type is used while uploading files to server.
-So multipart/form-data is used when a form requires binary data, like the contents of a file, to be uploaded*/
-
-/*****Set the method attribute to POST because file content can't be put inside a URL parameter using a form.
-
-Set the value of enctype to multipart/form-data because the data will be split into multiple parts, one for each file plus one for the text of the form body that may be sent with them.*/
-
-
-
-	// if(request_headers.find("Content-Length") != request_headers.end() )
-	// {
-	// 	request_headers.insert(pair<string, string>("Body", request_divise.back()));
-	// }
 	
 }	
 
@@ -169,7 +147,6 @@ int Request::check_which_location_compatible()
 		Locations = NULL;
 		return 0;
 	}
-	//std::set<Location>::iterator i1;
 	while(path_navigate != "")
 	{
 		for(std::list<Location>::iterator i1 = locations.begin(); i1 != locations.end() ; i1++)
@@ -227,7 +204,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		Host = "";
 		Status_Code = 400;
-		std::cout << "Bad request\n";
+		std::cout << RED << "Bad request\n";
 		return 0;
 	}
 	// if i have in my request header server_name = localhost and there no port 
@@ -264,7 +241,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	if(test == 0 && var_test == 2)
 	{
-		std::cout << "server: [warn] conflicting server name "" on 0.0.0.0: "<< Servers->get_port_listen() << " ignored" << std::endl;
+		std::cout << RED << "server: [warn] conflicting server name "" on 0.0.0.0: "<< Servers->get_port_listen() << " ignored" << std::endl;
 		exit(0);
 	}
 		
@@ -286,7 +263,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	}
 	if(var2 == 2)
 	{
-		std::cout << "server: [warn] conflicting server name "" on 0.0.0.0:  ignored" << std::endl;
+		std::cout << RED << "server: [warn] conflicting server name "" on 0.0.0.0:  ignored" << std::endl;
 		exit(0);
 	}
 
@@ -298,11 +275,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 		std::cout << RED <<"Bad request, No Server is compatible\n";
 		return 0;
 	}
-	//Content-Length is specified and it does not match the length of the message-line, the message is either truncated, or padded with nulls to the specified length.
-
-	//The Content-Length header indicates the size of the message body, in bytes, sent to the recipient.
-
-	//Basically it is the number of bytes of data in the body of the request or response.
+	
 
 	if (Servers->get_client_max_body_size() != -1  && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
@@ -331,7 +304,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 			std::vector<std::string> body_divise = ft_divise(request_headers["body"], "\n");
 			std::vector<std::string>::iterator iter = body_divise.begin() + 1;
 			std::vector<std::string> w_o_r_d = ft_divise(*iter, ";");
-			std::cout << "body_divise-->" << body_divise[1] << std::endl;
 			if(body_divise[1].find("\"")!= std::string::npos)
 				name_file = ft_divise(w_o_r_d[2], "\"");
 			path_doc = "/Users/souchen/Desktop/Myserver/website/upload-test/upload-doc/" + name_file[1];
@@ -386,9 +358,7 @@ std::string Request::path_of_file()
 	}
    	if(Status_Code == 400)
 	{
-		std::cout << "enter here\n";
 		Status_Code = 400;
-		// std::cout << RED << "Bad request\n";
 		path_of_file_dm = "";
 		return path_of_file_dm ;
 	}
@@ -411,7 +381,6 @@ std::string Request::path_of_file()
 	
 	path_of_file_dm = Servers->get_root();
 
-	//if(strcmp(Path_in_request, "/") == 0)
 	if (Path_in_request.compare("/") == 0)
 	{
 		
@@ -466,7 +435,6 @@ std::string Request::path_of_file()
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-	std::cout << "our file is" << path_of_file_dm << std::endl;
 
 	return path_of_file_dm;
 
@@ -524,9 +492,8 @@ int Request::check_auto_index(std::string path_access)
 		}
 		else
 		{
-			//autoindex off
 			Status_Code = 403;
-			std::cout << "The client does not have the access right to the content\n";
+			std::cout << RED <<"index off --->The client does not have the access right to the content\n";
 			return 2;
 		}
 	}
@@ -559,6 +526,7 @@ std::map<unsigned int, std::string> Request::Status_codes_means(void)
 	   code_stat.insert(std::pair<unsigned int, std::string>(403, "403 Forbidden"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(404, "404 Not Found"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(405, "405 Method Not allow"));
+	   code_stat.insert(std::pair<unsigned int, std::string>(405, "500 500 Internal Server Error"));
 	
 		return code_stat ;
 }
@@ -575,7 +543,6 @@ int Request::check_cgi()
 		count_pos = path_of_file_dm.find(iter_cgi->first);
 		if(count_pos != std::string::npos)
 		{
-			std::cout << "not found..\n";
 			return count_pos;
 		}
 
@@ -597,8 +564,7 @@ char ** Request::get_the_path(std::string extention_name)
 	char *path = getcwd(NULL, 0);
 	std::string path_actuel = std::string(path);
 	free(path);
-	// std::vector<std::string>path_final;
-	// find() returns an iterator or a constant iterator that refers to the position where the key is present in the map.
+
 	if(Servers->get_cgis().find(extention_name) != Servers->get_cgis().end())
 	{
 		cgi_path = Servers->get_cgis().find(extention_name)->second;
@@ -616,14 +582,13 @@ char ** Request::get_the_path(std::string extention_name)
 	if(fd_cgi <= 0)
 	{
 		std::cout << "Cgi file open error\n";
+		Status_Code = 500;
 		return 0;
 	}
 	std::vector<std::string> path_final;
 	path_final.push_back(cgi_path);
 	path_final.push_back(path_actuel + "/" + path_of_file_dm.substr(0, path_of_file_dm.find_first_of('?', 0)));
-	//std::cout << "path_final[1]-->" << path_final[1] << endl; 
-	//std::cout << "path_final size-->" << path_final.size() << endl;
-	// put our vector in char ** variable
+
 
 	argument = static_cast<char **>(malloc(sizeof(char *) * (path_final.size() + 1)));
 	if(argument == NULL)
@@ -665,8 +630,7 @@ char *Request::ft_strdup(std::string path)
 
 void Request::cgi_start(std::string &body_final)
 {
-	// int *status = NULL;
-	// int options;
+
 	char **argv;
 	char **env;
 	
@@ -695,7 +659,7 @@ void Request::cgi_start(std::string &body_final)
 	pid_t pid = fork();
 	if(pid < 0)
 	{
-		std::cout << RED << "fork failed\n";
+		std::cout << RED << "Fork failed\n";
 		exit(0);
 	}else if(pid == 0)
 	{
@@ -737,19 +701,18 @@ void Request::cgi_start(std::string &body_final)
 			close(post_pipe[1]);
 			if (dup2(post_pipe[0], 0) == -1)
 			{
-				std::cout<< "dup2 error\n";
+				std::cout<< RED << "Dup2 error\n";
 				exit(0);
 			}
 		}
 		close(fd_pipe[0]);
 		if(dup2(fd_pipe[1], 1) == -1)
 		{
-			std::cout<< "Error dup\n";
+			std::cout<< RED << "Dup2 Error dup\n";
 			exit(0);
 		}
 
-		// std::cout << "argv[0]-->" << argv[0] << endl;
-		// std::cout << "argv[1]-->" << argv[1] << endl;
+		
 		if(execve(argv[0], argv, env) < 0)
 		{
 			std::cout << RED <<"execve error\n";
@@ -763,7 +726,7 @@ void Request::cgi_start(std::string &body_final)
 		 	close(post_pipe[0]);
 		
 			if (write(post_pipe[1], request_headers["body"].c_str(), request_headers["body"].size()) < 0)
-				std::cout << "write error\n";
+				std::cout << RED<< "write error\n";
 		
 			close(post_pipe[1]);
 		}
@@ -818,7 +781,6 @@ void Request::auto_index(std::string &str, std::string path_access)
 		{
 			// It returns a null pointer upon reaching the end of the directory stream
 			std::string our_link = entry->d_name;
-			// std::cout << "link here-->" << our_link << endl;
 			if (is_directory(path_access + '/' + our_link))
 			{
 				our_link += '/';
@@ -850,7 +812,7 @@ void Request::delete_request(std::string &path)
 	Status_Code = 200;
 	if(remove(path_of_file_dm.c_str()) == -1)
 	{
-		std::cout << RED << "remove failed\n";
+		std::cout << RED << "Remove failed\n";
 		Status_Code = 404;
 	}
 

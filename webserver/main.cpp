@@ -27,11 +27,11 @@ int main(int argc, char *argv[])
     signal(SIGPIPE, SIG_IGN);
     if(argc != 2)
     {
-        std::cout << "Add default config file!\n";
+        std::cout << YELLOW << "Add default config file!\n";
         std::ifstream FileToCheck("config_file/config_file-default.conf");
 		    if (!FileToCheck.is_open())
 		    {
-			    std::cout << "Error: opening file--> This file doesnt exist" << std::endl;
+			    std::cout << RED << "Error: opening file--> This file doesnt exist" << std::endl;
 			    return -1;
 		    }
 		    FileToCheck.close();
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         	std::ifstream FileToCheck(argv[1]);
 		    if (!FileToCheck.is_open())
 		    {
-			    std::cout << "Error: opening file--> This file doesnt exist" << std::endl;
+			    std::cout << RED << "Error: opening file--> This file doesnt exist" << std::endl;
 			    return -1;
 		    }
 		    FileToCheck.close();

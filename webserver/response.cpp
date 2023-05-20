@@ -53,7 +53,6 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 	response_header << "Date: " << get_time() << std::endl;
 	response_header << "Server: webserv/0.01" << std::endl;
 	response_header << "Content_type:"<< get_content_type(path_access, var) << std::endl;
-	//response_header << "X-Powered-By: PHP/8.1.12" << std::endl;
 	response_header << "Content-Length: " << size_of_file << std::endl;
 	response_header << "Connection: Closed" << std::endl;
 	if (locations && locations->get_http_redirection() > 0)
@@ -71,9 +70,8 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
 std::string response::get_content_type	(const std::string &path_access, const bool& check)
 {
 	std::string type;
-	if (check == 0)
-		type = "text/html";
-	else if (path_access.find(".png", path_access.length() - 4) != std::string::npos)
+	(void) check;
+	if (path_access.find(".png", path_access.length() - 4) != std::string::npos)
 		type = "image/png";
 	else if (path_access.find(".jpg", path_access.length() - 4) != std::string::npos)
 		type = "image/jpg";
@@ -89,6 +87,8 @@ std::string response::get_content_type	(const std::string &path_access, const bo
 		type = "text/html";
 	else if (path_access.find(".txt", path_access.length() - 4) != std::string::npos)
 		type = "text/plain";
+	else if (path_access.find(".mp4", path_access.length() - 4) != std::string::npos)
+		type = "video/mp4";
 	else
 		type = "application/octet-stream";
 	return type;
