@@ -21,7 +21,7 @@
 
 int is_integer(const std::string &str)
 {
-    if (str.empty() || ((!isdigit(str[0])) && (str[0] != '+') && (str[0] != '-')))
+    if (str.empty() || ((!isdigit(str[0])) && (str[0] != '+')))
         return 0;
     
     return (1);
@@ -39,6 +39,10 @@ int	ft_search(char const c, const std::string &search_data)
 	return 0;
 }
 
+bool is_empty(std::ifstream& pFile)
+{
+    return pFile.peek() == std::ifstream::traits_type::eof();
+}
 
 std::vector<std::string> ft_divise(const std::string &str, const std::string &search)
 {
@@ -103,7 +107,8 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 
 	if (word1[1] != "{")
 	{
-		std::cout << "Invalid config file\n";
+		std::cout << RED << "Invalid config file\n";
+		delete(serv);
 		exit(0);
 	}
 		
@@ -141,6 +146,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			{
 				
 					std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after listen" << std::endl;
+					delete(serv);
 					exit(0);
 			}
 			std::vector<std::string> listen_words = ft_divise(words2[1], ":");
@@ -162,12 +168,14 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			{
 				address_ip = "127.0.0.1";
 			}
+		
 				
-			
+		
 
-			if (is_integer(address_port) == 0)
+			if (is_integer(address_port) == 0 || atoi(address_port.c_str()) < 0)
 			{
 				std::cout << BLUE  << "--> server configuration is invalid: address port should be an integer" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 			serv->set_port_listen(atoi(address_port.c_str()));
@@ -185,6 +193,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if (words2.size() < 2)
 			{
 				std::cout << BLUE  << "--> server configuration is invalid: should have another argument after server_name" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 			for (std::vector<std::string>::iterator server_name = words2.begin() + 1; server_name != words2.end(); server_name++)
@@ -193,13 +202,14 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 				 
 			}
 			
+			
 		}
 		else if (words2[0] == "root")
 		{
 			if (words2.size() != 2)
 			{
 				std::cout << BLUE  << serv->get_root() << "--> server configuration is invalid: should have another argument after root" << std::endl;
-
+				delete(serv);
 				exit(0);
 			}
 			std::string root_tmp = words2[1];
@@ -207,7 +217,6 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			{
 				root_tmp = root_tmp.substr(1);
 			}
-				
 			if (root_tmp.size() > 1 && root_tmp[root_tmp.size() - 1] == '/')
 				root_tmp.resize(root_tmp.size() - 1);
 			serv->set_root(root_tmp);
@@ -218,7 +227,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if (words2.size() !=  2)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have one argument after index" << std::endl;
-		
+				delete(serv);
 				exit(0);
 			}
 			serv->set_index(words2[1]);
@@ -227,15 +236,17 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 		// client_max_body_size
 		else if (words2[0] == "client_max_body_size")
 		{
+
 			if (words2.size() != 2)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after client_max_body_size" << std::endl;
+				delete(serv);
 				exit(0);
 			}
-			if (is_integer(words2[1]) == 0)
+			if (is_integer(words2[1]) == 0 && words2[1] != "-1")
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have a number after client_max_body_size" << std::endl;
-	
+				delete(serv);
 				exit(0);
 			}
 			// using atoll here i should search for it
@@ -246,6 +257,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after error_page" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 			//The C++ pair allows you to store two disparate items as a single entity.
@@ -260,6 +272,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  << "--> server configuration is invalid: should have three argument after cgi" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 			serv->insert_in_cgi(words2[1], words2[2]);
@@ -281,6 +294,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if (words2.size() != 3)
 			{
 				std::cout << BLUE  <<  "--> server configuration is invalid: should have another argument after location" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 			size_t old_cmp = *cmp;
@@ -296,6 +310,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 			if(words2[2] != "{")
 			{
 				std::cout << BLUE  <<  "--> should have open bracket after location and path" << std::endl;
+				delete(serv);
 				exit(0);
 			}
 
@@ -323,6 +338,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 					if(w_o_r_d.size() != 2)
 					{
 						std::cout << BLUE  << "--> should have another argument after root" << std::endl;
+						delete(serv);
 						exit(0);
 					}
 					if(w_o_r_d[1].size() > 1 && w_o_r_d[1][w_o_r_d[1].size() - 1] == '/')
@@ -355,6 +371,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 					if(w_o_r_d.size() != 2)
 					{
 						std::cout << "should have another argument after autoindex" << std::endl;
+						delete(serv);
 						exit(0);
 					}
 					if(w_o_r_d[1] == "on" || w_o_r_d[1] == "off")
@@ -367,6 +384,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 					if(w_o_r_d.size() != 2)
 					{
 						std::cout << "should have another argument after upload_enable" << std::endl;
+						delete(serv);
 						exit(0);
 					}
 					if(w_o_r_d[1] == "0" || w_o_r_d[1] == "1")
@@ -379,6 +397,7 @@ server	*parse_server(std::vector<std::string> config_file, size_t *cmp)
 					if(w_o_r_d.size() < 2)
 					{
 						std::cout << "should have another argument after index" << std::endl;
+						delete(serv);
 						exit(0);
 					}
 					location.set_index(w_o_r_d[1]);

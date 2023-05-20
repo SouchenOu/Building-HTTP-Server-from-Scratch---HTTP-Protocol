@@ -102,17 +102,9 @@ void Request::Parcing_request(std::string buffer)
 		transfer_encoding = transfer_encoding.substr(count, (transfer_encoding.find("\n", 0) - count));
 		
 	}
-	// std::size_t pos;
-	// if(pos = buffer.find("Cookie: ") != std::string::npos)
-	// {
-	// 	cookie = buffer.substr(pos, buffer.find('\n', pos));
-	// 	pos = cookie.find_first_of(": ") + 2;
-	// 	cookie = cookie.substr(pos, (cookie.find("\n", 0) - pos));
-
-	// 		std::cout << "cookie-->" << cookie << endl;
-	// }
-	std::cout << "Cookie --> "<<request_headers["Cookie"] << std::endl;
-
+	
+	std::cout << "port-->" << request_headers["Port"] << std::endl;
+	std::cout << "Host-->" << request_headers["Host"] << std::endl;
 	
 
 // Here for POST request
@@ -302,7 +294,8 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	
 	if(this->Servers == NULL)
 	{
-		std::cout << "No Server is compatible\n";
+		Status_Code = 400;
+		std::cout << RED <<"Bad request, No Server is compatible\n";
 		return 0;
 	}
 	//Content-Length is specified and it does not match the length of the message-line, the message is either truncated, or padded with nulls to the specified length.
@@ -310,12 +303,11 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	//The Content-Length header indicates the size of the message body, in bytes, sent to the recipient.
 
 	//Basically it is the number of bytes of data in the body of the request or response.
-	std::cout << "max_body_size-->" << Servers->get_client_max_body_size() << std::endl;
 
 	if (Servers->get_client_max_body_size() != -1  && atoi(request_headers["Content-Length"].c_str()) > Servers->get_client_max_body_size())
 	{
-		std::cout << "Payload Too Large\n";
-		std::cout << "413 Request Entity Too Large\n";
+		std::cout << RED <<"Payload Too Large\n";
+		std::cout << BLUE << "413 Request Entity Too Large\n";
 		Status_Code = 413;
 		return 0;
 	}
@@ -330,16 +322,21 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	if(request_headers["body"] != "" && request_headers["Content-Type"].find("multipart") != std::string::npos)
 	{
 		std::vector<std::string> vect_body;
+		std::vector<std::string>name_file;
+		std::string path_doc;
 		if(Locations->get_upload_enable() == 1)
 		{
-			std::cout << "uploading......\n";
+			std::cout << GREEN << "uploading......\n";
 			std::string body_final;
 			std::vector<std::string> body_divise = ft_divise(request_headers["body"], "\n");
 			std::vector<std::string>::iterator iter = body_divise.begin() + 1;
 			std::vector<std::string> w_o_r_d = ft_divise(*iter, ";");
-			std::vector<std::string>name_file = ft_divise(w_o_r_d[2], "\"");
+			std::cout << "body_divise-->" << body_divise[1] << std::endl;
+			if(body_divise[1].find("\"")!= std::string::npos)
+				name_file = ft_divise(w_o_r_d[2], "\"");
+			path_doc = "/Users/souchen/Desktop/Myserver/website/upload-test/upload-doc/" + name_file[1];
 			request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
-			std::fstream myFile(name_file[1], std::ios::in | std::ios::out | std::ios::trunc);
+			std::fstream myFile(path_doc, std::ios::in | std::ios::out | std::ios::trunc);
 			myFile << request_headers["body"];
 
 	
@@ -359,6 +356,7 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	if(indice == 0)
 	{
 		Status_Code = 405;
+		std::cout << RED << "Method not allowed\n";
 		return 0;
 	}
 	
@@ -380,15 +378,15 @@ std::string Request::path_of_file()
 
 	std::string Path_in_request;
 	std::string tmp_file;
-		if(Status_Code == 405)
+	if(Status_Code == 405)
 	{
 		Status_Code = 405;
-		// std::cout << RED << "Bad request\n";
 		path_of_file_dm = "";
 		return path_of_file_dm ;
 	}
    	if(Status_Code == 400)
 	{
+		std::cout << "enter here\n";
 		Status_Code = 400;
 		// std::cout << RED << "Bad request\n";
 		path_of_file_dm = "";
@@ -400,19 +398,20 @@ std::string Request::path_of_file()
 		path_of_file_dm = "";
 		return path_of_file_dm ;
 	}
+    
     if(Locations == NULL || Servers == NULL)
     {
 		Status_Code = 400;
-		// std::cout << RED << "Bad request\n";
-		path_of_file_dm = "";
-		return path_of_file_dm ;
+        path_of_file_dm = "";
+		return path_of_file_dm;
     }
+
 	
+	Path_in_request = Path; // in my case i have / 
 	
-	Path_in_request = Path;
 	path_of_file_dm = Servers->get_root();
 
-
+	//if(strcmp(Path_in_request, "/") == 0)
 	if (Path_in_request.compare("/") == 0)
 	{
 		
@@ -422,15 +421,10 @@ std::string Request::path_of_file()
 			Path_in_request += '/' + Servers->get_index();
 	}
 	//return Path_in_request;
-	//The function returns the index of the first occurrence of the sub-string.
 	if (Path_in_request.find(Locations->get_path()) == 0)
 	{
-		if(is_directory(path_of_file_dm + Locations->get_root()))
-		{
-			path_of_file_dm = path_of_file_dm + Locations->get_root();
-		}else
-			path_of_file_dm = path_of_file_dm + "/" + Locations->get_root();
-	
+		Path_in_request = Path_in_request.substr(Locations->get_path().length());
+		path_of_file_dm = path_of_file_dm + '/' + Locations->get_root();
 	}
 	
 	if(is_directory(path_of_file_dm + Path_in_request))
@@ -440,8 +434,8 @@ std::string Request::path_of_file()
 	else
 	{
 		tmp_file = path_of_file_dm + '/' + Path_in_request;
-		
 	}
+
 	if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] != '/')
 	{
 	
@@ -452,27 +446,29 @@ std::string Request::path_of_file()
 		}
 	}else if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] == '/')
 	{
-					std::cout << "yess here\n";
 
 		if(Locations->get_index().length())
 		{
-						std::cout << "yess here\n";
 
 			tmp_file = tmp_file + Locations->get_index();
 		}
 	}
-	
+
 	if(is_directory(tmp_file) && tmp_file[tmp_file.length() - 1] != '/')
 		tmp_file = tmp_file + '/';
 	path_of_file_dm = tmp_file;
 
-	// close(file_des);
+	 
+	path_of_file_dm = tmp_file;
+
 	std::size_t found = path_of_file_dm.find("//");
 	if(found != std::string::npos)
 	{
 		path_of_file_dm.replace(found, 2 ,"/");
 	}
-    return path_of_file_dm;
+	std::cout << "our file is" << path_of_file_dm << std::endl;
+
+	return path_of_file_dm;
 
 }
 
@@ -484,14 +480,34 @@ std::string	Request::error_pages(int error_code)
 	if (Servers && Servers->get_error_pages().size() && Servers->get_error_pages().find(error_code) != Servers->get_error_pages().end() && Servers->get_error_pages()[error_code].size())
 	{
 		std::string file_page = Servers->get_root() + '/' + Servers->get_error_pages()[error_code];
+		std::ifstream file_error(file_page.c_str(), std::ofstream::in);
+		if(((!file_error || !file_error.is_open() || !file_error.good()) ))
+		{
+			return ("website/404.html");
+
+			file_error.close();
+		}
 		return (Servers->get_root() + Servers->get_error_pages().find(error_code)->second);
 	}
 	else
 	{
+		std::string file_page;
 		std::stringstream str_data;
 		str_data << error_code;
+		if(Servers != NULL)
+		{
+			file_page = Servers->get_root() + "/default_error/" + str_data.str() + ".html";
+			std::ifstream file_error(file_page.c_str(), std::ofstream::in);
+			if(((!file_error || !file_error.is_open() || !file_error.good()) ))
+			{
+				return ("website/default_error/" + str_data.str() + ".html");
+				file_error.close();
+			}
+			return (Servers->get_root() + "/default_error/" + str_data.str() + ".html");
+		}
+			return ("website/default_error/" + str_data.str() + ".html");
+			
 
-		return (Servers->get_root() + "/default_error/" + str_data.str() + ".html");
 	}
 		
 }
@@ -508,6 +524,7 @@ int Request::check_auto_index(std::string path_access)
 		}
 		else
 		{
+			//autoindex off
 			Status_Code = 403;
 			std::cout << "The client does not have the access right to the content\n";
 			return 2;
@@ -548,9 +565,7 @@ std::map<unsigned int, std::string> Request::Status_codes_means(void)
 
 int Request::check_cgi()
 {
-	// int count_pos;
 	count_pos = 0;
-	//int value = 0;
 	std::map<std::string, std::string> cgi = Servers->get_cgis();
 	std::map<std::string, std::string>::iterator iter_cgi;
 
@@ -560,10 +575,13 @@ int Request::check_cgi()
 		count_pos = path_of_file_dm.find(iter_cgi->first);
 		if(count_pos != std::string::npos)
 		{
+			std::cout << "not found..\n";
 			return count_pos;
 		}
 
 	}
+	count_pos = 0;
+
 	return count_pos;
 }
 
@@ -585,6 +603,13 @@ char ** Request::get_the_path(std::string extention_name)
 	{
 		cgi_path = Servers->get_cgis().find(extention_name)->second;
 	}
+	if(cgi_path == "")
+	{
+		std::cout << RED << "There is no cgi path\n";
+		Status_Code = 500;
+		return 0;
+	}
+		
 	// check if this path exist or not
 
 	int fd_cgi = open(cgi_path.c_str(),O_RDONLY );
@@ -604,7 +629,7 @@ char ** Request::get_the_path(std::string extention_name)
 	if(argument == NULL)
 	{
 		free(argument);
-		exit(0);
+		exit(1);
 	}
 		
 	for(size_t i = 0; i < path_final.size(); i++)
@@ -625,7 +650,7 @@ char *Request::ft_strdup(std::string path)
 	if(var == NULL)
 	{
 		free(var);
-		exit(0);
+		exit(1);
 	}
 
 	unsigned int i = 0;
@@ -642,9 +667,6 @@ void Request::cgi_start(std::string &body_final)
 {
 	// int *status = NULL;
 	// int options;
-
-
-	std::cout << "Yes cgi\n";
 	char **argv;
 	char **env;
 	
@@ -673,11 +695,10 @@ void Request::cgi_start(std::string &body_final)
 	pid_t pid = fork();
 	if(pid < 0)
 	{
-		std::cout << "fork failed\n";
+		std::cout << RED << "fork failed\n";
 		exit(0);
 	}else if(pid == 0)
 	{
-		std::cout<< "shild process\n";
 		std::vector<std::string> enverment;
 		enverment.push_back("REQUEST_METHOD="+type_request);
 		enverment.push_back("SCRIPT_FILENAME="+ path_actuel + "/" + path_of_file_dm.substr(0,path_of_file_dm.find_first_of('?',0)));
@@ -703,7 +724,7 @@ void Request::cgi_start(std::string &body_final)
 		if(env == NULL)
 		{
 			free(env);
-			exit(0);
+			exit(1);
 		}
 		for(size_t k =0; k < enverment.size() ; k++)
 		{
@@ -731,8 +752,8 @@ void Request::cgi_start(std::string &body_final)
 		// std::cout << "argv[1]-->" << argv[1] << endl;
 		if(execve(argv[0], argv, env) < 0)
 		{
-			std::cout << "execve error\n";
-			Status_Code = 404;
+			std::cout << RED <<"execve error\n";
+			Status_Code = 500;
 		}
 	}else
 	{

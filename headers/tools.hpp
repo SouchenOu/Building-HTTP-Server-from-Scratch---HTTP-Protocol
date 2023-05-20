@@ -56,6 +56,7 @@ std::vector<std::string> ft_divise(const std::string &str, const std::string &se
 server	*parse_server(std::vector<std::string> config_file, size_t *count);
 bool is_directory(const std::string &filename);
 Location	parse_location(std::vector<std::string> &config_file, size_t *cmp);
+bool is_empty(std::ifstream& pFile);
 
 
 

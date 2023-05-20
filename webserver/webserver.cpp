@@ -41,6 +41,11 @@ void Webserver::parcing_config_file(std::string config_file)
 	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
 
     std::ifstream read_file(config_file.c_str());
+	if(is_empty(read_file))
+	{
+		std::cout << RED << "config_file is empty\n";
+		exit(0);
+	}
 	
 	// now we should convert ifstream to string
 	std::string the_str (std::istreambuf_iterator<char>(read_file),(std::istreambuf_iterator<char>()));

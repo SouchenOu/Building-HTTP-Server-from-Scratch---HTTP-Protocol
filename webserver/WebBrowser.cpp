@@ -141,16 +141,13 @@ int WebBrowsers::Read_request()
 				}
 		
 				
-				std::size_t pos = request->get_content_type().find("application");
-				
 				if (request->get_type_request() == "GET" || request->get_type_request() == "DELETE")
 				{
 					value = 1;
 				}
 				
-				if(request->get_type_request() == "POST" && pos != std::string::npos)
+				if(request->get_type_request() == "POST" && request->get_request_header("body").empty() != 0)
 				{
-					std::cout << "end here\n";
 					value = 1;
 				}
 			
@@ -174,7 +171,7 @@ int WebBrowsers::Read_request()
 			{
 			
 				std::string body_final;
-				std::cout << "wait......\n";
+				std::cout << YELLOW << "wait......\n";
 				for(int i = 0; i < recv_s; i++)
 				{
 					request->get_request_header("body").push_back(buffer[i]);
@@ -201,7 +198,7 @@ int WebBrowsers::Read_request()
 			 	 }
 
 			}else{
-					std::cout << "wait......\n";					
+					std::cout << YELLOW << "wait......\n";					
 						for(int i = 0; i < recv_s; i++)
 						{
 							request->get_request_header("body").push_back(buffer[i]);
@@ -300,7 +297,7 @@ void WebBrowsers::check_error_page()
 	{
 		request->set_Status_code(200);
 	}
-	if(request->get_Status_code() == 400 || request->get_Status_code() == 405 || request->get_Status_code() == 404 || request->get_Status_code() == 413)
+	if(request->get_Status_code() == 400 || request->get_Status_code() == 405 || request->get_Status_code() == 404 ||  request->get_Status_code() == 403 || request->get_Status_code() == 413)
 	{
 		check_error = true;
 		path_access = request->error_pages(request->get_Status_code());
@@ -322,21 +319,21 @@ void WebBrowsers::prepareResponse()
 	
 	// path_access = path_access.substr(0, path_access.find_first_of('?',0));
 	check_error_page();
-	std::cout << "code_status-" << request->get_Status_code() << std::endl;
-	std::cout << "path-->" << path_access << std::endl;
+	std::cout << "path_access->" << path_access << std::endl;
 	std::ifstream file_check(path_access.c_str(), std::ofstream::in);
 	if(((!file_check || !file_check.is_open() || !file_check.good()) ) && Locations->get_http_redirection() == 0)
 	{
 		error = 1;
 		request->set_Status_code(404);
 		path_access = request->error_pages(request->get_Status_code());
+
 		file_check.close();
 	}
 	if(autoindex == 1)
 	{
 		value_status = 3;
 		file_check.close();
-	}else if(autoindex == 0)
+	}else if(autoindex == 0 && error == 0 && check_error == 0)
 	{
 		count = request->check_cgi();
 		if(count > 0)
@@ -348,15 +345,14 @@ void WebBrowsers::prepareResponse()
 	{
 		delete_indice = 2;
 	}
-	
 	// status = request->get_indice();
 	code_status = request->get_Status_code();
-	std::cout << "code_status-" << code_status << std::endl;
 	std::map<unsigned int, std::string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
-	if(check_error == true || (value_status == 0 && delete_indice == 0))
+	if(error == 1 || check_error == true || (value_status == 0 && delete_indice == 0))
 	{
+		std::cout << "herreeee\n";
 		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
 		indice = 2;
 		delete request;
@@ -364,11 +360,20 @@ void WebBrowsers::prepareResponse()
 
 	}else if(value_status == 2 && delete_indice == 0 && error == 0)
 	{
+		std::cout << "enter cgi\n";
 		std::string body;
 		request->cgi_start(body);
-		response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
-		response_buffer = response_buffer + body;
-		file_file_descriptor = 0;
+		if(request->get_Status_code() == 500)
+		{
+			path_access =  request->error_pages(request->get_Status_code());
+			response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
+		}else
+		{
+			response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
+			response_buffer = response_buffer + body;
+			file_file_descriptor = 0;
+		}
+
 		indice = 2;
 		delete request;
 		request = 0;
