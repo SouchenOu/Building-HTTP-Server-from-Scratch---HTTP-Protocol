@@ -81,8 +81,6 @@ int WebBrowsers::Read_request()
 		if(request == NULL)
 		{
 			read_buffer = read_buffer + std::string(buffer, recv_s);
-	
-		
 			if(request == NULL && recv_s <= BUFFUR_SIZE && (read_buffer.find("\r\n\r\n") != std::string::npos ))
 			{
 				
@@ -105,32 +103,34 @@ int WebBrowsers::Read_request()
 							request->set_Status_code(400);
 							return 0; 
 						}
-					}
-					if(request->get_transfer_encoding().find("chunked") != std::string::npos && EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
-					{
-						std::string body_chunk;
-						std::string body_final;
-						body_chunk.append(std::string(request->get_request_header("body")));
-						std::string subchunk = body_chunk.substr(0,100);
-						int			chunksize = strtol(subchunk.c_str(), NULL, 16);
-			 			size_t		i = 0;
-						while (chunksize)
+					
+					
+						if(request->get_transfer_encoding().find("chunked") != std::string::npos && EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 						{
-							i = body_chunk.find("\r\n", i) + 2;
-							body_final += body_chunk.substr(i, chunksize);
-						
-							if(EndChunked(body_final, "0\r\n\r\n") == 1)
+							std::string body_chunk;
+							std::string body_final;
+							body_chunk.append(std::string(request->get_request_header("body")));
+							std::string subchunk = body_chunk.substr(0,100);
+							int			chunksize = strtol(subchunk.c_str(), NULL, 16);
+			 				size_t		i = 0;
+							while (chunksize)
 							{
-								break ;
-							}
-							i += chunksize + 2;
-							subchunk = body_chunk.substr(i, 100);
-							chunksize = strtol(subchunk.c_str(), NULL, 16);
-							subchunk = body_chunk.substr(0,100);
+								i = body_chunk.find("\r\n", i) + 2;
+								body_final += body_chunk.substr(i, chunksize);
+						
+								if(EndChunked(body_final, "0\r\n\r\n") == 1)
+								{
+									break ;
+								}
+								i += chunksize + 2;
+								subchunk = body_chunk.substr(i, 100);
+								chunksize = strtol(subchunk.c_str(), NULL, 16);
+								subchunk = body_chunk.substr(0,100);
 						}
 						request->get_request_header("body").clear();
 						request->get_request_header("body").append(std::string(body_final));
 						value = 1;
+					}
 					}
 				}
 		
@@ -139,8 +139,13 @@ int WebBrowsers::Read_request()
 				{
 					value = 1;
 				}
-				
+
 				if(request->get_type_request() == "POST" && request->get_request_header("body").empty() != 0)
+				{
+
+					value = 1;
+				}
+				if(request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 				{
 					value = 1;
 				}
@@ -166,10 +171,11 @@ int WebBrowsers::Read_request()
 			
 				std::string body_final;
 				std::cout << YELLOW << "Wait......\n";
-				for(int i = 0; i < recv_s; i++)
-				{
-					request->get_request_header("body").push_back(buffer[i]);
-				}
+				// for(int i = 0; i < recv_s; i++)
+				// {
+				// 	request->get_request_header("body").push_back(buffer[i]);
+				// }
+				request->get_request_header("body").append(buffer, recv_s);				
 				if(EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 				{
 			 		std::string subchunk = request->get_request_header("body").substr(0,100);
@@ -192,13 +198,18 @@ int WebBrowsers::Read_request()
 			 	 }
 
 			}else{
-					std::cout << YELLOW << "wait......\n";					
-						for(int i = 0; i < recv_s; i++)
-						{
-							request->get_request_header("body").push_back(buffer[i]);
-						}
-					
+					std::cout << YELLOW << "wait......\n";	
+
+						// for(int i = 0; i < recv_s; i++)
+						// {
+						// 	request->get_request_header("body").push_back(buffer[i]);
+						// }
+						request->get_request_header("body").append(buffer, recv_s);		
 					if (request->get_type_request() == "POST" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
+					{
+						value = 1;
+					}
+					if (request->get_type_request() == "GET" &&  request->get_request_header("Content-Length") != "" && (std::stol(request->get_request_header("Content-Length")) ==  (long)request->get_request_header("body").size()))
 					{
 						value = 1;
 					}
@@ -292,12 +303,12 @@ void WebBrowsers::check_error_page()
 }
 void WebBrowsers::prepareResponse()
 {
-	//int status;
 	int code_status;
 	int value_status = 0;
 	int delete_indice = 0;
 	int error = 0;
 	int count;
+	std::string header;
 	send_byte = 0;
 	
 	
@@ -320,6 +331,19 @@ void WebBrowsers::prepareResponse()
 		count = request->check_cgi();
 		if(count > 0)
 			value_status = 2;
+		if(path_access.find(".php", path_access.length() - 4) != std::string::npos && value_status != 2)
+		{
+			request->set_Status_code(500);
+			path_access = request->error_pages(request->get_Status_code());
+			error = 1;
+		}else if(path_access.find(".py", path_access.length() - 3) != std::string::npos && value_status != 2)
+		{
+			request->set_Status_code(500);
+			path_access = request->error_pages(request->get_Status_code());
+			error = 1;
+		}
+		
+		
 		file_check.close();
 	}
 
@@ -327,14 +351,13 @@ void WebBrowsers::prepareResponse()
 	{
 		delete_indice = 2;
 	}
-	// status = request->get_indice();
 	code_status = request->get_Status_code();
 	std::map<unsigned int, std::string> map_Codestatus = request->Status_codes_means();
 	file_file_descriptor = open(path_access.c_str(), O_RDONLY);
 	response Response;
 	if(error == 1 || check_error == true || (value_status == 0 && delete_indice == 0))
 	{
-		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
+		response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request, header);
 		indice = 2;
 		delete request;
 		request = 0;
@@ -342,14 +365,15 @@ void WebBrowsers::prepareResponse()
 	}else if(value_status == 2 && delete_indice == 0 && error == 0)
 	{
 		std::string body;
-		request->cgi_start(body);
+		
+		header = request->cgi_start(body);
 		if(request->get_Status_code() == 500)
 		{
 			path_access =  request->error_pages(request->get_Status_code());
-			response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
+			response_buffer = Response.response_header(0 ,0, path_access, code_status, map_Codestatus, Locations, request, header);
 		}else
 		{
-			response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
+			response_buffer = Response.response_header(body.size() ,1, path_access, code_status, map_Codestatus, Locations, request, header);
 			response_buffer = response_buffer + body;
 			file_file_descriptor = 0;
 		}
@@ -362,7 +386,7 @@ void WebBrowsers::prepareResponse()
 		
 		std::string str;
 		request->auto_index(str,  path_access);
-		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations, request);
+		response_buffer = Response.response_header(str.size() ,1, path_access, code_status, map_Codestatus, Locations, request, header);
 		response_buffer = response_buffer + str;
 		file_file_descriptor = 0;
 		indice = 2;
@@ -375,10 +399,10 @@ void WebBrowsers::prepareResponse()
 		if(request->get_Status_code() == 404)	
 		{
 			path_access = path;
-			response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request);
+			response_buffer = Response.response_header(0 , 0, path_access, code_status, map_Codestatus, Locations, request, header);
 		}else
 		{
-			response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations, request);
+			response_buffer = Response.response_header(0 ,1, path_access, code_status, map_Codestatus, Locations, request, header);
 			file_file_descriptor = 0;
 		}
 			
@@ -394,11 +418,15 @@ int WebBrowsers::send_response()
 	if(indice == 2)
 	{
 		if(send1() == -1)
+		{
 			return -1;
+		}
 	}else if(indice == 3)
 	{
 		if(send2() == -1)
+		{
 			return -1;
+		}
 	}
 	return 1;
 }
@@ -445,9 +473,10 @@ int WebBrowsers::send2()
 	/****** A connection can be dropped by a peer socket and a SIGPIPE signal generated at a later time if data delivery is not complete.*/
 	if(send(file_descriptor, buff, fd, 0) == -1)
 	{
-		std::cout << RED << "Send failed" << std::endl;
+		std::cout << RED << "Send failed\n";
 		return -1;
 	}
+	
 
 	if (fd < BUFFUR_SIZE)
 	{

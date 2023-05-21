@@ -15,15 +15,11 @@
 #include "../headers/tools.hpp"
 
 response::response()
-{
-		std::cout << "response\n";
-}
+{}
 
 
 response::~response()
-{
-	std::cout<< "Response destructer\n";
-}
+{}
 
 
 	/*************************************************/
@@ -37,8 +33,9 @@ response::~response()
     /*************************************************/
 
 
-std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, std::map<unsigned int, std::string> map_Codestatus, Location *locations,  Request  *request)
+std::string response::response_header(int size_of_file, bool var, std::string path_access, int status_code, std::map<unsigned int, std::string> map_Codestatus, Location *locations,  Request  *request, std::string header)
 {
+	(void) request;
 	if(var == 0)
 	{
 		std::ifstream our_file(path_access.c_str(),std::ios::in);
@@ -52,16 +49,22 @@ std::string response::response_header(int size_of_file, bool var, std::string pa
     response_header << "HTTP/1.1 " << map_Codestatus[status_code] << std::endl;
 	response_header << "Date: " << get_time() << std::endl;
 	response_header << "Server: webserv/0.01" << std::endl;
-	response_header << "Content_type:"<< get_content_type(path_access, var) << std::endl;
 	response_header << "Content-Length: " << size_of_file << std::endl;
-	response_header << "Connection: Closed" << std::endl;
-	if (locations && locations->get_http_redirection() > 0)
-		response_header << "Location: " << locations->get_return_line() << std::endl;
-	if(request->get_request_header("Cookie").empty() == 0)
+	if(header.size() == 0)
 	{
-		response_header << "Set-Cookies: " << request->get_request_header("Cookie") << std::endl;
+		response_header << "Content_Type:"<< get_content_type(path_access, var) << std::endl;
+		response_header << "Connection: Closed" << std::endl;
+		if (locations && locations->get_http_redirection() > 0)
+			response_header << "Location: " << locations->get_return_line() << std::endl;
+		if(request->get_request_header("Cookie").empty() == 0)
+		{
+			response_header << "Set-Cookies: " << request->get_request_header("Cookie") << std::endl;
+		}
+		response_header << std::endl;
+	}else{
+		response_header << header << "\r\n\r\n";
 	}
-	response_header << std::endl;
+	
 
 	return response_header.str();
 

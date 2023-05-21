@@ -80,7 +80,7 @@ class Request
         int check_which_location_compatible();
        std::map<unsigned int, std::string> Status_codes_means(void);
        int check_cgi();
-       void cgi_start(std::string &body);
+       std::string cgi_start(std::string &body);
        char ** get_the_path(std::string extention_name);
        char * ft_strdup(std::string path);
        std::string &get_request_header(std::string element);

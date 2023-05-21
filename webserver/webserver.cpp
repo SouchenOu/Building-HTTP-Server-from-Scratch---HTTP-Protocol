@@ -35,8 +35,8 @@ void Webserver::parcing_config_file(std::string config_file)
 {
 
 	size_t cmp = 0;
-	//int size;
-	//Ifstream c++ is a file input stream that allows us to read any information contained in the file
+//int size;
+//Ifstream c++ is a file input stream that allows us to read any information contained in the file
 
     std::ifstream read_file(config_file.c_str());
 	if(is_empty(read_file))
@@ -45,7 +45,7 @@ void Webserver::parcing_config_file(std::string config_file)
 		exit(0);
 	}
 	
-	// now we should convert ifstream to string
+// now we should convert ifstream to string
 	std::string the_str (std::istreambuf_iterator<char>(read_file),(std::istreambuf_iterator<char>()));
 	read_file.close();
 	std::vector<std::string> config_line = ft_divise(the_str, "\n");
@@ -64,7 +64,7 @@ void Webserver::parcing_config_file(std::string config_file)
 				if((*iter1)->get_ip_address() == serv->get_ip_address() && (*iter1)->get_port_listen() == serv->get_port_listen())
 				{
 					std::set<std::string> server_names = (*iter1)->get_server_name();
-					if(server_names.size() == 0 || serv->get_server_name().size() == 0)
+					if(server_names.size() == 0 && serv->get_server_name().size() == 0)
 					{
 						std::cout << BLUE << "MyServer: [warn] conflicting port on" << serv->get_ip_address() << ":" << serv->get_port_listen() << ", ignored" << std::endl;
 						exit(0);
@@ -98,8 +98,8 @@ void Webserver::Establish_connection(void)
 	
 	fd_max = 0;
 	int fd_client;
-	//Clear an fd_set
-	//This macro initializes the file descriptor set set to be the empty set.
+//Clear an fd_set
+//This macro initializes the file descriptor set set to be the empty set.
 	FD_ZERO(&readfds); 
 	FD_ZERO(&writefds);
 	for (std::set<server*>::iterator iter = servers.begin(); iter != servers.end(); iter++)
@@ -180,9 +180,7 @@ Points to a bit set of descriptors to check for writing.*/
 //--> Data coming in or being able to write to a file descriptor
 		
 		
-		/*****A server socket is considered ready for reading if there is a pending connection which can be accepted with accept; see Accepting Connections. A client socket is ready for writing when its connection is fully established;*/
-		// select is constructive (select change r_fds )
-
+		
 		/* when select returns we know that one of our file descriptors has works for us, but select us a bit srange as i mentioned before (it is destructive)
 			meaning that it changes our FD_SET, so we passed in the set of file descriptors  to tell select which file descriptors to keep an eye on and when 
 			it returns now that same FD_SET containes just the file descriptors that are ready for reading, that is why we made a copy .
@@ -193,10 +191,10 @@ Points to a bit set of descriptors to check for writing.*/
 		activity = select(fd_max + 1, &r_fds, &w_fds, NULL, 0);
 
 		//The select function returns the number of sockets meeting the conditions
-		// if((activity < 0) && (errno != EINTR))
-		// {
-		// 	std::cout << RED << "Select error\n";
-		// }
+		if((activity < 0) && (errno != EINTR))
+		{
+			std::cout << RED << "Select error\n";
+		}
 		/**********************************************************/
       	/* One or more descriptors are readable.  Need to         */
       	/* determine which ones they are.                         */
@@ -283,6 +281,8 @@ Points to a bit set of descriptors to check for writing.*/
 						delete(*iter3);
 						iter3 = Browsers.erase(iter3);
 					}
+					
+						
 				}
 				
 			}
@@ -291,10 +291,6 @@ Points to a bit set of descriptors to check for writing.*/
 		
 
 		}
-
-	//handle multiple socket connections with fd_set and select 
-	//When writing server programs using sockets , it becomes necessary to handle multiple connections at a time , since a server needs to serve multiple clients.
-
 	}
 }
 

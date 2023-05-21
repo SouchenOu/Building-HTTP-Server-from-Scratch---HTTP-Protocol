@@ -37,8 +37,7 @@ Request::~Request()
 {
 	if (this->Locations != 0)
 		delete(this->Locations);
-	if(this->Servers != 0)
-		delete(this->Servers);
+	
 }
 void Request::Parcing_request(std::string buffer)
 {
@@ -52,7 +51,8 @@ void Request::Parcing_request(std::string buffer)
     type_request = w_o_r_d[0];
 	Path = w_o_r_d[1];
 	version_http = w_o_r_d[2];
-	Path = Path.substr(0, Path.find_first_of('?',0));
+	if(Path.find("?") != std::string::npos)
+		Path = Path.substr(0, Path.find_first_of('?',0));
 
 
     while(iter != request_divise.end())
@@ -191,8 +191,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	int indice = 0;
 
 	path_navigate = Path;
-	int var_test = 1;
-	int var2 = 0;
 	std::set<server*>::iterator const_iter1;
 	std::set<std::string>::iterator iter2;
 	std::set<server*>::iterator iter3;
@@ -206,7 +204,6 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		Host = "";
 		Status_Code = 400;
-		std::cout << RED << "Bad request\n";
 		return 0;
 	}
 	// if i have in my request header server_name = localhost and there no port 
@@ -229,42 +226,24 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 			{
 			
 					this->Servers = (*iter3);
+					break ;
 				
 			}
-	
-
-	}
-	
-	
-		
-	if(port == 0 || var_test == 2)
-	{
-		for(iter4 = servers.begin(); iter4 != servers.end(); iter4++)
-		{
-			std::set<std::string> server_names = (*iter4)->get_server_name();
+			std::set<std::string> server_names = (*iter3)->get_server_name();
 			for(iter2 = server_names.begin(); iter2 != server_names.end(); iter2++)
 			{
-				
 				if(((*iter2) == Host))
 				{
-					var2++;
-					this->Servers = (*iter4);
+					this->Servers = (*iter3);
 				}
 			}
-		}
 	}
-	if(var2 == 2)
-	{
-		std::cout << RED << "server: [warn] conflicting server name "" on 0.0.0.0:  ignored" << std::endl;
-		exit(0);
-	}
-
-
 	
+	
+
 	if(this->Servers == NULL)
 	{
 		Status_Code = 400;
-		std::cout << RED <<"Bad request, No Server is compatible\n";
 		return 0;
 	}
 	
@@ -288,20 +267,33 @@ int Request::check_request_with_config_file(const std::set<server*> &servers)
 	{
 		std::vector<std::string> vect_body;
 		std::vector<std::string>name_file;
+		std::vector<std::string> w_o_r_d;
 		std::string path_doc;
 		if(Locations->get_upload_enable() == 1)
 		{
 			std::cout << GREEN << "uploading......\n";
 			std::string body_final;
+			
 			std::vector<std::string> body_divise = ft_divise(request_headers["body"], "\n");
-			std::vector<std::string>::iterator iter = body_divise.begin() + 1;
-			std::vector<std::string> w_o_r_d = ft_divise(*iter, ";");
-			if(body_divise[1].find("\"")!= std::string::npos)
-				name_file = ft_divise(w_o_r_d[2], "\"");
-			path_doc = "/Users/souchen/Desktop/Myserver/website/upload-test/upload-doc/" + name_file[1];
-			request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
-			std::fstream myFile(path_doc, std::ios::in | std::ios::out | std::ios::trunc);
-			myFile << request_headers["body"];
+			if(body_divise[1].find("filename") != std::string::npos)
+			{
+					w_o_r_d = ft_divise(body_divise[1], ";");
+					name_file = ft_divise(w_o_r_d[2], "\"");
+			
+					path_doc = "/Users/souchen/Desktop/Myserver/website/upload-test/upload-doc/" + name_file[1];
+					request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
+					std::fstream myFile(path_doc, std::ios::in | std::ios::out | std::ios::trunc);
+					myFile << request_headers["body"];
+			}else
+			{
+				path_doc = "/Users/souchen/Desktop/Myserver/website/upload-test/upload-doc/data.txt";
+				request_headers["body"] = request_headers["body"].substr(request_headers["body"].find("\n\r\n") + 3,request_headers["body"].size() - 1 );
+				std::fstream myFile(path_doc, std::ios::in | std::ios::out | std::ios::trunc);
+				myFile << request_headers["body"];
+				
+			}
+				
+			
 
 	
 			 
@@ -518,8 +510,8 @@ std::map<unsigned int, std::string> Request::Status_codes_means(void)
 	   code_stat.insert(std::pair<unsigned int, std::string>(403, "403 Forbidden"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(404, "404 Not Found"));
 	   code_stat.insert(std::pair<unsigned int, std::string>(405, "405 Method Not allow"));
-	   code_stat.insert(std::pair<unsigned int, std::string>(405, "500 500 Internal Server Error"));
-	
+	   code_stat.insert(std::pair<unsigned int, std::string>(405, "500 Internal Server Error"));
+	   	code_stat.insert(std::pair<unsigned int, std::string>(413, "413 Payload Too Large"));
 		return code_stat ;
 }
 
@@ -531,7 +523,6 @@ int Request::check_cgi()
 
 	for(iter_cgi = cgi.begin(); iter_cgi != cgi.end(); iter_cgi++)
 	{
-		//value = 1;
 		count_pos = path_of_file_dm.find(iter_cgi->first);
 		if(count_pos != std::string::npos)
 		{
@@ -547,10 +538,7 @@ int Request::check_cgi()
 
 char ** Request::get_the_path(std::string extention_name)
 {
-	// firstly get the current directory
-	/**** These functions return a null-terminated string containing an
-       absolute pathname that is the current working directory of the
-       calling process.*/
+
 	std::string cgi_path;
 	char **argument;
 	char *path = getcwd(NULL, 0);
@@ -561,15 +549,7 @@ char ** Request::get_the_path(std::string extention_name)
 	{
 		cgi_path = Servers->get_cgis().find(extention_name)->second;
 	}
-	if(cgi_path == "")
-	{
-		std::cout << RED << "There is no cgi path\n";
-		Status_Code = 500;
-		return 0;
-	}
 		
-	// check if this path exist or not
-
 	int fd_cgi = open(cgi_path.c_str(),O_RDONLY );
 	if(fd_cgi <= 0)
 	{
@@ -620,11 +600,11 @@ char *Request::ft_strdup(std::string path)
 	return var;
 }
 
-void Request::cgi_start(std::string &body_final)
+std::string Request::cgi_start(std::string &body_final)
 {
-
 	char **argv;
 	char **env;
+	std::string headers;
 	
 	std::string body;
 	std::string extention_name = path_of_file_dm.substr(count_pos);
@@ -688,6 +668,7 @@ void Request::cgi_start(std::string &body_final)
 		}
 		env[enverment.size()] = 0;
 		argv = get_the_path(extention_name);
+	
 		if(type_request == "POST" && Status_Code != 413)
 		{
 			close(post_pipe[1]);
@@ -730,17 +711,17 @@ void Request::cgi_start(std::string &body_final)
 			
 			body = body + reading;
 		}
-			
-		if(extention_name == ".php")
-		{
-			std::vector<std::string> header = ft_divise(body, "\r");	
-			body_final = header[3];
-		}else
-			body_final = body;
+	
+			headers = body.substr(0,body.find("\r\n\r\n"));
+			body_final = body.substr(body.find("\r\n\r\n"), body.size());
+		
+
+		
 		
 		close(fd_pipe[0]);
 		
 	}
+	return headers;
 	
 		
 		
