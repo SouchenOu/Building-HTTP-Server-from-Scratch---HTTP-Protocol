@@ -47,12 +47,14 @@ void Request::Parcing_request(std::string buffer)
    
 
 	std::vector<std::string> w_o_r_d = ft_divise(*iter, white_espace);
-
-    type_request = w_o_r_d[0];
-	Path = w_o_r_d[1];
-	version_http = w_o_r_d[2];
-	if(Path.find("?") != std::string::npos)
-		Path = Path.substr(0, Path.find_first_of('?',0));
+	if(buffer.size() != 0 && w_o_r_d.size() >=2) 
+	{
+		type_request = w_o_r_d[0];
+		Path = w_o_r_d[1];
+		if(Path.find("?") != std::string::npos)
+			Path = Path.substr(0, Path.find_first_of('?',0));
+	}
+   
 
 
     while(iter != request_divise.end())

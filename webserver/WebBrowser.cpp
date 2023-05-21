@@ -171,11 +171,11 @@ int WebBrowsers::Read_request()
 			
 				std::string body_final;
 				std::cout << YELLOW << "Wait......\n";
-				// for(int i = 0; i < recv_s; i++)
-				// {
-				// 	request->get_request_header("body").push_back(buffer[i]);
-				// }
-				request->get_request_header("body").append(buffer, recv_s);				
+				for(int i = 0; i < recv_s; i++)
+				{
+					request->get_request_header("body").push_back(buffer[i]);
+				}
+				//request->get_request_header("body").append(buffer, recv_s);				
 				if(EndChunked(request->get_request_header("body"), "0\r\n\r\n") == 1)
 				{
 			 		std::string subchunk = request->get_request_header("body").substr(0,100);

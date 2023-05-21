@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <p>Select up files to upload</p>
   </header>
   <main>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
+    <form action="/upload_test_php" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <label for="file1">File 1</label>
         <input type="file" name="file1" id="file1" accept=".jpg, .jpeg, .png, .pdf, .mp4" required>
